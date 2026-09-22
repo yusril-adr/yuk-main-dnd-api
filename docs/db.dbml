@@ -1,0 +1,324 @@
+Project questboard {
+  database_type: "PostgreSQL"
+  Note: "D&D community platform"
+}
+
+/*
+ * ============================================================
+ * AUTH / PROFILE
+ * ============================================================
+ */
+
+Table users {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  username varchar(50)
+  email varchar(255) [not null, unique]
+  password varchar(255) [not null]
+  display_name varchar(100) [not null]
+  avatar_url text
+  bio text
+
+  exp integer [not null, default: 0]
+  level integer [not null, default: 1]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Note: "Authentication is handled by Supabase Auth; this stores application profile data."
+}
+
+/*
+ * ============================================================
+ * RBAC
+ * ============================================================
+ */
+
+Table roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  key varchar(50) [not null, unique]
+  name varchar(100) [not null]
+  description text
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+}
+
+Table permissions {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  module varchar(50) [not null]
+  action varchar(50) [not null]
+  key varchar(150) [not null, note: "`module:action` key"]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (module, action) [unique]
+  }
+}
+
+Table role_permissions {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  role_id uuid [not null]
+  permission_id uuid [not null]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (role_id, permission_id) [pk]
+  }
+}
+
+Table user_roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  user_id uuid [not null]
+  role_id uuid [not null]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (user_id, role_id) [pk]
+  }
+}
+
+/*
+ * ============================================================
+ * EVENTS
+ * ============================================================
+ */
+
+Table events {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  created_by uuid [not null]
+  story_id uuid
+
+  title varchar(150) [not null]
+  slug varchar(180) [not null, unique]
+  description text
+
+  status varchar(30) [not null, default: "draft"]
+
+  starts_at timestamptz [not null]
+  ends_at timestamptz
+
+  location varchar(255)
+  max_participants integer
+
+  exp_reward integer [not null, default: 0]
+  point_reward integer [not null, default: 0]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (created_by)
+    (story_id)
+    (status)
+    (starts_at)
+  }
+}
+
+Table event_participants {
+  event_id uuid [not null]
+  user_id uuid [not null]
+
+  status varchar(30) [not null, default: "registered"]
+
+  joined_at timestamptz [not null, default: `now()`]
+  attended_at timestamptz
+
+  exp_awarded integer [not null, default: 0]
+  points_awarded integer [not null, default: 0]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (event_id, user_id) [pk]
+    (user_id)
+    (event_id, status)
+  }
+}
+
+/*
+ * ============================================================
+ * stories
+ * ============================================================
+ */
+
+Table stories {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  created_by uuid [not null]
+
+  title varchar(150) [not null]
+  slug varchar(180) [not null, unique]
+  description text
+
+  status varchar(30) [not null, default: "draft"]
+
+  max_members integer
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (created_by)
+    (status)
+  }
+}
+
+Table story_members {
+  story_id uuid [not null]
+  user_id uuid [not null]
+
+  role varchar(30) [not null, default: "player"]
+  status varchar(30) [not null, default: "active"]
+
+  joined_at timestamptz [not null, default: `now()`]
+  left_at timestamptz
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (story_id, user_id) [pk]
+    (user_id)
+    (story_id, status)
+  }
+}
+
+/*
+ * ============================================================
+ * POINTS
+ * ============================================================
+ */
+
+Table point_transactions {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  user_id uuid [not null]
+
+  amount integer [not null]
+  balance_after integer [not null]
+
+  type varchar(30) [not null]
+
+  reference_type varchar(50)
+  reference_id uuid
+
+  description text
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (user_id, created_at)
+    (reference_type, reference_id)
+  }
+}
+
+/*
+ * ============================================================
+ * GOODS
+ * ============================================================
+ */
+
+Table goods {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  created_by uuid
+
+  name varchar(150) [not null]
+  slug varchar(180) [not null, unique]
+  description text
+
+  cost integer [not null]
+  stock integer
+
+  status varchar(30) [not null, default: "active"]
+
+  image_url text
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (status)
+  }
+}
+
+Table user_goods {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  user_id uuid [not null]
+  good_id uuid [not null]
+
+  quantity integer [not null, default: 1]
+  points_spent integer [not null]
+
+  status varchar(30) [not null, default: "pending"]
+
+  redeemed_at timestamptz [not null, default: `now()`]
+  fulfilled_at timestamptz
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  Indexes {
+    (user_id, created_at)
+    (good_id)
+    (status)
+  }
+}
+
+/*
+ * ============================================================
+ * RELATIONSHIPS
+ * ============================================================
+ */
+
+Ref: users.id < user_roles.user_id
+
+Ref: roles.id < user_roles.role_id
+
+Ref: roles.id < role_permissions.role_id
+Ref: permissions.id < role_permissions.permission_id
+
+Ref: users.id < events.created_by
+Ref: stories.id < events.story_id
+
+Ref: users.id < event_participants.user_id
+Ref: events.id < event_participants.event_id
+
+Ref: users.id < stories.created_by
+
+Ref: users.id < story_members.user_id
+Ref: stories.id < story_members.story_id
+
+Ref: users.id < point_transactions.user_id
+
+Ref: users.id < goods.created_by
+
+Ref: goods.id < user_goods.good_id
+Ref: users.id < user_goods.user_id

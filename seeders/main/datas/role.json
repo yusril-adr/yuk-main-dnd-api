@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Guild Master",
+    "key": "guild-master",
+    "description": "Guild Master role",
+    "permissions": [
+      "users:create",
+      "users:view",
+      "users:update",
+      "users:delete",
+      "roles:create",
+      "roles:view",
+      "roles:update",
+      "roles:delete",
+      "permissions:view",
+      "stories:create",
+      "stories:view",
+      "stories:update",
+      "stories:delete",
+      "events:create",
+      "events:view",
+      "events:update",
+      "events:delete",
+      "goods:create",
+      "goods:view",
+      "goods:update",
+      "goods:delete",
+      "points:create",
+      "points:view",
+      "points:update",
+      "points:delete"
+    ]
+  }
+]

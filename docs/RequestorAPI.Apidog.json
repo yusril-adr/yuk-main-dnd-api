@@ -1,0 +1,2155 @@
+{
+  "apidogProject": "1.0.0",
+  "$schema": {
+    "app": "apidog",
+    "type": "project",
+    "version": "1.2.0"
+  },
+  "info": {
+    "name": "Requestor",
+    "description": "",
+    "mockRule": {
+      "rules": [],
+      "enableSystemRule": true
+    }
+  },
+  "projectSetting": {
+    "id": "1298464",
+    "auth": {},
+    "securityScheme": {},
+    "gateway": [],
+    "language": "en-US",
+    "apiStatuses": [
+      "developing",
+      "testing",
+      "released",
+      "deprecated"
+    ],
+    "mockSettings": {},
+    "preProcessors": [],
+    "postProcessors": [],
+    "advancedSettings": {
+      "enableJsonc": false,
+      "enableBigint": false,
+      "responseValidate": true,
+      "enableTestScenarioSetting": false,
+      "enableYAPICompatScript": false,
+      "isDefaultUrlEncoding": 3,
+      "publishedDocUrlRules": {
+        "defaultRule": "SLUGIFY_WITH_RESOURCE_KEY",
+        "resourceKeyStandard": "NEW"
+      }
+    },
+    "initialDisabledMockIds": [],
+    "servers": [
+      {
+        "id": "default",
+        "name": "Default Server",
+        "moduleId": 1284205
+      }
+    ],
+    "cloudMock": {
+      "security": "free",
+      "enable": false,
+      "tokenKey": "apidogToken"
+    }
+  },
+  "apiCollection": [
+    {
+      "name": "Root",
+      "id": 8730578,
+      "auth": {
+        "type": "bearer",
+        "bearer": {
+          "token": "{{access_token}}"
+        }
+      },
+      "securityScheme": {},
+      "parentId": 0,
+      "serverId": "",
+      "description": "",
+      "identityPattern": {
+        "httpApi": {
+          "type": "methodAndPath",
+          "bodyType": ""
+        }
+      },
+      "shareSettings": {},
+      "visibility": "SHARED",
+      "moduleId": 1284205,
+      "preProcessors": [
+        {
+          "id": "inheritProcessors",
+          "type": "inheritProcessors",
+          "data": {}
+        }
+      ],
+      "postProcessors": [
+        {
+          "id": "inheritProcessors",
+          "type": "inheritProcessors",
+          "data": {}
+        }
+      ],
+      "inheritPostProcessors": {},
+      "inheritPreProcessors": {},
+      "items": [
+        {
+          "name": "Auth",
+          "id": 8730579,
+          "auth": {},
+          "securityScheme": {},
+          "parentId": 0,
+          "serverId": "",
+          "description": "",
+          "identityPattern": {
+            "httpApi": {
+              "type": "inherit",
+              "bodyType": "",
+              "fields": []
+            }
+          },
+          "shareSettings": {},
+          "visibility": "INHERITED",
+          "moduleId": 1284205,
+          "preProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "postProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "inheritPostProcessors": {},
+          "inheritPreProcessors": {},
+          "items": [
+            {
+              "name": "Login by Password",
+              "api": {
+                "id": "36546364",
+                "method": "post",
+                "path": "/api/v1/auth/login",
+                "parameters": {},
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "107026954",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\",\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjZDM4NTcxLTUyYTgtNGQwMi05NzY5LTZjMDhjY2Q4OGQ5YyIsImlhdCI6MTc3OTcxNzMxMiwiZXhwIjoxNzc5ODAzNzEyfQ.4aA_EqVoGy-bjfSoIGoflkEqAnFJK0g-E3eIp7G_UtU\",\"access_token_expired_at\":\"2026-05-26T13:55:12.666Z\"},\"message\":\"Login By Password successfully\"}",
+                    "responseId": "107026954"
+                  }
+                ],
+                "requestBody": {
+                  "type": "application/json",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"Rahasia123!\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 10,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [
+                  {
+                    "type": "extractor",
+                    "data": {
+                      "variableName": "access_token",
+                      "variableType": "environment",
+                      "subject": "responseJson",
+                      "template": "",
+                      "expression": "$.data.access_token",
+                      "extractSettings": {
+                        "expression": "$.data.access_token",
+                        "continueExtractorSettings": {
+                          "isContinueExtractValue": false,
+                          "JsonArrayValueIndexValue": ""
+                        }
+                      }
+                    },
+                    "defaultEnable": false,
+                    "enable": true,
+                    "id": "rQrN1rMbfszZbj4Ut7qMA"
+                  }
+                ],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Profile (me)",
+              "api": {
+                "id": "36546365",
+                "method": "get",
+                "path": "/api/v1/auth/me",
+                "parameters": {},
+                "auth": {
+                  "type": "inherit",
+                  "inherit": {}
+                },
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "107026954",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\",\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjZDM4NTcxLTUyYTgtNGQwMi05NzY5LTZjMDhjY2Q4OGQ5YyIsImlhdCI6MTc3OTcxNzMxMiwiZXhwIjoxNzc5ODAzNzEyfQ.4aA_EqVoGy-bjfSoIGoflkEqAnFJK0g-E3eIp7G_UtU\",\"access_token_expired_at\":\"2026-05-26T13:55:12.666Z\"},\"message\":\"Login By Password successfully\"}",
+                    "responseId": "107026954"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"Rahasia123!\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 16,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            }
+          ]
+        },
+        {
+          "name": "User",
+          "id": 8731295,
+          "auth": {},
+          "securityScheme": {},
+          "parentId": 0,
+          "serverId": "",
+          "description": "",
+          "identityPattern": {
+            "httpApi": {
+              "type": "inherit",
+              "bodyType": "",
+              "fields": []
+            }
+          },
+          "shareSettings": {},
+          "visibility": "INHERITED",
+          "moduleId": 1284205,
+          "preProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "postProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "inheritPostProcessors": {},
+          "inheritPreProcessors": {},
+          "items": [
+            {
+              "name": "Create User",
+              "api": {
+                "id": "36552236",
+                "method": "post",
+                "path": "/api/v1/users",
+                "parameters": {
+                  "query": []
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "application/json",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"name\": \"testing\",\n    \"email\": \"testing@gmail.com\",\n    \"password\": \"Rahasia123!\",\n    \"role\": \"viewer\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 13,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Paginate User",
+              "api": {
+                "id": "36552015",
+                "method": "get",
+                "path": "/api/v1/users",
+                "parameters": {
+                  "query": [
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "integer",
+                      "id": "oJpNw9AagC",
+                      "enable": true,
+                      "name": "page",
+                      "schema": {
+                        "type": "integer"
+                      },
+                      "example": "1"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "integer",
+                      "id": "KUc1bS2Jjr",
+                      "enable": true,
+                      "name": "per_page",
+                      "schema": {
+                        "type": "integer"
+                      },
+                      "example": "10"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "UvDy7yAj73",
+                      "enable": false,
+                      "name": "search",
+                      "example": ""
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "Cwfs7WeAXL",
+                      "enable": false,
+                      "name": "order",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "asc",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "desc",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": "desc"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "AykkV5sl0s",
+                      "enable": false,
+                      "name": "sort_by",
+                      "example": "updated_at"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "DlEkimaUAF",
+                      "enable": false,
+                      "name": "role",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "admin",
+                          "operator",
+                          "viewer"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "admin",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "operator",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "viewer",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": "operator"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "oZkQWlWlC8",
+                      "enable": false,
+                      "name": "status",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "active",
+                          "invited",
+                          "suspended"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "active",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "invited",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "suspended",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": ""
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 10,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Detail User",
+              "api": {
+                "id": "36552200",
+                "method": "get",
+                "path": "/api/v1/users/{user_id}",
+                "parameters": {
+                  "query": [],
+                  "path": [
+                    {
+                      "id": "user_id#0",
+                      "name": "user_id",
+                      "required": true,
+                      "description": "",
+                      "type": "string",
+                      "enable": true,
+                      "example": "5cd38571-52a8-4d02-9769-6c08ccd88d9c"
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 16,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Update User by Id",
+              "api": {
+                "id": "36552347",
+                "method": "patch",
+                "path": "/api/v1/users/{user_id}",
+                "parameters": {
+                  "query": [],
+                  "path": [
+                    {
+                      "id": "user_id#0",
+                      "name": "user_id",
+                      "required": true,
+                      "description": "",
+                      "type": "string",
+                      "enable": true,
+                      "example": "5b546735-6d2e-4f36-9384-2a46f1daa18b"
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "application/json",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"name\": \"testing - updated\",\n    \"email\": \"testing@gmail.com\",\n    \"password\": \"Rahasia123!\",\n    \"status\": \"suspended\",\n    \"role\": \"viewer\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 14,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Delete User by Id",
+              "api": {
+                "id": "36552357",
+                "method": "delete",
+                "path": "/api/v1/users/{user_id}",
+                "parameters": {
+                  "query": [],
+                  "path": [
+                    {
+                      "id": "user_id#0",
+                      "name": "user_id",
+                      "required": true,
+                      "description": "",
+                      "type": "string",
+                      "enable": true,
+                      "example": "5b546735-6d2e-4f36-9384-2a46f1daa18b"
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": "204",
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "noContent",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"name\": \"testing - updated\",\n    \"email\": \"testing@gmail.com\",\n    \"password\": \"Rahasia123!\",\n    \"role\": \"viewer\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 15,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request",
+          "id": 8732981,
+          "auth": {},
+          "securityScheme": {},
+          "parentId": 0,
+          "serverId": "",
+          "description": "",
+          "identityPattern": {
+            "httpApi": {
+              "type": "inherit",
+              "bodyType": "",
+              "fields": []
+            }
+          },
+          "shareSettings": {},
+          "visibility": "INHERITED",
+          "moduleId": 1284205,
+          "preProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "postProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "inheritPostProcessors": {},
+          "inheritPreProcessors": {},
+          "items": [
+            {
+              "name": "Create Request",
+              "api": {
+                "id": "36553712",
+                "method": "post",
+                "path": "/api/v1/requests",
+                "parameters": {
+                  "query": []
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "application/json",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"title\": \"testing title\",\n    \"MAIN_name\": \"tester\",\n    \"priority\": \"low\",\n    \"assignee_name\": null\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 0,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Paginate Request",
+              "api": {
+                "id": "36553713",
+                "method": "get",
+                "path": "/api/v1/requests",
+                "parameters": {
+                  "query": [
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "integer",
+                      "id": "oJpNw9AagC",
+                      "enable": true,
+                      "name": "page",
+                      "schema": {
+                        "type": "integer"
+                      },
+                      "example": "1"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "integer",
+                      "id": "KUc1bS2Jjr",
+                      "enable": true,
+                      "name": "per_page",
+                      "schema": {
+                        "type": "integer"
+                      },
+                      "example": "10"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "UvDy7yAj73",
+                      "enable": false,
+                      "name": "search",
+                      "example": ""
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "Cwfs7WeAXL",
+                      "enable": false,
+                      "name": "order",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "asc",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "desc",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": "desc"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "AykkV5sl0s",
+                      "enable": false,
+                      "name": "sort_by",
+                      "example": "updated_at"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "DlEkimaUAF",
+                      "enable": false,
+                      "name": "priority",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "low",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "medium",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "high",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": ""
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "oZkQWlWlC8",
+                      "enable": false,
+                      "name": "status",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "active",
+                          "invited",
+                          "suspended"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "active",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "invited",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "suspended",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": ""
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 0,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Detail Request",
+              "api": {
+                "id": "36553714",
+                "method": "get",
+                "path": "/api/v1/requests/{request_id}",
+                "parameters": {
+                  "query": [],
+                  "path": [
+                    {
+                      "id": "request_id#0",
+                      "name": "request_id",
+                      "required": true,
+                      "description": "",
+                      "type": "string",
+                      "enable": true,
+                      "example": "04ac5c59-6d26-4b0f-9f0e-40c06a4b4b3f"
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 0,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Update Request by Id",
+              "api": {
+                "id": "36553715",
+                "method": "patch",
+                "path": "/api/v1/requests/{request_id}",
+                "parameters": {
+                  "query": [],
+                  "path": [
+                    {
+                      "id": "request_id#0",
+                      "name": "request_id",
+                      "required": true,
+                      "description": "",
+                      "type": "string",
+                      "enable": true,
+                      "example": "04ac5c59-6d26-4b0f-9f0e-40c06a4b4b3f"
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "application/json",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"title\": \"testing title\",\n    \"MAIN_name\": \"tester\",\n    \"priority\": \"low\",\n    \"assignee_name\": null,\n    \"status\": \"suspended\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 0,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            },
+            {
+              "name": "Delete User by Id",
+              "api": {
+                "id": "36553716",
+                "method": "delete",
+                "path": "/api/v1/requests/{request_id}",
+                "parameters": {
+                  "query": [],
+                  "path": [
+                    {
+                      "id": "request_id#0",
+                      "name": "request_id",
+                      "required": true,
+                      "description": "",
+                      "type": "string",
+                      "enable": true,
+                      "example": "04ac5c59-6d26-4b0f-9f0e-40c06a4b4b3f"
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": "204",
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "noContent",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "jsonSchema": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [
+                    {
+                      "mediaType": "application/json",
+                      "value": "{\n    \"name\": \"testing - updated\",\n    \"email\": \"testing@gmail.com\",\n    \"password\": \"Rahasia123!\",\n    \"role\": \"viewer\"\n}"
+                    }
+                  ],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 0,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            }
+          ]
+        },
+        {
+          "name": "Audit Log",
+          "id": 8733031,
+          "auth": {},
+          "securityScheme": {},
+          "parentId": 0,
+          "serverId": "",
+          "description": "",
+          "identityPattern": {
+            "httpApi": {
+              "type": "inherit",
+              "bodyType": "",
+              "fields": []
+            }
+          },
+          "shareSettings": {},
+          "visibility": "INHERITED",
+          "moduleId": 1284205,
+          "preProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "postProcessors": [
+            {
+              "id": "inheritProcessors",
+              "type": "inheritProcessors",
+              "data": {}
+            }
+          ],
+          "inheritPostProcessors": {},
+          "inheritPreProcessors": {},
+          "items": [
+            {
+              "name": "Paginate Audit Log",
+              "api": {
+                "id": "36553868",
+                "method": "get",
+                "path": "/api/v1/audit-logs",
+                "parameters": {
+                  "query": [
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "integer",
+                      "id": "oJpNw9AagC",
+                      "enable": true,
+                      "name": "page",
+                      "schema": {
+                        "type": "integer"
+                      },
+                      "example": "1"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "integer",
+                      "id": "KUc1bS2Jjr",
+                      "enable": true,
+                      "name": "per_page",
+                      "schema": {
+                        "type": "integer"
+                      },
+                      "example": "10"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "UvDy7yAj73",
+                      "enable": false,
+                      "name": "search",
+                      "example": ""
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "Cwfs7WeAXL",
+                      "enable": false,
+                      "name": "order",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "asc",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "desc",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": "desc"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "AykkV5sl0s",
+                      "enable": false,
+                      "name": "sort_by",
+                      "example": "updated_at"
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "DlEkimaUAF",
+                      "enable": false,
+                      "name": "action",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "create",
+                          "update",
+                          "delete"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "create",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "update",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "delete",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": ""
+                    },
+                    {
+                      "required": false,
+                      "description": "",
+                      "type": "string",
+                      "id": "oZkQWlWlC8",
+                      "enable": false,
+                      "name": "target_type",
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "user",
+                          "request",
+                          "audit-log"
+                        ],
+                        "x-apidog-enum": [
+                          {
+                            "value": "user",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "request",
+                            "name": "",
+                            "description": ""
+                          },
+                          {
+                            "value": "audit-log",
+                            "name": "",
+                            "description": ""
+                          }
+                        ]
+                      },
+                      "example": ""
+                    }
+                  ]
+                },
+                "auth": {},
+                "securityScheme": {},
+                "commonParameters": {
+                  "query": [],
+                  "body": [],
+                  "cookie": [],
+                  "header": []
+                },
+                "responses": [
+                  {
+                    "id": "127479417",
+                    "code": 200,
+                    "name": "Success",
+                    "headers": [],
+                    "jsonSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "itemSchema": {},
+                    "description": "",
+                    "contentType": "json",
+                    "mediaType": ""
+                  }
+                ],
+                "responseExamples": [
+                  {
+                    "name": "OK",
+                    "data": "{\"status_code\":200,\"data\":{\"meta\":{\"total_all_data\":10,\"total_view\":10,\"max_view\":20,\"current_page\":1,\"total_page\":1},\"items\":[{\"id\":\"368d8c23-e707-4736-964c-c3f897e3ec5b\",\"name\":\"Viewer 8\",\"email\":\"viewer+8@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"12d1ce58-1566-4ec0-8260-dcc0132f704b\",\"name\":\"Viewer 7\",\"email\":\"viewer+7@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"849bbe15-c745-4f4b-998d-61ddee339aa6\",\"name\":\"Viewer 6\",\"email\":\"viewer+6@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"92fc512e-e58b-4a1d-aec5-078e8432c256\",\"name\":\"Viewer 5\",\"email\":\"viewer+5@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"0e8aa680-cd98-464a-96d1-3b0d2701c3b2\",\"name\":\"Viewer 4\",\"email\":\"viewer+4@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"74cb2127-a6ba-4f0f-a681-bed15a19e9b3\",\"name\":\"Viewer 3\",\"email\":\"viewer+3@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"c47e5180-3e24-4216-a710-fd40aef416a0\",\"name\":\"Viewer 2\",\"email\":\"viewer+2@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5378eaba-d0f8-4e8d-bff1-2984d35f675f\",\"name\":\"Viewer 1\",\"email\":\"viewer+1@example.com\",\"role\":\"viewer\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"40d7da46-da4c-4770-a6ed-e9527dfab74e\",\"name\":\"Operator\",\"email\":\"operator@example.com\",\"role\":\"operator\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"},{\"id\":\"5cd38571-52a8-4d02-9769-6c08ccd88d9c\",\"name\":\"Admin\",\"email\":\"admin@example.com\",\"role\":\"admin\",\"status\":\"active\",\"created_at\":\"2026-05-25T11:49:24.575Z\",\"updated_at\":\"2026-05-25T11:49:24.575Z\"}]},\"message\":\"Users retrieved successfully\"}",
+                    "responseId": "127479417"
+                  }
+                ],
+                "requestBody": {
+                  "type": "none",
+                  "parameters": [],
+                  "required": true,
+                  "mediaType": "",
+                  "examples": [],
+                  "oasExtensions": ""
+                },
+                "description": "",
+                "tags": [],
+                "status": "released",
+                "serverId": "",
+                "operationId": "",
+                "sourceUrl": "",
+                "ordering": 0,
+                "cases": [],
+                "mocks": [],
+                "customApiFields": "{}",
+                "advancedSettings": {
+                  "disabledSystemHeaders": {}
+                },
+                "mockScript": {},
+                "codeSamples": [],
+                "commonResponseStatus": {},
+                "responseChildren": [],
+                "visibility": "INHERITED",
+                "moduleId": 1284205,
+                "oasExtensions": "",
+                "type": "http",
+                "preProcessors": [],
+                "postProcessors": [],
+                "inheritPostProcessors": {},
+                "inheritPreProcessors": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "socketCollection": [],
+  "docCollection": [],
+  "webSocketCollection": [],
+  "socketIOCollection": [],
+  "mcpClientCollection": [],
+  "responseCollection": [
+    {
+      "_databaseId": 1557543,
+      "updatedAt": "2026-05-25T13:20:57.000Z",
+      "name": "Root",
+      "type": "root",
+      "children": [],
+      "moduleId": 1284205,
+      "parentId": 0,
+      "id": 1557543,
+      "ordering": [],
+      "items": []
+    }
+  ],
+  "schemaCollection": [
+    {
+      "id": 3448632,
+      "name": "Root",
+      "visibility": "SHARED",
+      "moduleId": 1284205,
+      "items": [],
+      "ordering": []
+    }
+  ],
+  "securitySchemeCollection": [
+    {
+      "id": 1381703,
+      "moduleId": 1284205,
+      "name": "Root",
+      "items": [],
+      "ordering": []
+    }
+  ],
+  "oasComponentCollection": [],
+  "requestCollection": [
+    {
+      "name": "Root",
+      "children": [],
+      "ordering": [
+        "requestFolder.10737668"
+      ],
+      "items": []
+    }
+  ],
+  "apiTestCaseCollection": [
+    {
+      "id": 0,
+      "name": "Root",
+      "children": [],
+      "items": []
+    }
+  ],
+  "testCaseReferences": [],
+  "environments": [
+    {
+      "name": "Local Env",
+      "requestProxyAgentSettings": {},
+      "variables": [
+        {
+          "name": "access_token",
+          "securityType": "secret",
+          "value": "",
+          "description": "",
+          "initialValue": "",
+          "isSync": true
+        }
+      ],
+      "parameters": {
+        "cookie": [],
+        "query": [],
+        "header": [],
+        "body": []
+      },
+      "type": "normal",
+      "visibility": "protected",
+      "ordering": -1,
+      "tags": [
+        {
+          "name": "",
+          "color": "#1890FF"
+        }
+      ],
+      "advancedSettings": {},
+      "id": "6232277",
+      "baseUrl": "http://localhost:8000",
+      "baseUrls": {
+        "1284205": "http://localhost:8000"
+      },
+      "socketioBaseUrls": {},
+      "websocketBaseUrls": {}
+    },
+    {
+      "name": "Develop Env",
+      "requestProxyAgentSettings": {},
+      "variables": [
+        {
+          "name": "access_token",
+          "value": "",
+          "initialValue": "",
+          "isSync": true
+        }
+      ],
+      "parameters": {
+        "cookie": [],
+        "query": [],
+        "header": [],
+        "body": []
+      },
+      "type": "normal",
+      "visibility": "protected",
+      "ordering": 0,
+      "tags": [
+        {
+          "name": "",
+          "color": "#9373EE"
+        }
+      ],
+      "advancedSettings": {},
+      "id": "6232187",
+      "baseUrl": "https://requestor-api.dotploy.my.id",
+      "baseUrls": {
+        "1284205": "https://requestor-api.dotploy.my.id"
+      },
+      "socketioBaseUrls": {},
+      "websocketBaseUrls": {}
+    },
+    {
+      "name": "Testing Env",
+      "requestProxyAgentSettings": {},
+      "variables": [],
+      "parameters": {},
+      "type": "normal",
+      "visibility": "protected",
+      "ordering": 0,
+      "tags": [],
+      "advancedSettings": {},
+      "id": "6232188",
+      "baseUrl": "https://test.your-api-server.com",
+      "baseUrls": {
+        "1284205": "https://test.your-api-server.com"
+      },
+      "socketioBaseUrls": {},
+      "websocketBaseUrls": {}
+    },
+    {
+      "name": "Prod Env",
+      "requestProxyAgentSettings": {},
+      "variables": [],
+      "parameters": {},
+      "type": "normal",
+      "visibility": "protected",
+      "ordering": 0,
+      "tags": [],
+      "advancedSettings": {},
+      "id": "6232189",
+      "baseUrl": "https://prod.your-api-server.com",
+      "baseUrls": {
+        "1284205": "https://prod.your-api-server.com"
+      },
+      "socketioBaseUrls": {},
+      "websocketBaseUrls": {}
+    }
+  ],
+  "commonScripts": [],
+  "databaseConnections": [],
+  "globalVariables": [],
+  "commonParameters": null,
+  "customFunctions": [],
+  "projectTestCaseCategories": [
+    {
+      "id": 1424537,
+      "name": "Positive",
+      "description": "Valid inputs and correct expected results, representing typical usage."
+    },
+    {
+      "id": 1424538,
+      "name": "Negative",
+      "description": "Negative, invalid inputs such as missing fields, wrong types, unsupported methods, etc."
+    },
+    {
+      "id": 1424539,
+      "name": "Boundary",
+      "description": "Extreme or edge conditions, such as maximum string length, empty values, zero, null, etc."
+    },
+    {
+      "id": 1424540,
+      "name": "Security",
+      "description": "Test cases that may expose API security risks."
+    },
+    {
+      "id": 1424541,
+      "name": "Other",
+      "description": "Test cases not classified under existing categories."
+    }
+  ],
+  "projectTestCaseTags": [
+    {
+      "id": 6506146,
+      "name": "Required Fields Only",
+      "description": "Send only the required fields with valid values, omitting all optional fields, to test minimal valid requests."
+    },
+    {
+      "id": 6506147,
+      "name": "Valid Semantic",
+      "description": "Use values that are syntactically correct and also make sense in the business logic or domain context."
+    },
+    {
+      "id": 6506148,
+      "name": "Enum Combination Coverage",
+      "description": "For all enum-type parameters, apply orthogonal design to systematically construct test case combinations of parameters and their enum values, dedicated to testing enum coverage."
+    },
+    {
+      "id": 6506149,
+      "name": "Other Positive Case",
+      "description": "Provide realistic and valid inputs that match the API specification, producing the correct and expected result."
+    },
+    {
+      "id": 6506150,
+      "name": "Missing Required Fields",
+      "description": "Omit one or more required fields in the request body or parameters."
+    },
+    {
+      "id": 6506151,
+      "name": "Invalid Values",
+      "description": "Provide values that are within the correct type and format, but logically invalid for the field."
+    },
+    {
+      "id": 6506152,
+      "name": "Type Errors",
+      "description": "Use values with incorrect data types, such as sending a string instead of an integer."
+    },
+    {
+      "id": 6506153,
+      "name": "Format Errors",
+      "description": "Provide values in an incorrect format, e.g., wrong date pattern, malformed email address."
+    },
+    {
+      "id": 6506154,
+      "name": "Semantic Errors",
+      "description": "Use syntactically correct and properly formatted values that are logically impossible or violate domain rules."
+    },
+    {
+      "id": 6506155,
+      "name": "Other Negative Case",
+      "description": "Provide invalid or unexpected inputs that should trigger error handling or rejection by the API."
+    },
+    {
+      "id": 6506156,
+      "name": "Null",
+      "description": "Must be the JSON literal `null` (not empty, not \"null\")."
+    },
+    {
+      "id": 6506157,
+      "name": "Zero",
+      "description": "Must be the numeric literal 0."
+    },
+    {
+      "id": 6506158,
+      "name": "Empty Values",
+      "description": "Must be \"\"."
+    },
+    {
+      "id": 6506159,
+      "name": "Max Values",
+      "description": "Provide the exact minimum and maximum allowed values for numeric or date fields."
+    },
+    {
+      "id": 6506160,
+      "name": "Min Values",
+      "description": "Provide the exact minimum and maximum allowed values for numeric or date fields."
+    },
+    {
+      "id": 6506161,
+      "name": "Overflow",
+      "description": "Provide values just beyond the allowed minimum or maximum boundaries."
+    },
+    {
+      "id": 6506162,
+      "name": "Underflow",
+      "description": "Provide values just beyond the allowed minimum or maximum boundaries."
+    },
+    {
+      "id": 6506163,
+      "name": "Overly Long Strings",
+      "description": "Provide strings longer than the maximum allowed length, or shorter than the minimum required length."
+    },
+    {
+      "id": 6506164,
+      "name": "Overly Short Strings",
+      "description": "Provide strings longer than the maximum allowed length, or shorter than the minimum required length."
+    },
+    {
+      "id": 6506165,
+      "name": "Broken Object Level Authorization",
+      "description": "Users access or manipulate data objects without proper authorization."
+    },
+    {
+      "id": 6506166,
+      "name": "Access Control",
+      "description": "Restricting resources and actions users can access based on roles, permissions, or attributes."
+    },
+    {
+      "id": 6506167,
+      "name": "Auth Failures",
+      "description": "Authentication is weak, misconfigured, or bypassed, allowing unauthorized access."
+    },
+    {
+      "id": 6506168,
+      "name": "SQL Injection",
+      "description": "Insert malicious SQL code into input fields to test for SQL injection vulnerabilities."
+    },
+    {
+      "id": 6506169,
+      "name": "XSS Injection",
+      "description": "Inject JavaScript or HTML tags to test for cross-site scripting vulnerabilities."
+    },
+    {
+      "id": 6506170,
+      "name": "Fuzzy Input",
+      "description": "Send large or randomly generated payloads to test input validation and stability."
+    },
+    {
+      "id": 6506171,
+      "name": "Command Injection",
+      "description": "Insert shell commands into inputs to test for command execution vulnerabilities."
+    },
+    {
+      "id": 6506172,
+      "name": "JSON Injection",
+      "description": "Insert malicious or unexpected JSON structures to test parsing and validation."
+    },
+    {
+      "id": 6506173,
+      "name": "NoSQL Injection",
+      "description": "Provide NoSQL-specific malicious queries or operators to test for injection vulnerabilities."
+    },
+    {
+      "id": 6506174,
+      "name": "Other",
+      "description": "Test cases not classified under existing categories."
+    }
+  ],
+  "projectAssociations": [],
+  "moduleSettings": [
+    {
+      "id": "1284205",
+      "name": "Default module",
+      "description": "",
+      "moduleVariables": [],
+      "openApiInfo": {}
+    }
+  ]
+}
