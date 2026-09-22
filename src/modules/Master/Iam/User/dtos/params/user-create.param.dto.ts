@@ -1,17 +1,19 @@
 import {
+  IsArray,
   IsEmail,
-  IsEnum,
+  IsInt,
+  IsNotEmpty,
   IsOptional,
   IsString,
+  MaxLength,
   MinLength,
-  IsNotEmpty,
 } from 'class-validator';
-import { PermissionEnum } from '@shared/enums/permission.enum';
 
 export class UserCreateParamDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  @MaxLength(50)
+  username?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -23,7 +25,28 @@ export class UserCreateParamDto {
   @MinLength(8)
   password: string;
 
+  @IsString()
+  @IsNotEmpty()
+  displayName: string;
+
   @IsOptional()
-  @IsEnum(PermissionEnum)
-  role: PermissionEnum = PermissionEnum.VIEWER;
+  @IsString()
+  avatarUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
+  @IsOptional()
+  @IsInt()
+  exp?: number;
+
+  @IsOptional()
+  @IsInt()
+  level?: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  roleKeys?: string[];
 }

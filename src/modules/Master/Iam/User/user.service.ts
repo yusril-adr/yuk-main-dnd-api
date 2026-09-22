@@ -4,18 +4,23 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource, FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  FindManyOptions,
+  FindOptionsWhere,
+  ILike,
+} from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { UserRepository } from './user.repository';
 import { UserPaginateParamDto } from './dtos/params/user-paginate.param.dto';
 import { UserCreateParamDto } from './dtos/params/user-create.param.dto';
 import { UserUpdateParamDto } from './dtos/params/user-update.param.dto';
 import { UserEntityDto } from './dtos/results/user-entity.result.dto';
-import {
-  mergeEachWhereConditions,
-  mergeWhereConditions,
-} from '@shared/utils/common';
+import { mergeWhereConditions } from '@shared/utils/common';
 import { User } from '@entities/main/user.entity';
+import { Role } from '@entities/main/role.entity';
+import { UserRole } from '@entities/main/user-role.entity';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
 
 @Injectable()
@@ -37,19 +42,29 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(payload.password, 10);
+    const { roleKeys, ...userPayload } = payload;
 
     const saved = await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
       const userEntity = userRepo.create({
-        ...payload,
+        ...userPayload,
         password: hashedPassword,
+        exp: payload.exp ?? 0,
+        level: payload.level ?? 1,
       });
       const result = await userRepo.save(userEntity);
 
-      return result;
+      if (roleKeys?.length) {
+        await this.assignRoles(manager, result, roleKeys);
+      }
+
+      return userRepo.findOne({
+        where: { id: result.id },
+        relations: { userRoles: { role: true } },
+      });
     });
 
-    return new UserEntityDto().parseEntity(saved);
+    return new UserEntityDto().parseEntity(saved as User);
   }
 
   async paginate(
@@ -62,10 +77,10 @@ export class UserService {
     };
 
     query = this.searchQuery(query, queryDto);
-    query = this.filterQuery(query, queryDto);
 
     const users = await this.userRepository.find({
       ...query,
+      relations: { userRoles: { role: true } },
       take: queryDto.perPage,
       skip: queryDto.perPage * (queryDto.page - 1),
     });
@@ -84,6 +99,9 @@ export class UserService {
           username: ILike(`%${queryDto.search}%`),
         },
         {
+          displayName: ILike(`%${queryDto.search}%`),
+        },
+        {
           email: ILike(`%${queryDto.search}%`),
         },
       ];
@@ -92,25 +110,11 @@ export class UserService {
     return query;
   }
 
-  private filterQuery(
-    query: FindManyOptions<User>,
-    queryDto: UserPaginateParamDto,
-  ): FindManyOptions<User> {
-    const filters: FindOptionsWhere<User> = {};
-
-    // if (queryDto.role) {
-    //   filters.role = queryDto.role;
-    // }
-    // if (queryDto.status) {
-    //   filters.status = queryDto.status;
-    // }
-
-    query.where = mergeEachWhereConditions(query.where, filters);
-    return query;
-  }
-
   async findOne(id: string): Promise<UserEntityDto> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: { userRoles: { role: true } },
+    });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -122,7 +126,10 @@ export class UserService {
     payload: UserUpdateParamDto,
     user: TJWTPayload,
   ): Promise<UserEntityDto> {
-    const userEntity = await this.userRepository.findOne({ where: { id } });
+    const userEntity = await this.userRepository.findOne({
+      where: { id },
+      relations: { userRoles: { role: true } },
+    });
     if (!userEntity) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -140,16 +147,28 @@ export class UserService {
       payload.password = await bcrypt.hash(payload.password, 10);
     }
 
-    Object.assign(userEntity, payload);
+    const { roleKeys, ...userPayload } = payload;
+
+    Object.assign(userEntity, userPayload);
 
     const saved = await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
       const result = await userRepo.save(userEntity);
 
-      return result;
+      if (roleKeys !== undefined) {
+        await manager.getRepository(UserRole).delete({ user: { id } });
+        if (roleKeys.length) {
+          await this.assignRoles(manager, result, roleKeys);
+        }
+      }
+
+      return userRepo.findOne({
+        where: { id: result.id },
+        relations: { userRoles: { role: true } },
+      });
     });
 
-    return new UserEntityDto().parseEntity(saved);
+    return new UserEntityDto().parseEntity(saved as User);
   }
 
   async remove(id: string, user: TJWTPayload): Promise<void> {
@@ -162,5 +181,30 @@ export class UserService {
       const userRepo = manager.getRepository(User);
       await userRepo.softDelete(id);
     });
+  }
+
+  private async assignRoles(
+    manager: EntityManager,
+    user: User,
+    roleKeys: string[],
+  ): Promise<void> {
+    const roleRepository = manager.getRepository(Role);
+    const userRoleRepository = manager.getRepository(UserRole);
+
+    const roles = await roleRepository.find({
+      where: roleKeys.map((key) => ({ key })),
+    });
+
+    const foundKeys = new Set(roles.map((role) => role.key));
+    const missingKeys = roleKeys.filter((key) => !foundKeys.has(key));
+    if (missingKeys.length) {
+      throw new NotFoundException(
+        `Role with key ${missingKeys.join(', ')} not found`,
+      );
+    }
+
+    await userRoleRepository.save(
+      roles.map((role) => userRoleRepository.create({ user, role })),
+    );
   }
 }

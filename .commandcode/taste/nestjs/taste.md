@@ -8,3 +8,4 @@
 - Seeders should be idempotent: upsert rows by a natural `key` and only create missing join/pivot links, wrapped in `dataSource.transaction()`. Confidence: 0.70
 - Keep seed data in JSON files under `seeders/*/datas/*.json` and have the seeder read from them rather than hardcoding data in the class. Confidence: 0.65
 - Register seeders in the data source in dependency order (e.g., permissions → roles → users). Confidence: 0.60
+- Treats TypeORM entities as the source of truth for module DTOs/services — when an entity's shape changes, align the dependent module's param/result DTOs, service, and module registration (e.g., registering new relation entities) to match. Confidence: 0.55
