@@ -81,5 +81,10 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Request() request: TRequestUser, @Param('id') id: string) {
     await this.userService.remove(id, request.user);
+    return wrapper.response({
+      statusCode: HttpStatus.NO_CONTENT,
+      data: null,
+      message: 'User deleted successfully',
+    });
   }
 }
