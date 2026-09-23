@@ -2,7 +2,7 @@
   {
     "name": "Guild Master",
     "key": "guild-master",
-    "description": "Guild Master role",
+    "description": "Guild Master",
     "permissions": [
       "users:create",
       "users:view",
@@ -29,6 +29,14 @@
       "points:view",
       "points:update",
       "points:delete"
+    ]
+  },
+  {
+    "name": "Player",
+    "key": "player",
+    "description": "Player",
+    "permissions": [
+      "player_board:view"
     ]
   }
 ]

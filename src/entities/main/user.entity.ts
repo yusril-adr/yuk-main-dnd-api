@@ -23,10 +23,16 @@ export class User extends BaseEntity {
   bio?: string;
 
   @Column({ type: 'integer', default: 0 })
-  exp: number = 0;
+  playerExp: number = 0;
 
   @Column({ type: 'integer', default: 1 })
-  level: number = 1;
+  playerLevel: number = 1;
+
+  @Column({ type: 'integer', default: 0 })
+  dmExp: number = 0;
+
+  @Column({ type: 'integer', default: 1 })
+  dmLevel: number = 1;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];

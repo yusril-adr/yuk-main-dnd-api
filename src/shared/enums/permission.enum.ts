@@ -1,6 +1,12 @@
-// ! READ ME: If you add a new permission, make sure to assign to guild-master role seeder
 
 export enum PermissionEnum {
+  // Player Board Menu
+  PLAYER_BOARD_MENU = "player_board:view",
+
+  /* 
+    ! READ ME: If you add a new permission, make sure to assign to guild-master role seeder
+  */
+
   // Users
   USERS_CREATE = "users:create",
   USERS_VIEW = "users:view",

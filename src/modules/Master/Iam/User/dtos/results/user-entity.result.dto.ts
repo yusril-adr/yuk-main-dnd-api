@@ -17,8 +17,10 @@ export class UserEntityDto implements TUserEntityDto {
   displayName: string;
   avatarUrl?: string;
   bio?: string;
-  exp: number;
-  level: number;
+  playerExp: number;
+  playerLevel: number;
+  dmExp: number;
+  dmLevel: number;
   roles: string[];
   createdAt: string;
   updatedAt: string;
@@ -30,8 +32,10 @@ export class UserEntityDto implements TUserEntityDto {
     this.displayName = user.displayName;
     this.avatarUrl = user.avatarUrl;
     this.bio = user.bio;
-    this.exp = user.exp;
-    this.level = user.level;
+    this.playerExp = user.playerExp;
+    this.playerLevel = user.playerLevel;
+    this.dmExp = user.dmExp;
+    this.dmLevel = user.dmLevel;
     this.roles = (user.userRoles ?? [])
       .map((userRole) => userRole.role?.key)
       .filter((key): key is string => Boolean(key));

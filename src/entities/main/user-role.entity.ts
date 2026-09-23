@@ -4,7 +4,6 @@ import { User } from './user.entity';
 import { Role } from './role.entity';
 
 @Entity()
-@Unique(['user', 'role'])
 export class UserRole extends BaseEntity {
   @ManyToOne(() => User, (user) => user.userRoles, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

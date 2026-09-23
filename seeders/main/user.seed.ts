@@ -21,8 +21,10 @@ type TUserSeedData = {
   displayName: string;
   avatarUrl?: string;
   bio?: string;
-  exp?: number;
-  level?: number;
+  playerExp?: number;
+  playerLevel?: number;
+  dmExp?: number;
+  dmLevel?: number;
   roles?: string[];
 };
 
@@ -83,8 +85,10 @@ export default class UserSeeder implements Seeder {
               displayName: userData.displayName,
               avatarUrl: userData.avatarUrl,
               bio: userData.bio,
-              exp: userData.exp,
-              level: userData.level,
+              playerExp: userData.playerExp,
+              playerLevel: userData.playerLevel,
+              dmExp: userData.dmExp,
+              dmLevel: userData.dmLevel,
               password: dummyPassword,
             }),
           );

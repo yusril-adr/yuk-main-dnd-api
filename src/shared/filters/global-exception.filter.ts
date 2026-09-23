@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import * as Sentry from '@sentry/nestjs';
-import { QueryFailedError } from 'typeorm';
+import { QueryFailedError, TypeORMError } from 'typeorm';
 import { camelToSnake } from '@shared/utils/common';
 
 @Catch()
@@ -71,6 +71,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
       // Handle TypeORM exceptions
       [QueryFailedError.name]: () => {
+        status = HttpStatus.BAD_REQUEST;
+        responseBody = {
+          error: exception.name,
+          message: exception.message,
+        };
+
+        this.logger.error(exception, exception.stack);
+        Sentry.captureException(exception);
+      },
+
+      [TypeORMError.name]: () => {
         status = HttpStatus.BAD_REQUEST;
         responseBody = {
           error: exception.name,

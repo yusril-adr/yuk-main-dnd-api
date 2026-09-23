@@ -1,21 +1,18 @@
 import { UserEntityDto } from '@modules/Master/Iam/User/dtos/results/user-entity.result.dto';
 import { User } from '@entities/main/user.entity';
 
-export class AuthLoginResultDto extends UserEntityDto {
+export class AuthMeResultDto extends UserEntityDto {
   selectedRole: string | null;
-  accessToken: string;
-  accessTokenExpiredAt: string;
+  permissions: string[];
 
   constructor(payload: {
     user: User;
     selectedRole: string | null;
-    accessToken: string;
-    accessTokenExpiredAt: string;
+    permissions: string[];
   }) {
     super();
     this.parseEntity(payload.user);
     this.selectedRole = payload.selectedRole;
-    this.accessToken = payload.accessToken;
-    this.accessTokenExpiredAt = payload.accessTokenExpiredAt;
+    this.permissions = payload.permissions;
   }
 }

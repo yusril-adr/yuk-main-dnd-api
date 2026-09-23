@@ -8,7 +8,7 @@ import { snakeCase } from 'typeorm/util/StringUtils.js';
 import requestorDb from '@infrastructure/databases/main.ds';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AccessTokenGuard } from '@shared/guards/access-token.guard';
-import { RolesGuard } from '@shared/guards/role.guard';
+import { PermissionsGuard } from '@shared/guards/permissions.guard';
 import { DeprecatedGuard } from '@shared/guards/deprecated.guard';
 import { replaceAllCamelCaseToSnakeCase } from '@shared/utils/common';
 import { RequestInterceptor } from '@shared/interceptors/request.interceptor';
@@ -17,8 +17,6 @@ import { GlobalExceptionFilter } from '@shared/filters/global-exception.filter';
 
 import { AuthModule } from '@modules/Auth/auth.module';
 import { UserModule } from '@modules/Master/Iam/User/user.module';
-import { RequestModule } from '@modules/Request/request.module';
-import { AuditLogModule } from '@modules/AuditLog/audit-log.module';
 
 @Module({
   imports: [
@@ -42,8 +40,6 @@ import { AuditLogModule } from '@modules/AuditLog/audit-log.module';
 
     AuthModule,
     UserModule,
-    RequestModule,
-    AuditLogModule,
   ],
   providers: [
     {
@@ -52,7 +48,7 @@ import { AuditLogModule } from '@modules/AuditLog/audit-log.module';
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard,
+      useClass: PermissionsGuard,
     },
     {
       provide: APP_GUARD,

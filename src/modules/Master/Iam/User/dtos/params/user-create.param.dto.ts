@@ -1,10 +1,11 @@
 import {
   IsArray,
   IsEmail,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsStrongPassword,
+  IsUUID,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -20,9 +21,7 @@ export class UserCreateParamDto {
   @IsEmail()
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
+  @IsStrongPassword()
   password: string;
 
   @IsString()
@@ -38,15 +37,7 @@ export class UserCreateParamDto {
   bio?: string;
 
   @IsOptional()
-  @IsInt()
-  exp?: number;
-
-  @IsOptional()
-  @IsInt()
-  level?: number;
-
-  @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  roleKeys?: string[];
+  @IsUUID('4', { each: true })
+  roleIds?: string[];
 }

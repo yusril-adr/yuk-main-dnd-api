@@ -4,7 +4,6 @@ import { Role } from './role.entity';
 import { Permission } from './permission.entity';
 
 @Entity()
-@Unique(['role', 'permission'])
 export class RolePermission extends BaseEntity {
   @ManyToOne(() => Role, (role) => role.rolePermissions, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })

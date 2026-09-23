@@ -11,6 +11,7 @@ import * as wrapper from '@shared/utils/wrapper';
 import { AuthService } from '@modules/Auth/auth.service';
 import { Public } from '@shared/decorators/public.decorator';
 import { AuthLoginPasswordParamDto } from '@modules/Auth/dtos/params/auth-login.param.dto';
+import { AuthSwitchRoleParamDto } from '@modules/Auth/dtos/params/auth-switch-role.param.dto';
 import type { TRequestUser } from '@shared/types/request.type';
 
 @Controller({
@@ -28,6 +29,22 @@ export class AuthController {
     return wrapper.response({
       data: result,
       message: 'Login By Password successfully',
+    });
+  }
+
+  @Post('switch-role')
+  @HttpCode(HttpStatus.OK)
+  async switchRole(
+    @Request() request: TRequestUser,
+    @Body() payload: AuthSwitchRoleParamDto,
+  ) {
+    const result = await this.authService.switchRole(
+      payload.roleKey,
+      request.user,
+    );
+    return wrapper.response({
+      data: result,
+      message: 'Role switched successfully',
     });
   }
 

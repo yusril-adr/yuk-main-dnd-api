@@ -8,4 +8,9 @@
 - Seeders should be idempotent: upsert rows by a natural `key` and only create missing join/pivot links, wrapped in `dataSource.transaction()`. Confidence: 0.70
 - Keep seed data in JSON files under `seeders/*/datas/*.json` and have the seeder read from them rather than hardcoding data in the class. Confidence: 0.65
 - Register seeders in the data source in dependency order (e.g., permissions → roles → users). Confidence: 0.60
-- Treats TypeORM entities as the source of truth for module DTOs/services — when an entity's shape changes, align the dependent module's param/result DTOs, service, and module registration (e.g., registering new relation entities) to match. Confidence: 0.55
+- Treats TypeORM entities as the source of truth for module DTOs/services — when an entity's shape changes, align the dependent module's param/result DTOs, service, and module registration (e.g., registering new relation entities) to match. Confidence: 0.65
+- For multi-role auth, prefers a single access token (JWT) carrying both selected and available roles with a `switch-role` endpoint to change role mid-session — rather than a two-step login with a separate pre-auth token; auto-selects the role when the user has exactly one. Confidence: 0.80
+- Prefers dedicated result DTOs that extend the base entity DTO to add response fields (e.g., `AuthMeResultDto extends UserEntityDto`), mirroring existing result-DTO patterns rather than modifying the base DTO. Confidence: 0.70
+- When a response needs permission data, computes permissions fresh from DB relations (role → rolePermissions → permission) rather than reusing JWT claims, since the token may be stale. Confidence: 0.60
+- Prefers referencing related entities by stable UUID `id` (e.g., `roleIds`) rather than editable string `key` values in param DTOs and service lookups. Confidence: 0.70
+- For TypeORM entities, keeps property names camelCase and relies on the project's `SnakeCaseNamingStrategy` to map them to snake_case DB columns; keeps `docs/db.dbml` column names in snake_case. Confidence: 0.60

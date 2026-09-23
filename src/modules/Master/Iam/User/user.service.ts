@@ -42,20 +42,18 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(payload.password, 10);
-    const { roleKeys, ...userPayload } = payload;
+    const { roleIds, ...userPayload } = payload;
 
     const saved = await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
       const userEntity = userRepo.create({
         ...userPayload,
         password: hashedPassword,
-        exp: payload.exp ?? 0,
-        level: payload.level ?? 1,
       });
       const result = await userRepo.save(userEntity);
 
-      if (roleKeys?.length) {
-        await this.assignRoles(manager, result, roleKeys);
+      if (roleIds?.length) {
+        await this.assignRoles(manager, result, roleIds);
       }
 
       return userRepo.findOne({
@@ -147,7 +145,7 @@ export class UserService {
       payload.password = await bcrypt.hash(payload.password, 10);
     }
 
-    const { roleKeys, ...userPayload } = payload;
+    const { roleIds, ...userPayload } = payload;
 
     Object.assign(userEntity, userPayload);
 
@@ -155,10 +153,10 @@ export class UserService {
       const userRepo = manager.getRepository(User);
       const result = await userRepo.save(userEntity);
 
-      if (roleKeys !== undefined) {
+      if (roleIds !== undefined) {
         await manager.getRepository(UserRole).delete({ user: { id } });
-        if (roleKeys.length) {
-          await this.assignRoles(manager, result, roleKeys);
+        if (roleIds.length) {
+          await this.assignRoles(manager, result, roleIds);
         }
       }
 
@@ -186,20 +184,20 @@ export class UserService {
   private async assignRoles(
     manager: EntityManager,
     user: User,
-    roleKeys: string[],
+    roleIds: string[],
   ): Promise<void> {
     const roleRepository = manager.getRepository(Role);
     const userRoleRepository = manager.getRepository(UserRole);
 
     const roles = await roleRepository.find({
-      where: roleKeys.map((key) => ({ key })),
+      where: roleIds.map((id) => ({ id })),
     });
 
-    const foundKeys = new Set(roles.map((role) => role.key));
-    const missingKeys = roleKeys.filter((key) => !foundKeys.has(key));
-    if (missingKeys.length) {
+    const foundIds = new Set(roles.map((role) => role.id));
+    const missingIds = roleIds.filter((id) => !foundIds.has(id));
+    if (missingIds.length) {
       throw new NotFoundException(
-        `Role with key ${missingKeys.join(', ')} not found`,
+        `Role with id ${missingIds.join(', ')} not found`,
       );
     }
 
