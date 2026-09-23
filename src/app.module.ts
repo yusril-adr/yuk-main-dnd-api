@@ -17,6 +17,7 @@ import { GlobalExceptionFilter } from '@shared/filters/global-exception.filter';
 
 import { AuthModule } from '@modules/Auth/auth.module';
 import { PermissionModule } from '@modules/Master/Iam/Permission/permission.module';
+import { RoleModule } from '@modules/Master/Iam/Role/role.module';
 import { UserModule } from '@modules/Master/Iam/User/user.module';
 
 @Module({
@@ -41,6 +42,7 @@ import { UserModule } from '@modules/Master/Iam/User/user.module';
 
     AuthModule,
     PermissionModule,
+    RoleModule,
     UserModule,
   ],
   providers: [
