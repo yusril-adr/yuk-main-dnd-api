@@ -12,7 +12,7 @@ import { AuthLoginPasswordParamDto } from '@modules/Auth/dtos/params/auth-login.
 import { AuthLoginResultDto } from '@modules/Auth/dtos/results/auth-login.result.dto';
 import { AuthMeResultDto } from '@modules/Auth/dtos/results/auth-me.result.dto';
 import { UserRepository } from '@modules/Master/Iam/User/user.repository';
-import { User } from '@entities/main/user.entity';
+import { User } from '@entities/main/iam/user.entity';
 
 @Injectable()
 export class AuthService {

@@ -1,4 +1,4 @@
-import type { TRole } from '@entities/main/role.entity';
+import type { TRole } from '@entities/main/iam/role.entity';
 import dayjs from '@shared/utils/dayjs';
 import { PermissionEntityDto } from '@modules/Master/Iam/Permission/dtos/results/permission-entity.result.dto';
 

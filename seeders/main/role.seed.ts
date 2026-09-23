@@ -4,9 +4,9 @@ import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { Logger } from '@nestjs/common';
 
-import { Role } from '@entities/main/role.entity';
-import { Permission } from '@entities/main/permission.entity';
-import { RolePermission } from '@entities/main/role-permission.entity';
+import { Role } from '@entities/main/iam/role.entity';
+import { Permission } from '@entities/main/iam/permission.entity';
+import { RolePermission } from '@entities/main/iam/role-permission.entity';
 
 type TRoleSeedData = {
   key: string;

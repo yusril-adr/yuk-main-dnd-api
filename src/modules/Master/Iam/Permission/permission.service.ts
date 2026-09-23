@@ -7,7 +7,7 @@ import {
   ILike,
 } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
-import { Permission } from '@entities/main/permission.entity';
+import { Permission } from '@entities/main/iam/permission.entity';
 import { mergeWhereConditions } from '@shared/utils/common';
 import { PermissionRepository } from './permission.repository';
 import { PermissionFilterParamDto } from './dtos/params/permission-filter.param.dto';

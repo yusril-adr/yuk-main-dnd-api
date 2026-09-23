@@ -18,9 +18,9 @@ import { UserCreateParamDto } from './dtos/params/user-create.param.dto';
 import { UserUpdateParamDto } from './dtos/params/user-update.param.dto';
 import { UserEntityDto } from './dtos/results/user-entity.result.dto';
 import { mergeWhereConditions } from '@shared/utils/common';
-import { User } from '@entities/main/user.entity';
-import { Role } from '@entities/main/role.entity';
-import { UserRole } from '@entities/main/user-role.entity';
+import { User } from '@entities/main/iam/user.entity';
+import { Role } from '@entities/main/iam/role.entity';
+import { UserRole } from '@entities/main/iam/user-role.entity';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { Logger } from '@nestjs/common';
 
-import { Permission } from '@entities/main/permission.entity';
+import { Permission } from '@entities/main/iam/permission.entity';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 
 export default class PermissionSeeder implements Seeder {

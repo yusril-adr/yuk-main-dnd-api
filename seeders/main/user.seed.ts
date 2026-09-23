@@ -7,9 +7,9 @@ import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
-import { User } from '@entities/main/user.entity';
-import { Role } from '@entities/main/role.entity';
-import { UserRole } from '@entities/main/user-role.entity';
+import { User } from '@entities/main/iam/user.entity';
+import { Role } from '@entities/main/iam/role.entity';
+import { UserRole } from '@entities/main/iam/user-role.entity';
 import { toCamelCaseArray } from '@shared/utils/common';
 
 // Load .env file

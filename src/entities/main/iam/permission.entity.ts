@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, Unique } from 'typeorm';
-import { BaseEntity } from './base.entity';
+import { BaseEntity } from '../base.entity';
 import { RolePermission } from './role-permission.entity';
 
 @Entity()

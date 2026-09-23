@@ -1,6 +1,6 @@
 import { IsIn, IsOptional, IsString } from 'class-validator';
 import { snakeCase } from 'typeorm/util/StringUtils';
-import { Role } from '@entities/main/role.entity';
+import { Role } from '@entities/main/iam/role.entity';
 import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
 import { getAllEntityProperties } from '@shared/utils/common';
 

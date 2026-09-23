@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { BaseEntity } from './base.entity';
+import { BaseEntity } from '../base.entity';
 import { UserRole } from './user-role.entity';
 
 @Entity()
@@ -33,6 +33,9 @@ export class User extends BaseEntity {
 
   @Column({ type: 'integer', default: 1 })
   dmLevel: number = 1;
+
+  @Column({ type: 'integer', default: 0 })
+  points: number = 0;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];

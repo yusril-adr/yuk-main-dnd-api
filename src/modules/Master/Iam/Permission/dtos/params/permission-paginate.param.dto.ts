@@ -1,6 +1,6 @@
 import { IsIn, IsOptional, IsString } from 'class-validator';
 import { snakeCase } from 'typeorm/util/StringUtils';
-import { Permission } from '@entities/main/permission.entity';
+import { Permission } from '@entities/main/iam/permission.entity';
 import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
 import { getAllEntityProperties } from '@shared/utils/common';
 

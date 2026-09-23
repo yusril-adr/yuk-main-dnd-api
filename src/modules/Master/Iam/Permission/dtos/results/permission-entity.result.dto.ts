@@ -1,4 +1,4 @@
-import type { TPermission } from '@entities/main/permission.entity';
+import type { TPermission } from '@entities/main/iam/permission.entity';
 import dayjs from '@shared/utils/dayjs';
 
 export type TPermissionEntityDto = Omit<

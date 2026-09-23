@@ -23,7 +23,7 @@ const options: DataSourceOptions & SeederOptions = {
   password: configService.get<string>('MAIN_DB_PASSWORD'),
   database: configService.get<string>('MAIN_DB_DATABASE'),
   entities: [
-    join(__dirname, '../../', 'entities/main', '*.entity.ts'),
+    join(__dirname, '../../', 'entities/main', '**', '*.entity.ts'),
   ],
   migrations: [join(__dirname, '../../../', 'migrations/main', '*.ts')],
   seeds: [PermissionSeeder, RoleSeeder, UserSeeder],

@@ -23,6 +23,7 @@ Table users {
   player_level integer [not null, default: 1]
   dm_exp integer [not null, default: 0]
   dm_level integer [not null, default: 1]
+  points integer [not null, default: 0]
 
   created_at timestamptz [not null, default: `now()`]
   updated_at timestamptz [not null, default: `now()`]

@@ -13,9 +13,9 @@ import {
   ILike,
 } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
-import { Permission } from '@entities/main/permission.entity';
-import { Role } from '@entities/main/role.entity';
-import { RolePermission } from '@entities/main/role-permission.entity';
+import { Permission } from '@entities/main/iam/permission.entity';
+import { Role } from '@entities/main/iam/role.entity';
+import { RolePermission } from '@entities/main/iam/role-permission.entity';
 import { mergeWhereConditions } from '@shared/utils/common';
 import { RoleCreateParamDto } from './dtos/params/role-create.param.dto';
 import { RolePaginateParamDto } from './dtos/params/role-paginate.param.dto';
