@@ -33,7 +33,7 @@ export class UserService {
   async create(
     payload: UserCreateParamDto,
     user: TJWTPayload,
-  ): Promise<UserEntityDto> {
+  ): Promise<void> {
     const existing = await this.userRepository.findOne({
       where: { email: payload.email },
     });
@@ -44,7 +44,7 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(payload.password, 10);
     const { roleIds, ...userPayload } = payload;
 
-    const saved = await this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
       const userEntity = userRepo.create({
         ...userPayload,
@@ -55,14 +55,7 @@ export class UserService {
       if (roleIds?.length) {
         await this.assignRoles(manager, result, roleIds);
       }
-
-      return userRepo.findOne({
-        where: { id: result.id },
-        relations: { userRoles: { role: true } },
-      });
     });
-
-    return new UserEntityDto().parseEntity(saved as User);
   }
 
   async paginate(
@@ -125,7 +118,7 @@ export class UserService {
     id: string,
     payload: UserUpdateParamDto,
     user: TJWTPayload,
-  ): Promise<UserEntityDto> {
+  ): Promise<void> {
     const userEntity = await this.userRepository.findOne({
       where: { id },
       relations: { userRoles: { role: true } },
@@ -151,7 +144,7 @@ export class UserService {
 
     Object.assign(userEntity, userPayload);
 
-    const saved = await this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
       const result = await userRepo.save(userEntity);
 
@@ -161,14 +154,7 @@ export class UserService {
           await this.assignRoles(manager, result, roleIds);
         }
       }
-
-      return userRepo.findOne({
-        where: { id: result.id },
-        relations: { userRoles: { role: true } },
-      });
     });
-
-    return new UserEntityDto().parseEntity(saved as User);
   }
 
   async remove(id: string, user: TJWTPayload): Promise<void> {

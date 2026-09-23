@@ -35,10 +35,10 @@ export class RoleService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(payload: RoleCreateParamDto): Promise<RoleEntityDto> {
+  async create(payload: RoleCreateParamDto): Promise<void> {
     const key = await this.generateUniqueKey(payload.name);
     const { permissionIds, ...rolePayload } = payload;
-    const saved = await this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const roleRepository = manager.getRepository(Role);
       const role = await roleRepository.save(
         roleRepository.create({ ...rolePayload, key }),
@@ -47,13 +47,7 @@ export class RoleService {
       if (permissionIds?.length) {
         await this.assignPermissions(manager, role, permissionIds);
       }
-
-      return roleRepository.findOne({
-        where: { id: role.id },
-      });
     });
-
-    return new RoleEntityDto().parseEntity(saved as Role);
   }
 
   async paginate(
@@ -112,7 +106,7 @@ export class RoleService {
   async update(
     id: string,
     payload: RoleUpdateParamDto,
-  ): Promise<RoleEntityDto> {
+  ): Promise<void> {
     const roleEntity = await this.roleRepository.findOne({
       where: { id },
     });
@@ -129,7 +123,7 @@ export class RoleService {
       roleEntity.key = await this.generateUniqueKey(payload.name as string, id);
     }
 
-    const saved = await this.dataSource.transaction(async (manager) => {
+    await this.dataSource.transaction(async (manager) => {
       const roleRepository = manager.getRepository(Role);
       const result = await roleRepository.save(roleEntity);
 
@@ -139,13 +133,7 @@ export class RoleService {
           await this.assignPermissions(manager, result, permissionIds);
         }
       }
-
-      return roleRepository.findOne({
-        where: { id: result.id },
-      });
     });
-
-    return new RoleEntityDto().parseEntity(saved as Role);
   }
 
   async remove(id: string): Promise<void> {

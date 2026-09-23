@@ -34,10 +34,10 @@ export class UserController {
     @Request() request: TRequestUser,
     @Body() payload: UserCreateParamDto,
   ) {
-    const result = await this.userService.create(payload, request.user);
+    await this.userService.create(payload, request.user);
     return wrapper.response({
       statusCode: HttpStatus.CREATED,
-      data: result,
+      data: null,
       message: 'User created successfully',
     });
   }
@@ -69,9 +69,9 @@ export class UserController {
     @Param('id') id: string,
     @Body() payload: UserUpdateParamDto,
   ) {
-    const result = await this.userService.update(id, payload, request.user);
+    await this.userService.update(id, payload, request.user);
     return wrapper.response({
-      data: result,
+      data: null,
       message: 'User updated successfully',
     });
   }

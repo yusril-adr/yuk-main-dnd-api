@@ -29,10 +29,10 @@ export class RoleController {
   @Permissions([PermissionEnum.ROLES_CREATE])
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() payload: RoleCreateParamDto) {
-    const result = await this.roleService.create(payload);
+    await this.roleService.create(payload);
     return wrapper.response({
       statusCode: HttpStatus.CREATED,
-      data: result,
+      data: null,
       message: 'Role created successfully',
     });
   }
@@ -60,9 +60,9 @@ export class RoleController {
   @Patch(':id')
   @Permissions([PermissionEnum.ROLES_UPDATE])
   async update(@Param('id') id: string, @Body() payload: RoleUpdateParamDto) {
-    const result = await this.roleService.update(id, payload);
+    await this.roleService.update(id, payload);
     return wrapper.response({
-      data: result,
+      data: null,
       message: 'Role updated successfully',
     });
   }
