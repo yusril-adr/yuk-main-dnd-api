@@ -11,6 +11,7 @@ import dayjs from '@shared/utils/dayjs';
 import { AuthLoginPasswordParamDto } from '@modules/Auth/dtos/params/auth-login.param.dto';
 import { AuthLoginResultDto } from '@modules/Auth/dtos/results/auth-login.result.dto';
 import { AuthMeResultDto } from '@modules/Auth/dtos/results/auth-me.result.dto';
+import { RolePermissionRepository } from '@modules/Master/Iam/Role/role-permission.repository';
 import { UserRepository } from '@modules/Master/Iam/User/user.repository';
 import { User } from '@entities/main/iam/user.entity';
 
@@ -18,6 +19,7 @@ import { User } from '@entities/main/iam/user.entity';
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly rolePermissionRepository: RolePermissionRepository,
     private readonly configService: ConfigService,
   ) {}
 
@@ -28,7 +30,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: [{ email: identifier }, { username: identifier }],
       relations: {
-        userRoles: { role: { rolePermissions: { permission: true } } },
+        userRoles: { role: true },
       },
     });
 
@@ -51,6 +53,7 @@ export class AuthService {
     }
 
     const selectedRole = availableRoles.length === 1 ? availableRoles[0] : null;
+    await this.loadSelectedRolePermissions(user, selectedRole);
     return this.issueAccessToken(user, selectedRole);
   }
 
@@ -61,7 +64,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { id: currentUser.id },
       relations: {
-        userRoles: { role: { rolePermissions: { permission: true } } },
+        userRoles: { role: true },
       },
     });
 
@@ -74,6 +77,7 @@ export class AuthService {
       throw new ForbiddenException('Role is not available for this user');
     }
 
+    await this.loadSelectedRolePermissions(user, roleKey);
     return this.issueAccessToken(user, roleKey);
   }
 
@@ -86,7 +90,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { id: decoded.id },
       relations: {
-        userRoles: { role: { rolePermissions: { permission: true } } },
+        userRoles: { role: true },
       },
     });
 
@@ -94,6 +98,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
+    await this.loadSelectedRolePermissions(user, decoded.selectedRole);
     const permissions = this.getRolePermissions(user, decoded.selectedRole);
     return new AuthMeResultDto({
       user,
@@ -106,6 +111,27 @@ export class AuthService {
     return (user.userRoles ?? [])
       .map((userRole) => userRole.role?.key)
       .filter((key): key is string => Boolean(key));
+  }
+
+  private async loadSelectedRolePermissions(
+    user: User,
+    selectedRole: string | null,
+  ): Promise<void> {
+    if (!selectedRole) {
+      return;
+    }
+
+    const selectedUserRole = (user.userRoles ?? []).find(
+      (userRole) => userRole.role?.key === selectedRole,
+    );
+    if (!selectedUserRole?.role) {
+      return;
+    }
+
+    selectedUserRole.role.rolePermissions =
+      await this.rolePermissionRepository.findByRoleId(
+        selectedUserRole.role.id,
+      );
   }
 
   private getRolePermissions(user: User, selectedRole: string | null): string[] {

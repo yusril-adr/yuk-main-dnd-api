@@ -9,5 +9,16 @@
     "dm_exp": 0,
     "dm_level": 1,
     "roles": ["guild-master", "player"]
+  },
+  {
+    "username": "yonaka",
+    "email": "hajimeyonaka@gmail.com",
+    "display_name": "Yonaka",
+    "bio": null,
+    "player_exp": 0,
+    "player_level": 1,
+    "dm_exp": 0,
+    "dm_level": 1,
+    "roles": ["player"]
   }
 ]
