@@ -111,7 +111,9 @@ export class UserService {
   async findOne(id: string): Promise<UserEntityDto> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: { userRoles: { role: true } },
+      relations: {
+        userRoles: { role: { rolePermissions: { permission: true } } },
+      },
     });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);

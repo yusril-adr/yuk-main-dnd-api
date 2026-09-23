@@ -6,7 +6,7 @@ export type TRoleEntityDto = Omit<
   TRole,
   'userRoles' | 'rolePermissions' | 'createdAt' | 'updatedAt' | 'deletedAt'
 > & {
-  permissions: PermissionEntityDto[];
+  permissions?: PermissionEntityDto[];
   createdAt: string;
   updatedAt: string;
 };
@@ -16,7 +16,7 @@ export class RoleEntityDto implements TRoleEntityDto {
   key: string;
   name: string;
   description?: string;
-  permissions: PermissionEntityDto[];
+  permissions?: PermissionEntityDto[];
   createdAt: string;
   updatedAt: string;
 
@@ -25,12 +25,14 @@ export class RoleEntityDto implements TRoleEntityDto {
     this.key = role.key;
     this.name = role.name;
     this.description = role.description;
-    this.permissions = (role.rolePermissions ?? [])
-      .map((rolePermission) => rolePermission.permission)
-      .filter((permission): permission is NonNullable<typeof permission> =>
-        Boolean(permission),
-      )
-      .map((permission) => new PermissionEntityDto().parseEntity(permission));
+    if (role.rolePermissions) {
+      this.permissions = role.rolePermissions
+        .map((rolePermission) => rolePermission.permission)
+        .filter((permission): permission is NonNullable<typeof permission> =>
+          Boolean(permission),
+        )
+        .map((permission) => new PermissionEntityDto().parseEntity(permission));
+    }
     this.createdAt = dayjs(role.createdAt).toISOString();
     this.updatedAt = dayjs(role.updatedAt).toISOString();
 

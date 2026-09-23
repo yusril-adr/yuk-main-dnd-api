@@ -1,11 +1,12 @@
 import type { TUser } from '@entities/main/user.entity';
 import dayjs from '@shared/utils/dayjs';
+import { RoleEntityDto } from '@modules/Master/Iam/Role/dtos/results/role-entity.result.dto';
 
 export type TUserEntityDto = Omit<
   TUser,
   'password' | 'userRoles' | 'createdAt' | 'updatedAt' | 'deletedAt'
 > & {
-  roles: string[];
+  roles: RoleEntityDto[];
   createdAt: string;
   updatedAt: string;
 };
@@ -21,7 +22,7 @@ export class UserEntityDto implements TUserEntityDto {
   playerLevel: number;
   dmExp: number;
   dmLevel: number;
-  roles: string[];
+  roles: RoleEntityDto[];
   createdAt: string;
   updatedAt: string;
 
@@ -37,8 +38,9 @@ export class UserEntityDto implements TUserEntityDto {
     this.dmExp = user.dmExp;
     this.dmLevel = user.dmLevel;
     this.roles = (user.userRoles ?? [])
-      .map((userRole) => userRole.role?.key)
-      .filter((key): key is string => Boolean(key));
+      .map((userRole) => userRole.role)
+      .filter((role): role is NonNullable<typeof role> => Boolean(role))
+      .map((role) => new RoleEntityDto().parseEntity(role));
     this.createdAt = dayjs(user.createdAt).toISOString();
     this.updatedAt = dayjs(user.updatedAt).toISOString();
 
