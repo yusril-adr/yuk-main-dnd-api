@@ -67,6 +67,20 @@ export class StorageService {
     }
   }
 
+  async delete(file: FileEntity): Promise<void> {
+    switch (file.driver) {
+      case FileDriverEnum.SUPABASE:
+        await this.supabaseStorageIntegration.delete(
+          file.bucket,
+          file.path,
+        );
+        return;
+      case FileDriverEnum.LOCAL:
+      default:
+        throw this.unsupportedDriverError(file.driver);
+    }
+  }
+
   getPublicUrlSync(file: FileEntity): string {
     switch (file.driver) {
       case FileDriverEnum.SUPABASE:

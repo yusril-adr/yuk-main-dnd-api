@@ -68,6 +68,20 @@ export class SupabaseStorageIntegration {
     };
   }
 
+  async delete(bucket: string, path: string): Promise<void> {
+    this.validateBucket(bucket);
+    this.validatePath(path);
+
+    const client = this.supabaseClientIntegration.getClient();
+    const { error } = await client.storage.from(bucket).remove([path]);
+
+    if (error) {
+      throw new ServiceUnavailableException(
+        'File storage is temporarily unavailable. Please try again later.',
+      );
+    }
+  }
+
   getPublicUrlSync(bucket: string, path: string): string {
     this.validateBucket(bucket);
 
@@ -109,6 +123,14 @@ export class SupabaseStorageIntegration {
     if (!bucket) {
       throw new InternalServerErrorException(
         'Storage bucket is not configured',
+      );
+    }
+  }
+
+  private validatePath(path: string): void {
+    if (!path) {
+      throw new InternalServerErrorException(
+        'Storage file path is not configured',
       );
     }
   }

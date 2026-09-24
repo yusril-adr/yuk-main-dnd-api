@@ -95,6 +95,20 @@ export class FileService {
     };
   }
 
+  async remove(id: string): Promise<void> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('File id must be a valid UUID');
+    }
+
+    const file = await this.fileRepository.findOne({ where: { id } });
+    if (!file) {
+      throw new NotFoundException(`File with id ${id} not found`);
+    }
+
+    await this.storageService.delete(file);
+    await this.fileRepository.softDelete(id);
+  }
+
   private parseMetadata(metadata?: string): TFileUploadMetadata {
     if (!metadata) {
       return {};
