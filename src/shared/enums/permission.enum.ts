@@ -1,7 +1,7 @@
 
 export enum PermissionEnum {
   // Player Board Menu
-  PLAYER_BOARD_MENU = "player_board:view",
+  PLAYER_BOARD_VIEW = "player_board:view",
 
   /* 
     ! READ ME: If you add a new permission, make sure to assign to guild-master role seeder
