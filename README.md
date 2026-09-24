@@ -81,6 +81,52 @@ App runs at `http://localhost:8000` with API prefix `/api/v1`.
 | `PATCH /api/v1/requests/:id` | Admin | Update request |
 | `DELETE /api/v1/requests/:id` | Admin | Soft-delete request |
 | `GET /api/v1/audit-logs` | Bearer token | List audit logs (paginated) |
+| `POST /api/v1/files/upload` | Bearer token | Upload a file |
+| `GET /api/v1/files/download/:id` | Public | Generate a signed download URL |
+
+### File storage
+
+Configure Supabase Storage in `.env`:
+
+```env
+STORAGE_DRIVER=supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-server-only-service-role-key
+SUPABASE_SIGNED_URL_EXPIRES_IN=900
+FILE_USER_AVATAR_BUCKET=your-avatar-bucket
+FILE_OTHER_BUCKET=your-other-files-bucket
+FILE_USER_AVATAR_PATH_PREFIX=users
+FILE_USER_AVATAR_FILENAME=avatar
+FILE_USER_AVATAR_MAX_FILE_SIZE_BYTES=10485760
+FILE_OTHER_PATH_PREFIX=others
+FILE_OTHER_MAX_FILE_SIZE_BYTES=10485760
+```
+
+Upload a file using the authenticated user's access token:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/files/upload \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -F "purpose=others" \
+  -F 'metadata={}' \
+  -F "file=@./example.png"
+```
+
+For a user avatar, omit `target_id` to use the authenticated user. Targeting another user requires the `users:update` permission:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/files/upload \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -F "purpose=user_avatar" \
+  -F 'metadata={"target_id":"user-uuid"}' \
+  -F "file=@./avatar.png"
+```
+
+Generate a signed download URL:
+
+```bash
+curl http://localhost:8000/api/v1/files/download/<file-id>
+```
 
 ## Tech Stack
 

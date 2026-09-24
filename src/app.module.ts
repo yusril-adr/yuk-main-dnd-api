@@ -19,6 +19,7 @@ import { AuthModule } from '@modules/Auth/auth.module';
 import { PermissionModule } from '@modules/Master/Iam/Permission/permission.module';
 import { RoleModule } from '@modules/Master/Iam/Role/role.module';
 import { UserModule } from '@modules/Master/Iam/User/user.module';
+import { FileModule } from '@modules/File/file.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UserModule } from '@modules/Master/Iam/User/user.module';
     PermissionModule,
     RoleModule,
     UserModule,
+    FileModule,
   ],
   providers: [
     {
