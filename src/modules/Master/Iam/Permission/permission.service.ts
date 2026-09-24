@@ -10,12 +10,12 @@ import { camelCase } from 'typeorm/util/StringUtils';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { mergeWhereConditions } from '@shared/utils/common';
 import { PermissionRepository } from './permission.repository';
-import { PermissionFilterParamDto } from './dtos/params/permission-filter.param.dto';
+import { PermissionFullListParamDto } from './dtos/params/permission-full-list.param.dto';
 import { PermissionPaginateParamDto } from './dtos/params/permission-paginate.param.dto';
 import { PermissionEntityDto } from './dtos/results/permission-entity.result.dto';
 
 type PermissionWhere = FindOptionsWhere<Permission>;
-type PermissionQuery = PermissionFilterParamDto & { search?: string };
+type PermissionQuery = PermissionFullListParamDto & { search?: string };
 
 @Injectable()
 export class PermissionService {
@@ -49,7 +49,7 @@ export class PermissionService {
   }
 
   async findAll(
-    queryDto: PermissionFilterParamDto,
+    queryDto: PermissionFullListParamDto,
   ): Promise<PermissionEntityDto[]> {
     let query: FindManyOptions<Permission> = {
       order: {

@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class PermissionFilterParamDto {
+export class PermissionFullListParamDto {
   @IsOptional()
   @IsString()
   module?: string;

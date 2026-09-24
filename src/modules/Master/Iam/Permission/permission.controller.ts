@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import * as wrapper from '@shared/utils/wrapper';
 import { PermissionService } from './permission.service';
-import { PermissionFilterParamDto } from './dtos/params/permission-filter.param.dto';
+import { PermissionFullListParamDto } from './dtos/params/permission-full-list.param.dto';
 import { PermissionPaginateParamDto } from './dtos/params/permission-paginate.param.dto';
 
 @Controller({
@@ -23,7 +23,7 @@ export class PermissionController {
   }
 
   @Get('full')
-  async findAll(@Query() query: PermissionFilterParamDto) {
+  async findAll(@Query() query: PermissionFullListParamDto) {
     const data = await this.permissionService.findAll(query);
     return wrapper.listResponse({
       data,
