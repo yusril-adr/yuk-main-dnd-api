@@ -38,6 +38,7 @@ export class SupabaseStorageIntegration {
     if (error) {
       throw new ServiceUnavailableException(
         'File storage is temporarily unavailable. Please try again later.',
+        { cause: error },
       );
     }
   }
@@ -54,9 +55,17 @@ export class SupabaseStorageIntegration {
       .from(bucket)
       .createSignedUrl(path, settings.signedUrlExpiresInSeconds);
 
-    if (error || !data?.signedUrl) {
+    if (error) {
       throw new ServiceUnavailableException(
         'File storage is temporarily unavailable. Please try again later.',
+        { cause: error },
+      );
+    }
+
+    if (!data?.signedUrl) {
+      throw new ServiceUnavailableException(
+        'File storage is temporarily unavailable. Please try again later.',
+        { cause: new Error('Supabase did not return a signed URL') },
       );
     }
 
@@ -78,6 +87,7 @@ export class SupabaseStorageIntegration {
     if (error) {
       throw new ServiceUnavailableException(
         'File storage is temporarily unavailable. Please try again later.',
+        { cause: error },
       );
     }
   }

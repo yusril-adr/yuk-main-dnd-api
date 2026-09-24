@@ -34,9 +34,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       //TODO: implement this
     }
 
-    // Log the exception
-    this.logger.error(exception, exception.stack);
-    Sentry.captureException(exception);
+    this.reportException(exception);
 
     // Send the transformed response
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
@@ -77,8 +75,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           message: exception.message,
         };
 
-        this.logger.error(exception, exception.stack);
-        Sentry.captureException(exception);
+        this.reportException(exception);
       },
 
       [TypeORMError.name]: () => {
@@ -88,8 +85,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           message: exception.message,
         };
 
-        this.logger.error(exception, exception.stack);
-        Sentry.captureException(exception);
+        this.reportException(exception);
       },
     };
     const exceptionParentName = Object.getPrototypeOf(
@@ -99,10 +95,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const handleException = handledExceptions[exceptionParentName];
     if (handleException) {
       handleException();
-    } else {
-      this.logger.error(exception, exception.stack);
-      Sentry.captureException(exception);
     }
+
+    this.reportException(exception);
 
     // Send the transformed response
     response.status(status).json(
@@ -111,5 +106,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         statusCode: status,
       }),
     );
+  }
+
+  private reportException(exception: any): void {
+    this.logger.error(exception, exception.stack);
+    Sentry.captureException(exception);
   }
 }
