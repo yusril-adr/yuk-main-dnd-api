@@ -68,6 +68,21 @@ export class SupabaseStorageIntegration {
     };
   }
 
+  getPublicUrlSync(bucket: string, path: string): string {
+    this.validateBucket(bucket);
+
+    const client = this.supabaseClientIntegration.getClient();
+    const { data } = client.storage.from(bucket).getPublicUrl(path);
+
+    if (!data?.publicUrl) {
+      throw new InternalServerErrorException(
+        'Storage public URL could not be generated',
+      );
+    }
+
+    return data.publicUrl;
+  }
+
   private getSettings(): TSupabaseStorageSettings {
     const signedUrlExpiresInSeconds = Number(
       this.configService.get<string>(

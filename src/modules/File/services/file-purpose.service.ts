@@ -82,7 +82,7 @@ export class FilePurposeService {
     return {
       bucket,
       path: `${pathPrefix}/${targetId}/${randomUUID()}${extension}`,
-      upsert: true,
+      upsert: false,
       maxFileSizeBytes: this.getMaxFileSizeBytes(
         'FILE_USER_AVATAR_MAX_FILE_SIZE_BYTES',
       ),

@@ -85,7 +85,7 @@ export class FileService {
     }
 
     const signedUrl = await this.storageService.createSignedUrl(file);
-
+    
     return {
       id: file.id,
       name: file.name,

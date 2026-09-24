@@ -67,6 +67,19 @@ export class StorageService {
     }
   }
 
+  getPublicUrlSync(file: FileEntity): string {
+    switch (file.driver) {
+      case FileDriverEnum.SUPABASE:
+        return this.supabaseStorageIntegration.getPublicUrlSync(
+          file.bucket,
+          file.path,
+        );
+      case FileDriverEnum.LOCAL:
+      default:
+        throw this.unsupportedDriverError(file.driver);
+    }
+  }
+
   private getConfiguredDriver(): string {
     return (
       this.configService.get<string>('STORAGE_DRIVER') ??
