@@ -22,17 +22,18 @@ import { User } from '@entities/main/iam/user.entity';
 import { Role } from '@entities/main/iam/role.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
+import { StorageService } from '@modules/shared/services/storage.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly storageService: StorageService,
     private readonly dataSource: DataSource,
   ) {}
 
   async create(
     payload: UserCreateParamDto,
-    user: TJWTPayload,
   ): Promise<void> {
     const existing = await this.userRepository.findOne({
       where: { email: payload.email },
@@ -71,13 +72,23 @@ export class UserService {
 
     const users = await this.userRepository.find({
       ...query,
-      relations: { userRoles: { role: true } },
+      relations: { userRoles: { role: true }, avatarFile: true },
       take: queryDto.perPage,
       skip: queryDto.perPage * (queryDto.page - 1),
     });
 
+    const mappedUsers = users
+    .map(
+      (user) => {
+        let avatarUrl: string | undefined = undefined;
+        if (user.avatarFile) {
+          avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
+        }
+        return new UserEntityDto().parseEntity(user, avatarUrl);
+      }
+    );
     const count = await this.userRepository.count(query);
-    return [users.map((user) => new UserEntityDto().parseEntity(user)), count];
+    return [mappedUsers, count];
   }
 
   private searchQuery(
@@ -106,12 +117,18 @@ export class UserService {
       where: { id },
       relations: {
         userRoles: { role: { rolePermissions: { permission: true } } },
+        avatarFile: true,
       },
     });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    return new UserEntityDto().parseEntity(user);
+
+    let avatarUrl: string | undefined = undefined;
+    if (user.avatarFile) {
+      avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
+    }
+    return new UserEntityDto().parseEntity(user, avatarUrl);
   }
 
   async update(

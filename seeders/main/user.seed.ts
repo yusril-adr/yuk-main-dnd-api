@@ -83,7 +83,6 @@ export default class UserSeeder implements Seeder {
               username: userData.username,
               email: userData.email,
               displayName: userData.displayName,
-              avatarUrl: userData.avatarUrl,
               bio: userData.bio,
               playerExp: userData.playerExp,
               playerLevel: userData.playerLevel,

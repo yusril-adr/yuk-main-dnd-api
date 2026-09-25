@@ -21,3 +21,5 @@ export class File extends BaseEntity {
   @Column({ length: 50 })
   driver: string;
 }
+
+export type TFile = InstanceType<typeof File>;

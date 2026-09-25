@@ -20,6 +20,7 @@ import { PermissionModule } from '@modules/Master/Iam/Permission/permission.modu
 import { RoleModule } from '@modules/Master/Iam/Role/role.module';
 import { UserModule } from '@modules/Master/Iam/User/user.module';
 import { FileModule } from '@modules/File/file.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 @Module({
   imports: [
@@ -40,6 +41,8 @@ import { FileModule } from '@modules/File/file.module';
         fallthrough: true,
       },
     }),
+    
+    SharedModule,
 
     AuthModule,
     PermissionModule,

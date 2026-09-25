@@ -5,6 +5,7 @@ import { Role } from '@entities/main/iam/role.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
 import { RolePermission } from '@entities/main/iam/role-permission.entity';
 import { Permission } from '@entities/main/iam/permission.entity';
+import { File } from '@entities/main/file.entity';
 import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
@@ -17,6 +18,7 @@ import { UserController } from './user.controller';
       UserRole,
       RolePermission,
       Permission,
+      File,
     ]),
   ],
   controllers: [UserController],

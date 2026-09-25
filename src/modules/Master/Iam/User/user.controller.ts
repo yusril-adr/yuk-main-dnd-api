@@ -34,7 +34,7 @@ export class UserController {
     @Request() request: TRequestUser,
     @Body() payload: UserCreateParamDto,
   ) {
-    await this.userService.create(payload, request.user);
+    await this.userService.create(payload);
     return wrapper.response({
       statusCode: HttpStatus.CREATED,
       data: null,

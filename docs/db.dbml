@@ -46,7 +46,7 @@ Table users {
   email varchar(255) [not null, unique]
   password varchar(255) [not null]
   display_name varchar(100) [not null]
-  avatar_url text
+  avatar_file_id uuid [not null]
   bio text
 
   player_exp integer [not null, default: 0]
@@ -328,6 +328,8 @@ Table user_goods {
  * RELATIONSHIPS
  * ============================================================
  */
+
+Ref: files.id < users.avatar_file_id
 
 Ref: users.id < user_roles.user_id
 

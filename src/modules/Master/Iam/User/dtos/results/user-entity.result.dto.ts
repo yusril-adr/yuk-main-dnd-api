@@ -4,7 +4,7 @@ import { RoleEntityDto } from '@modules/Master/Iam/Role/dtos/results/role-entity
 
 export type TUserEntityDto = Omit<
   TUser,
-  'password' | 'avatarUrl' | 'userRoles' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  'password' | 'userRoles' | 'createdAt' | 'updatedAt' | 'deletedAt'
 > & {
   roles?: RoleEntityDto[];
   createdAt: string;
@@ -16,9 +16,7 @@ export class UserEntityDto implements TUserEntityDto {
   username?: string;
   email: string;
   displayName: string;
-  avatar?: {
-    url: string;
-  };
+  avatarUrl?: string;
   bio?: string;
   playerExp: number;
   playerLevel: number;
@@ -29,15 +27,13 @@ export class UserEntityDto implements TUserEntityDto {
   createdAt: string;
   updatedAt: string;
 
-  parseEntity(user: TUser): UserEntityDto {
+  parseEntity(user: TUser, avatarUrl?: string): UserEntityDto {
     this.id = user.id;
     this.username = user.username;
     this.email = user.email;
     this.displayName = user.displayName;
-    if (user.avatarUrl) {
-      this.avatar = {
-        url: user.avatarUrl,
-      };
+    if (avatarUrl) {
+      this.avatarUrl = avatarUrl;
     }
     this.bio = user.bio;
     this.playerExp = user.playerExp;

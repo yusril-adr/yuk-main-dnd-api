@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { UserRole } from './user-role.entity';
+import { File } from '../file.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -15,9 +16,6 @@ export class User extends BaseEntity {
 
   @Column({ length: 100 })
   displayName: string;
-
-  @Column({ type: 'text', nullable: true })
-  avatarUrl?: string;
 
   @Column({ type: 'text', nullable: true })
   bio?: string;
@@ -36,6 +34,10 @@ export class User extends BaseEntity {
 
   @Column({ type: 'integer', default: 0 })
   points: number = 0;
+
+  @OneToOne(() => File, (file) => file.id, { cascade: true })
+  @JoinColumn()
+  avatarFile?: File;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];
