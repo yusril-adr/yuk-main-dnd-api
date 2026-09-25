@@ -13,6 +13,7 @@ import { PermissionRepository } from './permission.repository';
 import { PermissionFullListParamDto } from './dtos/params/permission-full-list.param.dto';
 import { PermissionPaginateParamDto } from './dtos/params/permission-paginate.param.dto';
 import { PermissionEntityDto } from './dtos/results/permission-entity.result.dto';
+import { OrderKeyEnum } from '@shared/enums/order.enum';
 
 type PermissionWhere = FindOptionsWhere<Permission>;
 type PermissionQuery = PermissionFullListParamDto & { search?: string };
@@ -53,9 +54,9 @@ export class PermissionService {
   ): Promise<PermissionEntityDto[]> {
     let query: FindManyOptions<Permission> = {
       order: {
-        module: 'ASC',
-        action: 'ASC',
-        key: 'ASC',
+        module: OrderKeyEnum.ASC,
+        action: OrderKeyEnum.ASC,
+        key: OrderKeyEnum.ASC,
       },
     };
 
