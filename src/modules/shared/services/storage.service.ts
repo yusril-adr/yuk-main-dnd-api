@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FileDriverEnum } from '@shared/enums/file-driver.enum';
+import { FileDriverEnum } from '@modules/shared/enum/file-driver.enum';
 import { File as FileEntity } from '@entities/main/file.entity';
 import { SupabaseStorageIntegration } from '@shared/libs/supabase/supabase-storage.integration';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';

@@ -29,8 +29,8 @@ export class UserCreateParamDto {
   displayName: string;
 
   @IsOptional()
-  @IsString()
-  avatarUrl?: string;
+  @IsUUID('4')
+  avatarFileId?: string | null;
 
   @IsOptional()
   @IsString()

@@ -37,7 +37,7 @@ export class User extends BaseEntity {
 
   @OneToOne(() => File, (file) => file.id, { cascade: true })
   @JoinColumn()
-  avatarFile?: File;
+  avatarFile?: File | null;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];

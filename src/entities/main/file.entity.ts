@@ -1,5 +1,6 @@
 import { Column, Entity } from "typeorm";
 import { BaseEntity } from "./base.entity";
+import { FileStatusEnum } from "@modules/shared/enum/file-status.enum";
 
 @Entity()
 export class File extends BaseEntity {
@@ -20,6 +21,9 @@ export class File extends BaseEntity {
 
   @Column({ length: 50 })
   driver: string;
+
+  @Column({ length: 50, default: FileStatusEnum.ACTIVE })
+  status: string = FileStatusEnum.ACTIVE;
 }
 
 export type TFile = InstanceType<typeof File>;

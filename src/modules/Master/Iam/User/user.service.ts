@@ -2,14 +2,17 @@ import * as bcrypt from 'bcrypt';
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   DataSource,
   EntityManager,
   FindManyOptions,
   FindOptionsWhere,
   ILike,
+  Repository,
 } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { UserRepository } from './user.repository';
@@ -21,13 +24,18 @@ import { mergeWhereConditions } from '@shared/utils/common';
 import { User } from '@entities/main/iam/user.entity';
 import { Role } from '@entities/main/iam/role.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
+import { File } from '@entities/main/file.entity';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
 import { StorageService } from '@modules/shared/services/storage.service';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+
   constructor(
     private readonly userRepository: UserRepository,
+    @InjectRepository(File)
+    private readonly fileRepository: Repository<File>,
     private readonly storageService: StorageService,
     private readonly dataSource: DataSource,
   ) {}
@@ -43,13 +51,15 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(payload.password, 10);
-    const { roleIds, ...userPayload } = payload;
+    const { roleIds, avatarFileId, ...userPayload } = payload;
+    const avatarFile = await this.resolveAvatarFile(avatarFileId);
 
     await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
       const userEntity = userRepo.create({
         ...userPayload,
         password: hashedPassword,
+        avatarFile,
       });
       const result = await userRepo.save(userEntity);
 
@@ -138,7 +148,7 @@ export class UserService {
   ): Promise<void> {
     const userEntity = await this.userRepository.findOne({
       where: { id },
-      relations: { userRoles: { role: true } },
+      relations: { userRoles: { role: true }, avatarFile: true },
     });
     if (!userEntity) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -157,9 +167,17 @@ export class UserService {
       payload.password = await bcrypt.hash(payload.password, 10);
     }
 
-    const { roleIds, ...userPayload } = payload;
+    const { roleIds, avatarFileId, ...userPayload } = payload;
+    const isAvatarFileProvided = avatarFileId !== undefined;
+    const previousAvatarFile = userEntity.avatarFile;
+    const avatarFile = isAvatarFileProvided
+      ? await this.resolveAvatarFile(avatarFileId, id)
+      : previousAvatarFile;
 
     Object.assign(userEntity, userPayload);
+    if (isAvatarFileProvided) {
+      userEntity.avatarFile = avatarFile;
+    }
 
     await this.dataSource.transaction(async (manager) => {
       const userRepo = manager.getRepository(User);
@@ -172,6 +190,14 @@ export class UserService {
         }
       }
     });
+
+    if (
+      isAvatarFileProvided &&
+      previousAvatarFile &&
+      previousAvatarFile.id !== avatarFile?.id
+    ) {
+      await this.cleanupAvatarFile(previousAvatarFile);
+    }
   }
 
   async remove(id: string, user: TJWTPayload): Promise<void> {
@@ -209,5 +235,44 @@ export class UserService {
     await userRoleRepository.save(
       roles.map((role) => userRoleRepository.create({ user, role })),
     );
+  }
+
+  private async resolveAvatarFile(
+    avatarFileId: string | null | undefined,
+    userId?: string,
+  ): Promise<File | null> {
+    if (avatarFileId === null || avatarFileId === undefined) {
+      return null;
+    }
+
+    const file = await this.fileRepository.findOne({
+      where: { id: avatarFileId },
+    });
+    if (!file) {
+      throw new NotFoundException(`File with id ${avatarFileId} not found`);
+    }
+
+    const fileUser = await this.userRepository.findOne({
+      where: { avatarFile: { id: avatarFileId } },
+    });
+    if (fileUser && fileUser.id !== userId) {
+      throw new ConflictException(
+        `File with id ${avatarFileId} is already assigned to another user`,
+      );
+    }
+
+    return file;
+  }
+
+  private async cleanupAvatarFile(file: File): Promise<void> {
+    try {
+      await this.storageService.delete(file);
+      await this.fileRepository.softDelete(file.id);
+    } catch (error) {
+      this.logger.error(
+        `Failed to clean up avatar file ${file.id}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 }

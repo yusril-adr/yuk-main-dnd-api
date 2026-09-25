@@ -18,6 +18,7 @@ export class FileEntityDto implements TFileEntityDto {
   size: number;
   driver: string;
   url?: string;
+  status: string;
   createdAt: string;
   updatedAt: string;
 
@@ -32,6 +33,7 @@ export class FileEntityDto implements TFileEntityDto {
     if (url) {
       this.url = url;
     }
+    this.status = file.status;
     this.createdAt = dayjs(file.createdAt).toISOString();
     this.updatedAt = dayjs(file.updatedAt).toISOString();
 

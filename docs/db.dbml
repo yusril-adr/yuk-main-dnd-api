@@ -46,7 +46,7 @@ Table users {
   email varchar(255) [not null, unique]
   password varchar(255) [not null]
   display_name varchar(100) [not null]
-  avatar_file_id uuid [not null]
+  avatar_file_id uuid
   bio text
 
   player_exp integer [not null, default: 0]
