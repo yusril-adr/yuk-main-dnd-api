@@ -14,12 +14,14 @@ import { AuthMeResultDto } from '@modules/Auth/dtos/results/auth-me.result.dto';
 import { RolePermissionRepository } from '@modules/Master/Iam/Role/role-permission.repository';
 import { UserRepository } from '@modules/Master/Iam/User/user.repository';
 import { User } from '@entities/main/iam/user.entity';
+import { StorageService } from '@modules/shared/services/storage.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly rolePermissionRepository: RolePermissionRepository,
+    private readonly storageService: StorageService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -31,6 +33,7 @@ export class AuthService {
       where: [{ email: identifier }, { username: identifier }],
       relations: {
         userRoles: { role: true },
+        avatarFile: true,
       },
     });
 
@@ -65,6 +68,7 @@ export class AuthService {
       where: { id: currentUser.id },
       relations: {
         userRoles: { role: true },
+        avatarFile: true,
       },
     });
 
@@ -91,6 +95,7 @@ export class AuthService {
       where: { id: decoded.id },
       relations: {
         userRoles: { role: true },
+        avatarFile: true,
       },
     });
 
@@ -100,10 +105,16 @@ export class AuthService {
 
     await this.loadSelectedRolePermissions(user, decoded.selectedRole);
     const permissions = this.getRolePermissions(user, decoded.selectedRole);
+
+    let avatarUrl: string | undefined = undefined;
+    if (user.avatarFile) {
+      avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
+    }
     return new AuthMeResultDto({
       user,
       selectedRole: decoded.selectedRole,
       permissions,
+      avatarUrl,
     });
   }
 
@@ -173,11 +184,17 @@ export class AuthService {
       .add(accessExpiresIn, 'second')
       .toISOString();
 
+    let avatarUrl: string | undefined = undefined;
+    if (user.avatarFile) {
+      avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
+    }
+
     return new AuthLoginResultDto({
       user,
       selectedRole,
       accessToken,
       accessTokenExpiredAt,
+      avatarUrl,
     });
   }
 }

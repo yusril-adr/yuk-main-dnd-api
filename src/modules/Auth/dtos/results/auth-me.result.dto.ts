@@ -10,6 +10,7 @@ export class AuthMeResultDto extends UserEntityDto {
     user: User;
     selectedRole: string | null;
     permissions: string[];
+    avatarUrl?: string;
   }) {
     super();
     this.parseEntity(payload.user);
@@ -17,5 +18,6 @@ export class AuthMeResultDto extends UserEntityDto {
       ? (this.roles?.find((role) => role.key === payload.selectedRole) ?? null)
       : null;
     this.permissions = payload.permissions;
+    this.avatarUrl = payload.avatarUrl;
   }
 }

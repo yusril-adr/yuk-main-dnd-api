@@ -12,6 +12,7 @@ export class AuthLoginResultDto extends UserEntityDto {
     selectedRole: string | null;
     accessToken: string;
     accessTokenExpiredAt: string;
+    avatarUrl?: string;
   }) {
     super();
     this.parseEntity(payload.user);
@@ -20,5 +21,6 @@ export class AuthLoginResultDto extends UserEntityDto {
       : null;
     this.accessToken = payload.accessToken;
     this.accessTokenExpiredAt = payload.accessTokenExpiredAt;
+    this.avatarUrl = payload.avatarUrl;
   }
 }
