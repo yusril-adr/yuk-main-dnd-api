@@ -22,6 +22,7 @@ Project questboard {
    size integer [not null]
    mimetype varchar(50)
    driver varchar(50) [not null]
+   status varchar(50) [not null, default: "active"]
 
    created_by uuid [not null]
    updated_by uuid [not null]

@@ -1,19 +1,14 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { isUUID } from 'class-validator';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
-import { UserRepository } from '@modules/Master/Iam/User/user.repository';
 import { FilePurposesEnum } from '@modules/File/enums/file-purposes.enum';
-import { PermissionEnum } from '@shared/enums/permission.enum';
-import { TJWTPayload } from '@shared/types/jwt-payload.type';
-import type { TFileUploadMetadata } from '../types/file-upload-metadata.type';
+import { FileStatusEnum } from '@modules/shared/enum/file-status.enum';
+import { UserAvatarPathService } from '@modules/shared/services/user-avatar-path.service';
 import { TFilePurposeUploadConfig } from '../types/file-purpose-upload-config.type';
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
@@ -22,18 +17,16 @@ const DEFAULT_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 export class FilePurposeService {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userRepository: UserRepository,
+    private readonly userAvatarPathService: UserAvatarPathService,
   ) {}
 
-  async resolveUploadConfig(
+  resolveUploadConfig(
     purpose: FilePurposesEnum,
-    metadata: TFileUploadMetadata,
-    currentUser: TJWTPayload,
     originalName: string,
-  ): Promise<TFilePurposeUploadConfig> {
+  ): TFilePurposeUploadConfig {
     switch (purpose) {
       case FilePurposesEnum.USER_AVATAR:
-        return this.resolveUserAvatarConfig(metadata, currentUser, originalName);
+        return this.resolveUserAvatarConfig(originalName);
       case FilePurposesEnum.OTHER:
         return this.resolveOtherConfig(originalName);
       default:
@@ -43,49 +36,17 @@ export class FilePurposeService {
     }
   }
 
-  private async resolveUserAvatarConfig(
-    metadata: TFileUploadMetadata,
-    currentUser: TJWTPayload,
+  private resolveUserAvatarConfig(
     originalName: string,
-  ): Promise<TFilePurposeUploadConfig> {
-    const targetId = metadata.targetId ?? currentUser.id;
-    const isTargetingAnotherUser = targetId !== currentUser.id;
-
-    if (!isUUID(targetId)) {
-      throw new BadRequestException('metadata.target_id must be a valid UUID');
-    }
-
-    if (
-      isTargetingAnotherUser &&
-      !currentUser.permissions.includes(PermissionEnum.USERS_UPDATE)
-    ) {
-      throw new ForbiddenException(
-        'Users update permission is required to upload for another user',
-      );
-    }
-
-    const targetUser = await this.userRepository.findOne({
-      where: { id: targetId },
-    });
-    if (!targetUser) {
-      throw new NotFoundException(`Target user with id ${targetId} not found`);
-    }
-
-    const bucket = this.getRequiredConfig('FILE_USER_AVATAR_BUCKET');
-    const pathPrefix = this.configService.get<string>(
-      'FILE_USER_AVATAR_PATH_PREFIX',
-      'users',
-    );
-
-    const extension = extname(originalName).toLowerCase();
-
+  ): TFilePurposeUploadConfig {
     return {
-      bucket,
-      path: `${pathPrefix}/${targetId}/${randomUUID()}${extension}`,
+      bucket: this.userAvatarPathService.getBucket(),
+      path: this.userAvatarPathService.createTemporaryPath(originalName),
       upsert: false,
       maxFileSizeBytes: this.getMaxFileSizeBytes(
         'FILE_USER_AVATAR_MAX_FILE_SIZE_BYTES',
       ),
+      status: FileStatusEnum.TEMPORARY,
     };
   }
 
@@ -106,6 +67,7 @@ export class FilePurposeService {
       maxFileSizeBytes: this.getMaxFileSizeBytes(
         'FILE_OTHER_MAX_FILE_SIZE_BYTES',
       ),
+      status: FileStatusEnum.ACTIVE,
     };
   }
 

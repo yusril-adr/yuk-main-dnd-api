@@ -6,14 +6,12 @@ import {
   Param,
   Post,
   Body,
-  Request,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as wrapper from '@shared/utils/wrapper';
 import { Public } from '@shared/decorators/public.decorator';
-import type { TRequestUser } from '@shared/types/request.type';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
 import { FileService } from './file.service';
 import { FileUploadParamDto } from './dtos/params/file-upload.param.dto';
@@ -29,7 +27,6 @@ export class FileController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('file'))
   async upload(
-    @Request() request: TRequestUser,
     @Body() payload: FileUploadParamDto,
     @UploadedFile() file?: TUploadedFile,
   ) {
@@ -37,7 +34,6 @@ export class FileController {
       file,
       payload.purpose,
       payload.metadata,
-      request.user,
     );
 
     return wrapper.response({

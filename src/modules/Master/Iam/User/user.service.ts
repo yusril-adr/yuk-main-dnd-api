@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 import {
   ConflictException,
   Injectable,
@@ -27,6 +28,8 @@ import { UserRole } from '@entities/main/iam/user-role.entity';
 import { File } from '@entities/main/file.entity';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
 import { StorageService } from '@modules/shared/services/storage.service';
+import { FileStatusEnum } from '@modules/shared/enum/file-status.enum';
+import { UserAvatarPathService } from '@modules/shared/services/user-avatar-path.service';
 
 @Injectable()
 export class UserService {
@@ -37,6 +40,7 @@ export class UserService {
     @InjectRepository(File)
     private readonly fileRepository: Repository<File>,
     private readonly storageService: StorageService,
+    private readonly userAvatarPathService: UserAvatarPathService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -52,21 +56,48 @@ export class UserService {
 
     const hashedPassword = await bcrypt.hash(payload.password, 10);
     const { roleIds, avatarFileId, ...userPayload } = payload;
-    const avatarFile = await this.resolveAvatarFile(avatarFileId);
+    const temporaryAvatarFile = await this.resolveAvatarFile(
+      avatarFileId,
+      FileStatusEnum.TEMPORARY,
+    );
+    const userId = temporaryAvatarFile ? randomUUID() : undefined;
+    const promotionDestination = temporaryAvatarFile
+      ? this.getAvatarPromotionDestination(temporaryAvatarFile, userId!)
+      : undefined;
+    const movedAvatarFile =
+      temporaryAvatarFile && promotionDestination
+        ? await this.moveAvatarFile(temporaryAvatarFile, promotionDestination)
+        : null;
 
-    await this.dataSource.transaction(async (manager) => {
-      const userRepo = manager.getRepository(User);
-      const userEntity = userRepo.create({
-        ...userPayload,
-        password: hashedPassword,
-        avatarFile,
+    try {
+      await this.dataSource.transaction(async (manager) => {
+        const userRepo = manager.getRepository(User);
+        const fileRepo = manager.getRepository(File);
+        const avatarFile = movedAvatarFile
+          ? await fileRepo.save(movedAvatarFile)
+          : null;
+        const userEntity = userRepo.create({
+          ...userPayload,
+          ...(userId ? { id: userId } : {}),
+          password: hashedPassword,
+          avatarFile,
+        });
+        const result = await userRepo.save(userEntity);
+
+        if (roleIds?.length) {
+          await this.assignRoles(manager, result, roleIds);
+        }
       });
-      const result = await userRepo.save(userEntity);
-
-      if (roleIds?.length) {
-        await this.assignRoles(manager, result, roleIds);
+    } catch (error) {
+      if (movedAvatarFile && temporaryAvatarFile) {
+        await this.restoreTemporaryAvatarFile(
+          movedAvatarFile,
+          temporaryAvatarFile,
+        );
       }
-    });
+
+      throw error;
+    }
   }
 
   async paginate(
@@ -170,31 +201,69 @@ export class UserService {
     const { roleIds, avatarFileId, ...userPayload } = payload;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;
-    const avatarFile = isAvatarFileProvided
-      ? await this.resolveAvatarFile(avatarFileId, id)
+    const isCurrentAvatarFile = avatarFileId === previousAvatarFile?.id;
+    const temporaryAvatarFile =
+      isAvatarFileProvided &&
+      avatarFileId !== null &&
+      !isCurrentAvatarFile
+        ? await this.resolveAvatarFile(
+            avatarFileId,
+            FileStatusEnum.TEMPORARY,
+            id,
+          )
+        : null;
+    const promotionDestination = temporaryAvatarFile
+      ? this.getAvatarPromotionDestination(temporaryAvatarFile, id)
+      : undefined;
+    const movedAvatarFile =
+      temporaryAvatarFile && promotionDestination
+        ? await this.moveAvatarFile(temporaryAvatarFile, promotionDestination)
+        : null;
+    const nextAvatarFile = movedAvatarFile
+      ? movedAvatarFile
+      : isAvatarFileProvided
+        ? isCurrentAvatarFile
+          ? previousAvatarFile
+          : null
       : previousAvatarFile;
 
-    Object.assign(userEntity, userPayload);
-    if (isAvatarFileProvided) {
-      userEntity.avatarFile = avatarFile;
-    }
+    try {
+      await this.dataSource.transaction(async (manager) => {
+        const userRepo = manager.getRepository(User);
+        const fileRepo = manager.getRepository(File);
+        const avatarFile = movedAvatarFile
+          ? await fileRepo.save(movedAvatarFile)
+          : nextAvatarFile;
 
-    await this.dataSource.transaction(async (manager) => {
-      const userRepo = manager.getRepository(User);
-      const result = await userRepo.save(userEntity);
-
-      if (roleIds !== undefined) {
-        await manager.getRepository(UserRole).delete({ user: { id } });
-        if (roleIds.length) {
-          await this.assignRoles(manager, result, roleIds);
+        Object.assign(userEntity, userPayload);
+        if (isAvatarFileProvided) {
+          userEntity.avatarFile = avatarFile;
         }
+
+        const result = await userRepo.save(userEntity);
+
+        if (roleIds !== undefined) {
+          await manager.getRepository(UserRole).delete({ user: { id } });
+          if (roleIds.length) {
+            await this.assignRoles(manager, result, roleIds);
+          }
+        }
+      });
+    } catch (error) {
+      if (movedAvatarFile && temporaryAvatarFile) {
+        await this.restoreTemporaryAvatarFile(
+          movedAvatarFile,
+          temporaryAvatarFile,
+        );
       }
-    });
+
+      throw error;
+    }
 
     if (
       isAvatarFileProvided &&
       previousAvatarFile &&
-      previousAvatarFile.id !== avatarFile?.id
+      previousAvatarFile.id !== nextAvatarFile?.id
     ) {
       await this.cleanupAvatarFile(previousAvatarFile);
     }
@@ -239,6 +308,7 @@ export class UserService {
 
   private async resolveAvatarFile(
     avatarFileId: string | null | undefined,
+    expectedStatus: FileStatusEnum,
     userId?: string,
   ): Promise<File | null> {
     if (avatarFileId === null || avatarFileId === undefined) {
@@ -252,6 +322,12 @@ export class UserService {
       throw new NotFoundException(`File with id ${avatarFileId} not found`);
     }
 
+    if (file.status !== expectedStatus) {
+      throw new ConflictException(
+        `File with id ${avatarFileId} must be ${expectedStatus}`,
+      );
+    }
+
     const fileUser = await this.userRepository.findOne({
       where: { avatarFile: { id: avatarFileId } },
     });
@@ -262,6 +338,58 @@ export class UserService {
     }
 
     return file;
+  }
+
+  private getAvatarPromotionDestination(
+    file: File,
+    userId: string,
+  ): { bucket: string; path: string } {
+    const bucket = this.userAvatarPathService.getBucket();
+    if (
+      file.bucket !== bucket ||
+      !this.userAvatarPathService.isTemporaryPath(file.path)
+    ) {
+      throw new ConflictException(
+        `File with id ${file.id} is not a temporary user avatar`,
+      );
+    }
+
+    return {
+      bucket,
+      path: this.userAvatarPathService.createPromotedPath(userId, file.path),
+    };
+  }
+
+  private async moveAvatarFile(
+    file: File,
+    destination: { bucket: string; path: string },
+  ): Promise<File> {
+    const movedStorageFile = await this.storageService.move(file, destination);
+
+    return this.fileRepository.create({
+      ...file,
+      bucket: movedStorageFile.bucket,
+      path: movedStorageFile.path,
+      driver: movedStorageFile.driver,
+      status: FileStatusEnum.ACTIVE,
+    });
+  }
+
+  private async restoreTemporaryAvatarFile(
+    movedFile: File,
+    temporaryFile: File,
+  ): Promise<void> {
+    try {
+      await this.storageService.move(movedFile, {
+        bucket: temporaryFile.bucket,
+        path: temporaryFile.path,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to restore temporary avatar file ${temporaryFile.id}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 
   private async cleanupAvatarFile(file: File): Promise<void> {

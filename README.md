@@ -96,7 +96,6 @@ SUPABASE_SIGNED_URL_EXPIRES_IN=900
 FILE_USER_AVATAR_BUCKET=your-avatar-bucket
 FILE_OTHER_BUCKET=your-other-files-bucket
 FILE_USER_AVATAR_PATH_PREFIX=users
-FILE_USER_AVATAR_FILENAME=avatar
 FILE_USER_AVATAR_MAX_FILE_SIZE_BYTES=10485760
 FILE_OTHER_PATH_PREFIX=others
 FILE_OTHER_MAX_FILE_SIZE_BYTES=10485760
@@ -112,15 +111,42 @@ curl -X POST http://localhost:8000/api/v1/files/upload \
   -F "file=@./example.png"
 ```
 
-For a user avatar, omit `target_id` to use the authenticated user. Targeting another user requires the `users:update` permission:
+User avatars are always uploaded as temporary files. The upload response contains `status: "temporary"`; pass its ID as `avatar_file_id` when creating a user or replacing an existing avatar. The user write promotes it to the user's avatar path and changes its status to `"active"`:
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/files/upload \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -F "purpose=user_avatar" \
-  -F 'metadata={"target_id":"user-uuid"}' \
+  -F 'metadata={}' \
   -F "file=@./avatar.png"
+
+curl -X POST http://localhost:8000/api/v1/master/iam/users \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "new.user@example.com",
+    "password": "StrongPassword123!",
+    "display_name": "New User",
+    "avatar_file_id": "temporary-file-uuid"
+  }'
 ```
+
+To replace an existing user avatar, upload a new temporary avatar, then update the user:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/files/upload \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -F "purpose=user_avatar" \
+  -F 'metadata={}' \
+  -F "file=@./avatar.png"
+
+curl -X PATCH http://localhost:8000/api/v1/master/iam/users/user-uuid \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"avatar_file_id":"temporary-file-uuid"}'
+```
+
+`metadata.target_id` is not supported for user-avatar uploads.
 
 Generate a signed download URL:
 

@@ -8,11 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import { Repository } from 'typeorm';
 import { File as FileEntity } from '@entities/main/file.entity';
-import type { FilePurposesEnum } from './enums/file-purposes.enum';
+import { FilePurposesEnum } from './enums/file-purposes.enum';
 import { FilePurposeService } from './services/file-purpose.service';
-import type { TFileUploadMetadata } from './types/file-upload-metadata.type';
 import { StorageService } from '@modules/shared/services/storage.service';
-import { TJWTPayload } from '@shared/types/jwt-payload.type';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
 import { FileEntityDto } from './dtos/results/file-entity.result.dto';
 
@@ -29,17 +27,14 @@ export class FileService {
     file: TUploadedFile | undefined,
     purpose: FilePurposesEnum,
     metadata: string | undefined,
-    currentUser: TJWTPayload,
   ): Promise<FileEntityDto> {
     if (!file) {
       throw new BadRequestException('A file is required');
     }
 
-    const parsedMetadata = this.parseMetadata(metadata);
-    const purposeConfig = await this.filePurposeService.resolveUploadConfig(
+    this.validateMetadata(purpose, metadata);
+    const purposeConfig = this.filePurposeService.resolveUploadConfig(
       purpose,
-      parsedMetadata,
-      currentUser,
       file.originalname,
     );
 
@@ -63,6 +58,7 @@ export class FileService {
         size: file.size,
         mimetype: file.mimetype,
         driver: storageFile.driver,
+        status: purposeConfig.status,
       }),
     );
 
@@ -98,9 +94,12 @@ export class FileService {
     await this.fileRepository.softDelete(id);
   }
 
-  private parseMetadata(metadata?: string): TFileUploadMetadata {
+  private validateMetadata(
+    purpose: FilePurposesEnum,
+    metadata?: string,
+  ): void {
     if (!metadata) {
-      return {};
+      return;
     }
 
     let parsedMetadata: unknown;
@@ -118,15 +117,11 @@ export class FileService {
       throw new BadRequestException('metadata must be a JSON object');
     }
 
-    const targetId = (parsedMetadata as Record<string, unknown>).target_id;
-    if (targetId !== undefined && typeof targetId !== 'string') {
-      throw new BadRequestException('metadata.target_id must be a string');
+    if (
+      purpose === FilePurposesEnum.USER_AVATAR &&
+      Object.prototype.hasOwnProperty.call(parsedMetadata, 'target_id')
+    ) {
+      throw new BadRequestException('metadata.target_id is not supported');
     }
-
-    if (targetId !== undefined && !isUUID(targetId)) {
-      throw new BadRequestException('metadata.target_id must be a valid UUID');
-    }
-
-    return { targetId };
   }
 }

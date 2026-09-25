@@ -6,10 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { SupabaseClientIntegration } from './supabase-client.integration';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
-
-type TSupabaseStorageSettings = {
-  signedUrlExpiresInSeconds: number;
-};
+import type { TSupabaseStorageSettings } from './types/supabase-storage-options.type';
 
 @Injectable()
 export class SupabaseStorageIntegration {
@@ -83,6 +80,28 @@ export class SupabaseStorageIntegration {
 
     const client = this.supabaseClientIntegration.getClient();
     const { error } = await client.storage.from(bucket).remove([path]);
+
+    if (error) {
+      throw new ServiceUnavailableException(
+        'File storage is temporarily unavailable. Please try again later.',
+        { cause: error },
+      );
+    }
+  }
+
+  async move(
+    bucket: string,
+    sourcePath: string,
+    destinationPath: string,
+  ): Promise<void> {
+    this.validateBucket(bucket);
+    this.validatePath(sourcePath);
+    this.validatePath(destinationPath);
+
+    const client = this.supabaseClientIntegration.getClient();
+    const { error } = await client.storage
+      .from(bucket)
+      .move(sourcePath, destinationPath);
 
     if (error) {
       throw new ServiceUnavailableException(

@@ -7,12 +7,10 @@ import { FileDriverEnum } from '@modules/shared/enum/file-driver.enum';
 import { File as FileEntity } from '@entities/main/file.entity';
 import { SupabaseStorageIntegration } from '@shared/libs/supabase/supabase-storage.integration';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
-
-export type TStorageUploadOptions = {
-  bucket: string;
-  path: string;
-  upsert: boolean;
-};
+import type {
+  TStorageMoveOptions,
+  TStorageUploadOptions,
+} from '../types/storage-options.type';
 
 @Injectable()
 export class StorageService {
@@ -75,6 +73,38 @@ export class StorageService {
           file.path,
         );
         return;
+      case FileDriverEnum.LOCAL:
+      default:
+        throw this.unsupportedDriverError(file.driver);
+    }
+  }
+
+  async move(
+    file: FileEntity,
+    destination: TStorageMoveOptions,
+  ): Promise<{
+    bucket: string;
+    path: string;
+    driver: FileDriverEnum;
+  }> {
+    switch (file.driver) {
+      case FileDriverEnum.SUPABASE:
+        if (file.bucket !== destination.bucket) {
+          throw new InternalServerErrorException(
+            'Storage move across buckets is not supported',
+          );
+        }
+
+        await this.supabaseStorageIntegration.move(
+          file.bucket,
+          file.path,
+          destination.path,
+        );
+        return {
+          bucket: destination.bucket,
+          path: destination.path,
+          driver: FileDriverEnum.SUPABASE,
+        };
       case FileDriverEnum.LOCAL:
       default:
         throw this.unsupportedDriverError(file.driver);
