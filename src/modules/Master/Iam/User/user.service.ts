@@ -13,6 +13,7 @@ import {
   FindManyOptions,
   FindOptionsWhere,
   ILike,
+  In,
   Repository,
 } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
@@ -21,7 +22,10 @@ import { UserPaginateParamDto } from './dtos/params/user-paginate.param.dto';
 import { UserCreateParamDto } from './dtos/params/user-create.param.dto';
 import { UserUpdateParamDto } from './dtos/params/user-update.param.dto';
 import { UserEntityDto } from './dtos/results/user-entity.result.dto';
-import { mergeWhereConditions } from '@shared/utils/common';
+import {
+  mergeEachWhereConditions,
+  mergeWhereConditions,
+} from '@shared/utils/common';
 import { User } from '@entities/main/iam/user.entity';
 import { Role } from '@entities/main/iam/role.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
@@ -44,9 +48,7 @@ export class UserService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(
-    payload: UserCreateParamDto,
-  ): Promise<void> {
+  async create(payload: UserCreateParamDto): Promise<void> {
     const existing = await this.userRepository.findOne({
       where: { email: payload.email },
     });
@@ -110,6 +112,7 @@ export class UserService {
     };
 
     query = this.searchQuery(query, queryDto);
+    query = await this.filterQuery(query, queryDto);
 
     const users = await this.userRepository.find({
       ...query,
@@ -118,16 +121,13 @@ export class UserService {
       skip: queryDto.perPage * (queryDto.page - 1),
     });
 
-    const mappedUsers = users
-    .map(
-      (user) => {
-        let avatarUrl: string | undefined = undefined;
-        if (user.avatarFile) {
-          avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
-        }
-        return new UserEntityDto().parseEntity(user, avatarUrl);
+    const mappedUsers = users.map((user) => {
+      let avatarUrl: string | undefined = undefined;
+      if (user.avatarFile) {
+        avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
       }
-    );
+      return new UserEntityDto().parseEntity(user, avatarUrl);
+    });
     const count = await this.userRepository.count(query);
     return [mappedUsers, count];
   }
@@ -149,6 +149,27 @@ export class UserService {
         },
       ];
       query.where = mergeWhereConditions(query.where, ...searchCondition);
+    }
+    return query;
+  }
+
+  private async filterQuery(
+    query: FindManyOptions<User>,
+    queryDto: UserPaginateParamDto,
+  ): Promise<FindManyOptions<User>> {
+    if (queryDto.roleIds?.length) {
+      const userRoles = await this.userRepository.manager
+        .getRepository(UserRole)
+        .createQueryBuilder('ur')
+        .select('DISTINCT ur.user_id', 'user_id')
+        .where('ur.role_id IN (:...roleIds)', { roleIds: queryDto.roleIds })
+        .getRawMany();
+
+      const userIds = userRoles.map((ur) => ur.user_id);
+
+      query.where = mergeEachWhereConditions(query.where, {
+        id: In(userIds.length ? userIds : ['']),
+      });
     }
     return query;
   }
@@ -203,9 +224,7 @@ export class UserService {
     const previousAvatarFile = userEntity.avatarFile;
     const isCurrentAvatarFile = avatarFileId === previousAvatarFile?.id;
     const temporaryAvatarFile =
-      isAvatarFileProvided &&
-      avatarFileId !== null &&
-      !isCurrentAvatarFile
+      isAvatarFileProvided && avatarFileId !== null && !isCurrentAvatarFile
         ? await this.resolveAvatarFile(
             avatarFileId,
             FileStatusEnum.TEMPORARY,
@@ -225,7 +244,7 @@ export class UserService {
         ? isCurrentAvatarFile
           ? previousAvatarFile
           : null
-      : previousAvatarFile;
+        : previousAvatarFile;
 
     try {
       await this.dataSource.transaction(async (manager) => {

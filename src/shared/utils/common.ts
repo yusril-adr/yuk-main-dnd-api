@@ -5,10 +5,14 @@ export function snakeToCamel(obj: any): any {
     return obj.map((item) => snakeToCamel(item));
   } else if (obj !== null && obj.constructor === Object) {
     return Object.entries(obj).reduce((acc, [key, value]) => {
-      const camelKey = key.replace(/_([a-z])/g, (_, letter) =>
+      const isArrayKey = key.endsWith('[]');
+      const cleanKey = isArrayKey ? key.slice(0, -2) : key;
+      const camelKey = cleanKey.replace(/_([a-z])/g, (_, letter) =>
         letter.toUpperCase(),
       );
-      acc[camelKey] = snakeToCamel(value);
+      acc[camelKey] = isArrayKey
+        ? [snakeToCamel(value)]
+        : snakeToCamel(value);
       return acc;
     }, {} as any);
   }

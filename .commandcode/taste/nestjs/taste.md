@@ -14,3 +14,6 @@
 - When a response needs permission data, computes permissions fresh from DB relations (role → rolePermissions → permission) rather than reusing JWT claims, since the token may be stale. Confidence: 0.60
 - Prefers referencing related entities by stable UUID `id` (e.g., `roleIds`) rather than editable string `key` values in param DTOs and service lookups. Confidence: 0.70
 - For TypeORM entities, keeps property names camelCase and relies on the project's `SnakeCaseNamingStrategy` to map them to snake_case DB columns; keeps `docs/db.dbml` column names in snake_case. Confidence: 0.60
+- DTO field names must use camelCase (e.g., `roleIds` not `role_ids`) because the global request interceptor (`request.interceptor.ts`) already converts incoming snake_case query/body params to camelCase automatically. Confidence: 0.85
+- For array query parameters in paginate DTOs, uses `@Transform` from `class-transformer` to split comma-separated strings into arrays, combined with `@IsArray()` + `@IsUUID('4', { each: true })` validation. Confidence: 0.65
+- For filtering paginate endpoints by related entity IDs (e.g., role_ids), prefers querying the join table first for matching IDs, then filtering the main entity with TypeORM `In()` and `mergeEachWhereConditions` — keeping the existing `FindManyOptions` pattern intact rather than switching to `QueryBuilder`. Confidence: 0.65
