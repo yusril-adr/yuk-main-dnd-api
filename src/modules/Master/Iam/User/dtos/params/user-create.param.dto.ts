@@ -34,6 +34,7 @@ export class UserCreateParamDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(50)
   bio?: string;
 
   @IsOptional()
