@@ -1,4 +1,4 @@
-import { FileStatusEnum } from '@modules/shared/enum/file-status.enum';
+import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 
 export type TFilePurposeUploadConfig = {
   bucket: string;

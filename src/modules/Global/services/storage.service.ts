@@ -1,9 +1,6 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FileDriverEnum } from '@modules/shared/enum/file-driver.enum';
+import { FileDriverEnum } from '@modules/Global/enum/file-driver.enum';
 import { File as FileEntity } from '@entities/main/file.entity';
 import { SupabaseStorageIntegration } from '@shared/libs/supabase/supabase-storage.integration';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
@@ -43,7 +40,7 @@ export class StorageService {
           driver: FileDriverEnum.SUPABASE,
         };
       case FileDriverEnum.LOCAL:
-        // TODO: upload to local
+      // TODO: upload to local
       default:
         throw this.unsupportedDriverError(driver);
     }
@@ -68,10 +65,7 @@ export class StorageService {
   async delete(file: FileEntity): Promise<void> {
     switch (file.driver) {
       case FileDriverEnum.SUPABASE:
-        await this.supabaseStorageIntegration.delete(
-          file.bucket,
-          file.path,
-        );
+        await this.supabaseStorageIntegration.delete(file.bucket, file.path);
         return;
       case FileDriverEnum.LOCAL:
       default:
@@ -136,5 +130,4 @@ export class StorageService {
       `Storage driver '${driver}' is not supported`,
     );
   }
-
 }

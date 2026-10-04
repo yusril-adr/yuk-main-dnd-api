@@ -19,4 +19,4 @@ import { UserAvatarPathService } from './services/user-avatar-path.service';
     UserAvatarPathService,
   ],
 })
-export class SharedModule {}
+export class GlobalModule {}

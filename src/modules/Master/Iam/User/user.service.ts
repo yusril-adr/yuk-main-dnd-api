@@ -31,9 +31,9 @@ import { Role } from '@entities/main/iam/role.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
 import { File } from '@entities/main/file.entity';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
-import { StorageService } from '@modules/shared/services/storage.service';
-import { FileStatusEnum } from '@modules/shared/enum/file-status.enum';
-import { UserAvatarPathService } from '@modules/shared/services/user-avatar-path.service';
+import { StorageService } from '@modules/Global/services/storage.service';
+import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
+import { UserAvatarPathService } from '@modules/Global/services/user-avatar-path.service';
 
 @Injectable()
 export class UserService {

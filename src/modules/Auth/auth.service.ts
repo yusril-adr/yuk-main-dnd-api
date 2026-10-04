@@ -14,7 +14,7 @@ import { AuthMeResultDto } from '@modules/Auth/dtos/results/auth-me.result.dto';
 import { RolePermissionRepository } from '@modules/Master/Iam/Role/role-permission.repository';
 import { UserRepository } from '@modules/Master/Iam/User/user.repository';
 import { User } from '@entities/main/iam/user.entity';
-import { StorageService } from '@modules/shared/services/storage.service';
+import { StorageService } from '@modules/Global/services/storage.service';
 
 @Injectable()
 export class AuthService {
@@ -145,7 +145,10 @@ export class AuthService {
       );
   }
 
-  private getRolePermissions(user: User, selectedRole: string | null): string[] {
+  private getRolePermissions(
+    user: User,
+    selectedRole: string | null,
+  ): string[] {
     const selectedUserRole = selectedRole
       ? (user.userRoles ?? []).find(
           (userRole) => userRole.role?.key === selectedRole,

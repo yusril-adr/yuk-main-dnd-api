@@ -7,8 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
 import { FilePurposesEnum } from '@modules/File/enums/file-purposes.enum';
-import { FileStatusEnum } from '@modules/shared/enum/file-status.enum';
-import { UserAvatarPathService } from '@modules/shared/services/user-avatar-path.service';
+import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
+import { UserAvatarPathService } from '@modules/Global/services/user-avatar-path.service';
 import { TFilePurposeUploadConfig } from '../types/file-purpose-upload-config.type';
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
@@ -50,9 +50,7 @@ export class FilePurposeService {
     };
   }
 
-  private resolveOtherConfig(
-    originalName: string,
-  ): TFilePurposeUploadConfig {
+  private resolveOtherConfig(originalName: string): TFilePurposeUploadConfig {
     const bucket = this.getRequiredConfig('FILE_OTHER_BUCKET');
     const pathPrefix = this.configService.get<string>(
       'FILE_OTHER_PATH_PREFIX',
@@ -81,10 +79,7 @@ export class FilePurposeService {
 
   private getMaxFileSizeBytes(key: string): number {
     const value = Number(
-      this.configService.get<string>(
-        key,
-        String(DEFAULT_MAX_FILE_SIZE_BYTES),
-      ),
+      this.configService.get<string>(key, String(DEFAULT_MAX_FILE_SIZE_BYTES)),
     );
 
     if (!Number.isInteger(value) || value <= 0) {

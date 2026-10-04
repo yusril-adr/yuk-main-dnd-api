@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { File as FileEntity } from '@entities/main/file.entity';
 import { FilePurposesEnum } from './enums/file-purposes.enum';
 import { FilePurposeService } from './services/file-purpose.service';
-import { StorageService } from '@modules/shared/services/storage.service';
+import { StorageService } from '@modules/Global/services/storage.service';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
 import { FileEntityDto } from './dtos/results/file-entity.result.dto';
 
@@ -76,7 +76,7 @@ export class FileService {
     }
 
     const signedUrl = await this.storageService.createSignedUrl(file);
-    
+
     return new FileEntityDto().parseEntity(file, signedUrl.url);
   }
 
@@ -94,10 +94,7 @@ export class FileService {
     await this.fileRepository.softDelete(id);
   }
 
-  private validateMetadata(
-    purpose: FilePurposesEnum,
-    metadata?: string,
-  ): void {
+  private validateMetadata(purpose: FilePurposesEnum, metadata?: string): void {
     if (!metadata) {
       return;
     }

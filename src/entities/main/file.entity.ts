@@ -1,6 +1,6 @@
-import { Column, Entity } from "typeorm";
-import { BaseEntity } from "./base.entity";
-import { FileStatusEnum } from "@modules/shared/enum/file-status.enum";
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from './base.entity';
+import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 
 @Entity()
 export class File extends BaseEntity {
