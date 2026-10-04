@@ -1,7 +1,7 @@
 import { IsEnum, IsJSON, IsOptional } from 'class-validator';
 import { FilePurposesEnum } from '@modules/File/enums/file-purposes.enum';
 
-export class FileUploadParamDto {
+export class UploadFileInput {
   @IsEnum(FilePurposesEnum)
   purpose: FilePurposesEnum;
 
