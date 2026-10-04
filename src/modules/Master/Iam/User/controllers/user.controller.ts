@@ -11,30 +11,35 @@ import {
   Query,
   Request,
 } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
 import { Permissions } from '@shared/decorators/permissions.decorator';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import type { TRequestUser } from '@shared/types/request.type';
-import { UserService } from './user.service';
-import { UserPaginateParamDto } from './dtos/params/user-paginate.param.dto';
-import { UserCreateParamDto } from './dtos/params/user-create.param.dto';
-import { UserUpdateParamDto } from './dtos/params/user-update.param.dto';
+import { CreateUserCommand } from '../commands/create-user/create-user.command';
+import { CreateUserInput } from '../commands/create-user/create-user.input';
+import { UpdateUserCommand } from '../commands/update-user/update-user.command';
+import { UpdateUserInput } from '../commands/update-user/update-user.input';
+import { RemoveUserCommand } from '../commands/remove-user/remove-user.command';
+import { PaginateUsersQuery } from '../queries/paginate-users/paginate-users.query';
+import { PaginateUsersInput } from '../queries/paginate-users/paginate-users.input';
+import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
 
 @Controller({
   path: 'master/iam/users',
   version: '1',
 })
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post()
   @Permissions([PermissionEnum.USERS_CREATE])
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Request() request: TRequestUser,
-    @Body() payload: UserCreateParamDto,
-  ) {
-    await this.userService.create(payload);
+  async create(@Body() payload: CreateUserInput) {
+    await this.commandBus.execute(new CreateUserCommand(payload));
     return wrapper.response({
       statusCode: HttpStatus.CREATED,
       data: null,
@@ -43,11 +48,11 @@ export class UserController {
   }
 
   @Get()
-  async paginate(@Query() query: UserPaginateParamDto) {
-    const [data, count] = await this.userService.paginate(query);
+  async paginate(@Query() query: PaginateUsersInput) {
+    const output = await this.queryBus.execute(new PaginateUsersQuery(query));
     return wrapper.paginationResponse({
-      data,
-      count,
+      data: output.data,
+      count: output.count,
       query,
       message: 'Users retrieved successfully',
     });
@@ -55,9 +60,9 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const result = await this.userService.findOne(id);
+    const output = await this.queryBus.execute(new FindOneUserQuery(id));
     return wrapper.response({
-      data: result,
+      data: output.data,
       message: 'User retrieved successfully',
     });
   }
@@ -67,9 +72,11 @@ export class UserController {
   async update(
     @Request() request: TRequestUser,
     @Param('id') id: string,
-    @Body() payload: UserUpdateParamDto,
+    @Body() payload: UpdateUserInput,
   ) {
-    await this.userService.update(id, payload, request.user);
+    await this.commandBus.execute(
+      new UpdateUserCommand(id, payload, request.user),
+    );
     return wrapper.response({
       data: null,
       message: 'User updated successfully',
@@ -80,7 +87,7 @@ export class UserController {
   @Permissions([PermissionEnum.USERS_DELETE])
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Request() request: TRequestUser, @Param('id') id: string) {
-    await this.userService.remove(id, request.user);
+    await this.commandBus.execute(new RemoveUserCommand(id, request.user));
     return wrapper.response({
       statusCode: HttpStatus.NO_CONTENT,
       data: null,

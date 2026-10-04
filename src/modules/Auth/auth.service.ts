@@ -12,7 +12,7 @@ import { AuthLoginPasswordParamDto } from '@modules/Auth/dtos/params/auth-login.
 import { AuthLoginResultDto } from '@modules/Auth/dtos/results/auth-login.result.dto';
 import { AuthMeResultDto } from '@modules/Auth/dtos/results/auth-me.result.dto';
 import { RolePermissionRepository } from '@modules/Master/Iam/Role/repositories/role-permission.repository';
-import { UserRepository } from '@modules/Master/Iam/User/user.repository';
+import { UserRepository } from '@modules/Master/Iam/User/repositories/user.repository';
 import { User } from '@entities/main/iam/user.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 

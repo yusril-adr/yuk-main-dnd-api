@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class UserCreateParamDto {
+export class CreateUserInput {
   @IsOptional()
   @IsString()
   @MaxLength(50)
