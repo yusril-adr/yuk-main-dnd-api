@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 
+// TODO: Move UserRepository to public module (e.g., modules/users) when the public module is created.
 @Injectable()
 export class UserRepository extends Repository<User> {
   constructor(private readonly dataSource: DataSource) {
