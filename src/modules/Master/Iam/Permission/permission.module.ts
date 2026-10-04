@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CqrsModule } from '@nestjs/cqrs';
 import { Permission } from '@entities/main/iam/permission.entity';
-import { PermissionController } from './permission.controller';
-import { PermissionRepository } from './permission.repository';
-import { PermissionService } from './permission.service';
+import { PermissionController } from './controllers/permission.controller';
+import { PermissionRepository } from './repositories/permission.repository';
+import { PaginatePermissionsHandler } from './queries/paginate-permissions/paginate-permissions.handler';
+import { FindAllPermissionsHandler } from './queries/find-all-permissions/find-all-permissions.handler';
+
+const queryHandlers = [PaginatePermissionsHandler, FindAllPermissionsHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Permission])],
+  imports: [TypeOrmModule.forFeature([Permission]), CqrsModule],
   controllers: [PermissionController],
-  providers: [PermissionRepository, PermissionService],
-  exports: [PermissionRepository, PermissionService],
+  providers: [PermissionRepository, ...queryHandlers],
+  exports: [PermissionRepository],
 })
 export class PermissionModule {}
