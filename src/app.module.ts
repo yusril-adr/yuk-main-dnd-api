@@ -2,6 +2,8 @@ import { join } from 'path';
 import { BadRequestException, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CqrsModule } from '@nestjs/cqrs';
+
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { snakeCase } from 'typeorm/util/StringUtils.js';
 
@@ -34,6 +36,7 @@ import { GlobalModule } from '@modules/Global/global.module';
         autoLoadEntities: true,
       }),
     }),
+    CqrsModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/public',

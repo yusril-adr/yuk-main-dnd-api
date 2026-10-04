@@ -4,7 +4,7 @@ import { Permission } from '@entities/main/iam/permission.entity';
 import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
 import { getAllEntityProperties } from '@shared/utils/common';
 
-export class PermissionPaginateParamDto extends PaginateParamDto {
+export class PaginatePermissionsInput extends PaginateParamDto {
   @IsOptional()
   @IsString()
   @IsIn(getAllEntityProperties(Permission).map((prop) => snakeCase(prop)))
