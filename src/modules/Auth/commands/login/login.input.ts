@@ -1,6 +1,6 @@
 import { IsDefined, IsString } from 'class-validator';
 
-export class AuthLoginPasswordParamDto {
+export class LoginInput {
   @IsString()
   @IsDefined()
   identifier: string;

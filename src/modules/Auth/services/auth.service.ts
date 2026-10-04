@@ -8,13 +8,13 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
 import dayjs from '@shared/utils/dayjs';
-import { AuthLoginPasswordParamDto } from '@modules/Auth/dtos/params/auth-login.param.dto';
-import { AuthLoginResultDto } from '@modules/Auth/dtos/results/auth-login.result.dto';
-import { AuthMeResultDto } from '@modules/Auth/dtos/results/auth-me.result.dto';
 import { RolePermissionRepository } from '@modules/Master/Iam/Role/repositories/role-permission.repository';
 import { UserRepository } from '@modules/Master/Iam/User/repositories/user.repository';
 import { User } from '@entities/main/iam/user.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
+import { LoginInput } from '../commands/login/login.input';
+import { LoginOutput } from '../commands/login/login.output';
+import { GetMeOutput } from '../queries/get-me/get-me.output';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,7 @@ export class AuthService {
   async loginByPassword({
     identifier,
     password,
-  }: AuthLoginPasswordParamDto): Promise<AuthLoginResultDto> {
+  }: LoginInput): Promise<LoginOutput> {
     const user = await this.userRepository.findOne({
       where: [{ email: identifier }, { username: identifier }],
       relations: {
@@ -63,7 +63,7 @@ export class AuthService {
   async switchRole(
     roleKey: string,
     currentUser: TJWTPayload,
-  ): Promise<AuthLoginResultDto> {
+  ): Promise<LoginOutput> {
     const user = await this.userRepository.findOne({
       where: { id: currentUser.id },
       relations: {
@@ -85,7 +85,7 @@ export class AuthService {
     return this.issueAccessToken(user, roleKey);
   }
 
-  async loginByAccessToken(token: string): Promise<AuthMeResultDto> {
+  async loginByAccessToken(token: string): Promise<GetMeOutput> {
     const decoded = jwt.verify(
       token,
       this.configService.get<string>('ACCESS_TOKEN_KEY') as string,
@@ -110,7 +110,7 @@ export class AuthService {
     if (user.avatarFile) {
       avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
     }
-    return new AuthMeResultDto({
+    return new GetMeOutput({
       user,
       selectedRole: decoded.selectedRole,
       permissions,
@@ -165,7 +165,7 @@ export class AuthService {
   private issueAccessToken(
     user: User,
     selectedRole: string | null,
-  ): AuthLoginResultDto {
+  ): LoginOutput {
     const payload: TJWTPayload = {
       id: user.id,
       email: user.email,
@@ -192,7 +192,7 @@ export class AuthService {
       avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
     }
 
-    return new AuthLoginResultDto({
+    return new LoginOutput({
       user,
       selectedRole,
       accessToken,

@@ -2,14 +2,16 @@ import { User } from '@entities/main/iam/user.entity';
 import { RoleEntityDto } from '@shared/dtos/entities/iam/role.entity.dto';
 import { UserEntityDto } from '@shared/dtos/entities/iam/user.entity.dto';
 
-export class AuthMeResultDto extends UserEntityDto {
+export class LoginOutput extends UserEntityDto {
   selectedRole: RoleEntityDto | null;
-  permissions: string[];
+  accessToken: string;
+  accessTokenExpiredAt: string;
 
   constructor(payload: {
     user: User;
     selectedRole: string | null;
-    permissions: string[];
+    accessToken: string;
+    accessTokenExpiredAt: string;
     avatarUrl?: string;
   }) {
     super();
@@ -17,7 +19,18 @@ export class AuthMeResultDto extends UserEntityDto {
     this.selectedRole = payload.selectedRole
       ? (this.roles?.find((role) => role.key === payload.selectedRole) ?? null)
       : null;
-    this.permissions = payload.permissions;
+    this.accessToken = payload.accessToken;
+    this.accessTokenExpiredAt = payload.accessTokenExpiredAt;
     this.avatarUrl = payload.avatarUrl;
+  }
+
+  static from(payload: {
+    user: User;
+    selectedRole: string | null;
+    accessToken: string;
+    accessTokenExpiredAt: string;
+    avatarUrl?: string;
+  }): LoginOutput {
+    return new LoginOutput(payload);
   }
 }
