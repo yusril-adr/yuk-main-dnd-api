@@ -1,6 +1,6 @@
-import { UserEntityDto } from '@modules/Master/Iam/User/dtos/results/user-entity.result.dto';
-import { RoleEntityDto } from '@modules/Master/Iam/Role/dtos/results/role-entity.result.dto';
 import { User } from '@entities/main/iam/user.entity';
+import { RoleEntityDto } from '@shared/dtos/entities/iam/role.entity.dto';
+import { UserEntityDto } from '@shared/dtos/entities/iam/user.entity.dto';
 
 export class AuthMeResultDto extends UserEntityDto {
   selectedRole: RoleEntityDto | null;

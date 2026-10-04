@@ -21,7 +21,7 @@ import { UserRepository } from './user.repository';
 import { UserPaginateParamDto } from './dtos/params/user-paginate.param.dto';
 import { UserCreateParamDto } from './dtos/params/user-create.param.dto';
 import { UserUpdateParamDto } from './dtos/params/user-update.param.dto';
-import { UserEntityDto } from './dtos/results/user-entity.result.dto';
+import { UserEntityResultDto } from './dtos/results/user-entity.result.dto';
 import {
   mergeEachWhereConditions,
   mergeWhereConditions,
@@ -104,7 +104,7 @@ export class UserService {
 
   async paginate(
     queryDto: UserPaginateParamDto,
-  ): Promise<[UserEntityDto[], number]> {
+  ): Promise<[UserEntityResultDto[], number]> {
     let query: FindManyOptions<User> = {
       order: {
         [camelCase(queryDto.sortBy)]: queryDto.order,
@@ -126,7 +126,7 @@ export class UserService {
       if (user.avatarFile) {
         avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
       }
-      return new UserEntityDto().parseEntity(user, avatarUrl);
+      return new UserEntityResultDto().parseEntity(user, avatarUrl);
     });
     const count = await this.userRepository.count(query);
     return [mappedUsers, count];
@@ -174,7 +174,7 @@ export class UserService {
     return query;
   }
 
-  async findOne(id: string): Promise<UserEntityDto> {
+  async findOne(id: string): Promise<UserEntityResultDto> {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: {
@@ -190,7 +190,7 @@ export class UserService {
     if (user.avatarFile) {
       avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
     }
-    return new UserEntityDto().parseEntity(user, avatarUrl);
+    return new UserEntityResultDto().parseEntity(user, avatarUrl);
   }
 
   async update(

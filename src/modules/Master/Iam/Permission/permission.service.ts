@@ -1,18 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import {
-  And,
-  Equal,
-  FindManyOptions,
-  FindOptionsWhere,
-  ILike,
-} from 'typeorm';
+import { And, Equal, FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { mergeWhereConditions } from '@shared/utils/common';
 import { PermissionRepository } from './permission.repository';
 import { PermissionFullListParamDto } from './dtos/params/permission-full-list.param.dto';
 import { PermissionPaginateParamDto } from './dtos/params/permission-paginate.param.dto';
-import { PermissionEntityDto } from './dtos/results/permission-entity.result.dto';
+import { PermissionEntityResultDto } from './dtos/results/permission-entity.result.dto';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
 
 type PermissionWhere = FindOptionsWhere<Permission>;
@@ -24,7 +18,7 @@ export class PermissionService {
 
   async paginate(
     queryDto: PermissionPaginateParamDto,
-  ): Promise<[PermissionEntityDto[], number]> {
+  ): Promise<[PermissionEntityResultDto[], number]> {
     let query: FindManyOptions<Permission> = {
       order: {
         [camelCase(queryDto.sortBy)]: queryDto.order,
@@ -43,7 +37,7 @@ export class PermissionService {
 
     return [
       permissions.map((permission) =>
-        new PermissionEntityDto().parseEntity(permission),
+        new PermissionEntityResultDto().parseEntity(permission),
       ),
       count,
     ];
@@ -51,7 +45,7 @@ export class PermissionService {
 
   async findAll(
     queryDto: PermissionFullListParamDto,
-  ): Promise<PermissionEntityDto[]> {
+  ): Promise<PermissionEntityResultDto[]> {
     let query: FindManyOptions<Permission> = {
       order: {
         module: OrderKeyEnum.ASC,
@@ -66,7 +60,7 @@ export class PermissionService {
     const permissions = await this.permissionRepository.find(query);
 
     return permissions.map((permission) =>
-      new PermissionEntityDto().parseEntity(permission),
+      new PermissionEntityResultDto().parseEntity(permission),
     );
   }
 
@@ -105,6 +99,6 @@ export class PermissionService {
 
       query.where = mergeWhereConditions(query.where, ...searchCondition);
     }
-  return query;
+    return query;
   }
 }

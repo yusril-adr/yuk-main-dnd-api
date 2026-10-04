@@ -20,7 +20,7 @@ import { mergeWhereConditions } from '@shared/utils/common';
 import { RoleCreateParamDto } from './dtos/params/role-create.param.dto';
 import { RolePaginateParamDto } from './dtos/params/role-paginate.param.dto';
 import { RoleUpdateParamDto } from './dtos/params/role-update.param.dto';
-import { RoleEntityDto } from './dtos/results/role-entity.result.dto';
+import { RoleEntityResultDto } from './dtos/results/role-entity.result.dto';
 import { RoleRepository } from './role.repository';
 
 const ROLE_KEY_MAX_LENGTH = 50;
@@ -52,7 +52,7 @@ export class RoleService {
 
   async paginate(
     queryDto: RolePaginateParamDto,
-  ): Promise<[RoleEntityDto[], number]> {
+  ): Promise<[RoleEntityResultDto[], number]> {
     let query: FindManyOptions<Role> = {
       order: {
         [camelCase(queryDto.sortBy)]: queryDto.order,
@@ -68,7 +68,10 @@ export class RoleService {
     });
     const count = await this.roleRepository.count(query);
 
-    return [roles.map((role) => new RoleEntityDto().parseEntity(role)), count];
+    return [
+      roles.map((role) => new RoleEntityResultDto().parseEntity(role)),
+      count,
+    ];
   }
 
   private searchQuery(
@@ -92,7 +95,7 @@ export class RoleService {
     return query;
   }
 
-  async findOne(id: string): Promise<RoleEntityDto> {
+  async findOne(id: string): Promise<RoleEntityResultDto> {
     const role = await this.roleRepository.findOne({
       where: { id },
       relations: { rolePermissions: { permission: true } },
@@ -100,13 +103,10 @@ export class RoleService {
     if (!role) {
       throw new NotFoundException(`Role with id ${id} not found`);
     }
-    return new RoleEntityDto().parseEntity(role);
+    return new RoleEntityResultDto().parseEntity(role);
   }
 
-  async update(
-    id: string,
-    payload: RoleUpdateParamDto,
-  ): Promise<void> {
+  async update(id: string, payload: RoleUpdateParamDto): Promise<void> {
     const roleEntity = await this.roleRepository.findOne({
       where: { id },
     });

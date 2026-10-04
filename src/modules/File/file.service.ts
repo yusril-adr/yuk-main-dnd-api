@@ -12,7 +12,7 @@ import { FilePurposesEnum } from './enums/file-purposes.enum';
 import { FilePurposeService } from './services/file-purpose.service';
 import { StorageService } from '@modules/Global/services/storage.service';
 import type { TUploadedFile } from '@shared/types/uploaded-file.type';
-import { FileEntityDto } from './dtos/results/file-entity.result.dto';
+import { FileEntityResultDto } from './dtos/results/file-entity.result.dto';
 
 @Injectable()
 export class FileService {
@@ -27,7 +27,7 @@ export class FileService {
     file: TUploadedFile | undefined,
     purpose: FilePurposesEnum,
     metadata: string | undefined,
-  ): Promise<FileEntityDto> {
+  ): Promise<FileEntityResultDto> {
     if (!file) {
       throw new BadRequestException('A file is required');
     }
@@ -62,10 +62,10 @@ export class FileService {
       }),
     );
 
-    return new FileEntityDto().parseEntity(savedFile);
+    return new FileEntityResultDto().parseEntity(savedFile);
   }
 
-  async getDownloadUrl(id: string): Promise<FileEntityDto> {
+  async getDownloadUrl(id: string): Promise<FileEntityResultDto> {
     if (!isUUID(id)) {
       throw new BadRequestException('File id must be a valid UUID');
     }
@@ -77,7 +77,7 @@ export class FileService {
 
     const signedUrl = await this.storageService.createSignedUrl(file);
 
-    return new FileEntityDto().parseEntity(file, signedUrl.url);
+    return new FileEntityResultDto().parseEntity(file, signedUrl.url);
   }
 
   async remove(id: string): Promise<void> {
