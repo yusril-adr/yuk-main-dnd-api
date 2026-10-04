@@ -8,7 +8,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class RoleCreateParamDto {
+export class CreateRoleInput {
   @IsString()
   @IsNotEmpty()
   @Matches(/[A-Za-z0-9]/, {
