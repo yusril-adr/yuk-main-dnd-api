@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -20,6 +21,10 @@ export class CreateRoleInput {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isShowInPublic?: boolean;
 
   @IsOptional()
   @IsArray()

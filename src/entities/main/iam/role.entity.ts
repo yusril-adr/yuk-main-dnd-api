@@ -14,6 +14,9 @@ export class Role extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description?: string;
 
+  @Column({ type: 'boolean', default: true })
+  isShowInPublic: boolean = true;
+
   @OneToMany(() => UserRole, (userRole) => userRole.role)
   userRoles: UserRole[];
 
