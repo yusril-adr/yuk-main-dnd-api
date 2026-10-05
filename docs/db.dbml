@@ -203,8 +203,15 @@ Table stories {
   description text
 
   status varchar(30) [not null, default: "draft"]
+  type varchar(30) [not null, default: "oneshot", note: "oneshot | campaign"]
+  game_system varchar(100) [note: "free text, e.g. DnD 5e 2014, Werewolf, Ten Candles"]
 
   max_members integer
+
+  start_at timestamptz
+
+  location_type varchar(20) [not null, default: "online", note: "online | offline"]
+  location_detail text [note: "online: platform/link (e.g. Discord, Roll20), offline: place name/address"]
 
   created_at timestamptz [not null, default: `now()`]
   updated_at timestamptz [not null, default: `now()`]
@@ -213,6 +220,8 @@ Table stories {
   Indexes {
     (created_by)
     (status)
+    (type)
+    (start_at)
   }
 }
 
