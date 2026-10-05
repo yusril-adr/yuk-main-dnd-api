@@ -53,7 +53,6 @@ export class StoryController {
   }
 
   @Get()
-  @Permissions([PermissionEnum.STORIES_VIEW])
   async paginate(@Query() query: PaginateStoriesInput) {
     const output = await this.queryBus.execute(new PaginateStoriesQuery(query));
     return wrapper.paginationResponse({
@@ -65,7 +64,6 @@ export class StoryController {
   }
 
   @Get(':id')
-  @Permissions([PermissionEnum.STORIES_VIEW])
   async findOne(@Param('id') id: string) {
     const output = await this.queryBus.execute(new FindOneStoryQuery(id));
     return wrapper.response({
