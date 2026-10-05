@@ -2,7 +2,10 @@ import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { Role } from '@entities/main/iam/role.entity';
-import { mergeWhereConditions } from '@shared/utils/common';
+import {
+  mergeEachWhereConditions,
+  mergeWhereConditions,
+} from '@shared/utils/common';
 import { RoleRepository } from '../../repositories/role.repository';
 import { PaginateRolesQuery } from './paginate-roles.query';
 import { PaginateRolesOutput } from './paginate-roles.output';
@@ -24,6 +27,7 @@ export class PaginateRolesHandler
     };
 
     findOptions = this.searchQuery(findOptions, params);
+    findOptions = this.filterQuery(findOptions, params);
 
     const [roles, count] = await Promise.all([
       this.roleRepository.find({
@@ -54,6 +58,18 @@ export class PaginateRolesHandler
         },
       ];
       query.where = mergeWhereConditions(query.where, ...searchCondition);
+    }
+    return query;
+  }
+
+  private filterQuery(
+    query: FindManyOptions<Role>,
+    params: PaginateRolesInput,
+  ): FindManyOptions<Role> {
+    if (params.isShowInPublic !== undefined) {
+      query.where = mergeEachWhereConditions(query.where, {
+        isShowInPublic: params.isShowInPublic,
+      });
     }
     return query;
   }
