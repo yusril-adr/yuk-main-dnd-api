@@ -75,9 +75,14 @@ export class StoryController {
   }
 
   @Patch(':id')
-  @Permissions([PermissionEnum.STORIES_UPDATE])
-  async update(@Param('id') id: string, @Body() payload: UpdateStoryInput) {
-    await this.commandBus.execute(new UpdateStoryCommand(id, payload));
+  async update(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Body() payload: UpdateStoryInput,
+  ) {
+    await this.commandBus.execute(
+      new UpdateStoryCommand(id, payload, request.user),
+    );
     return wrapper.response({
       data: null,
       message: 'Story updated successfully',
@@ -85,10 +90,9 @@ export class StoryController {
   }
 
   @Delete(':id')
-  @Permissions([PermissionEnum.STORIES_DELETE])
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    await this.commandBus.execute(new RemoveStoryCommand(id));
+  async remove(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new RemoveStoryCommand(id, request.user));
     return wrapper.response({
       statusCode: HttpStatus.NO_CONTENT,
       data: null,
