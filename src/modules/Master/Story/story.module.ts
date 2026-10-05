@@ -6,6 +6,7 @@ import { File } from '@entities/main/file.entity';
 import { StoryController } from './controllers/story.controller';
 import { StoryRepository } from './repositories/story.repository';
 import { StoryService } from './services/story.service';
+import { StoryPermissionService } from './services/story-permission.service';
 import { CreateStoryHandler } from './commands/create-story/create-story.handler';
 import { UpdateStoryHandler } from './commands/update-story/update-story.handler';
 import { RemoveStoryHandler } from './commands/remove-story/remove-story.handler';
@@ -25,6 +26,7 @@ const queryHandlers = [PaginateStoriesHandler, FindOneStoryHandler];
   providers: [
     StoryRepository,
     StoryService,
+    StoryPermissionService,
     ...commandHandlers,
     ...queryHandlers,
   ],
