@@ -2,8 +2,6 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { User } from '../iam/user.entity';
 import { StoryStatusEnum } from '@modules/Master/Story/enums/story-status.enum';
-import { StoryTypeEnum } from '@modules/Master/Story/enums/story-type.enum';
-import { StoryLocationTypeEnum } from '@modules/Master/Story/enums/story-location-type.enum';
 
 @Entity()
 export class Story extends BaseEntity {
@@ -26,8 +24,8 @@ export class Story extends BaseEntity {
   status: string = StoryStatusEnum.DRAFT;
 
   @Index()
-  @Column({ length: 30, default: StoryTypeEnum.ONESHOT })
-  type: string = StoryTypeEnum.ONESHOT;
+  @Column({ length: 30 })
+  type: string;
 
   @Column({ length: 100, nullable: true })
   gameSystem?: string;
@@ -39,8 +37,8 @@ export class Story extends BaseEntity {
   @Column({ type: 'timestamp with time zone', nullable: true })
   startAt?: Date | null;
 
-  @Column({ length: 20, default: StoryLocationTypeEnum.ONLINE })
-  locationType: string = StoryLocationTypeEnum.ONLINE;
+  @Column({ length: 20 })
+  locationType: string;
 
   @Column({ type: 'text', nullable: true })
   locationDetail?: string;
