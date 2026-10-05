@@ -27,7 +27,7 @@ export class StoryEntityDto implements TStoryEntityDto {
   maxMembers?: number;
   startAt: string | null;
   locationType: string;
-  locationDetail?: string;
+  locationDetail: string;
   createdBy?: TStoryCreatorDto;
   createdAt: string;
   updatedAt: string;

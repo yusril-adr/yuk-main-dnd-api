@@ -40,8 +40,8 @@ export class Story extends BaseEntity {
   @Column({ length: 20 })
   locationType: string;
 
-  @Column({ type: 'text', nullable: true })
-  locationDetail?: string;
+  @Column({ type: 'text' })
+  locationDetail: string;
 }
 
 export type TStory = InstanceType<typeof Story>;

@@ -52,7 +52,7 @@ export class CreateStoryInput {
   @IsEnum(StoryLocationTypeEnum)
   locationType: StoryLocationTypeEnum;
 
-  @IsOptional()
   @IsString()
-  locationDetail?: string;
+  @IsNotEmpty()
+  locationDetail: string;
 }
