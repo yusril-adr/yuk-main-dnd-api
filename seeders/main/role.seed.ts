@@ -12,6 +12,7 @@ type TRoleSeedData = {
   key: string;
   name: string;
   description?: string;
+  isShowInPublic?: boolean;
   permissions: string[];
 };
 
@@ -66,6 +67,7 @@ export default class RoleSeeder implements Seeder {
               key: roleData.key,
               name: roleData.name,
               description: roleData.description,
+              isShowInPublic: roleData.isShowInPublic ?? true,
             }),
           );
           createdRoles++;

@@ -16,6 +16,7 @@ export class RoleEntityDto implements TRoleEntityDto {
   key: string;
   name: string;
   description?: string;
+  isShowInPublic: boolean;
   permissions?: PermissionEntityDto[];
   createdAt: string;
   updatedAt: string;
@@ -25,6 +26,7 @@ export class RoleEntityDto implements TRoleEntityDto {
     this.key = role.key;
     this.name = role.name;
     this.description = role.description;
+    this.isShowInPublic = role.isShowInPublic;
     if (role.rolePermissions) {
       this.permissions = role.rolePermissions
         .map((rolePermission) => rolePermission.permission)
