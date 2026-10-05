@@ -37,7 +37,7 @@ export class Story extends BaseEntity {
 
   @Index()
   @Column({ type: 'timestamp with time zone', nullable: true })
-  startAt?: Date;
+  startAt?: Date | null;
 
   @Column({ length: 20, default: StoryLocationTypeEnum.ONLINE })
   locationType: string = StoryLocationTypeEnum.ONLINE;
