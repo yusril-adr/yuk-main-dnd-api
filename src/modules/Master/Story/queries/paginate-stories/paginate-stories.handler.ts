@@ -7,6 +7,7 @@ import {
   mergeWhereConditions,
 } from '@shared/utils/common';
 import { StoryRepository } from '../../repositories/story.repository';
+import { StoryService } from '../../services/story.service';
 import { PaginateStoriesQuery } from './paginate-stories.query';
 import { PaginateStoriesOutput } from './paginate-stories.output';
 import { PaginateStoriesInput } from './paginate-stories.input';
@@ -16,7 +17,10 @@ export class PaginateStoriesHandler implements IQueryHandler<
   PaginateStoriesQuery,
   PaginateStoriesOutput
 > {
-  constructor(private readonly storyRepository: StoryRepository) {}
+  constructor(
+    private readonly storyRepository: StoryRepository,
+    private readonly storyService: StoryService,
+  ) {}
 
   async execute(query: PaginateStoriesQuery): Promise<PaginateStoriesOutput> {
     const { params } = query;
@@ -33,14 +37,20 @@ export class PaginateStoriesHandler implements IQueryHandler<
     const [stories, count] = await Promise.all([
       this.storyRepository.find({
         ...findOptions,
-        relations: { createdBy: true },
+        relations: { createdBy: true, bannerFile: true },
         take: params.perPage,
         skip: params.perPage * (params.page - 1),
       }),
       this.storyRepository.count(findOptions),
     ]);
 
-    return PaginateStoriesOutput.from(stories, count);
+    return PaginateStoriesOutput.from(
+      stories.map((story) => ({
+        story,
+        bannerUrl: this.storyService.resolveBannerUrl(story),
+      })),
+      count,
+    );
   }
 
   private searchQuery(

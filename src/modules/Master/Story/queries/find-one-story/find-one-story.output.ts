@@ -4,7 +4,9 @@ import { StoryEntityDto } from '@shared/dtos/entities/story/story.entity.dto';
 export class FindOneStoryOutput {
   constructor(public readonly data: StoryEntityDto) {}
 
-  static from(data: TStory): FindOneStoryOutput {
-    return new FindOneStoryOutput(new StoryEntityDto().parseEntity(data));
+  static from(data: TStory, bannerUrl: string | null): FindOneStoryOutput {
+    return new FindOneStoryOutput(
+      new StoryEntityDto().parseEntity(data, bannerUrl),
+    );
   }
 }

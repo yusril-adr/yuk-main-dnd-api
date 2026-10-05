@@ -1,6 +1,14 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { User } from '../iam/user.entity';
+import { File } from '../file.entity';
 import { StoryStatusEnum } from '@modules/Master/Story/enums/story-status.enum';
 
 @Entity()
@@ -42,6 +50,10 @@ export class Story extends BaseEntity {
 
   @Column({ type: 'text' })
   locationDetail: string;
+
+  @OneToOne(() => File, (file) => file.id, { cascade: true })
+  @JoinColumn()
+  bannerFile?: File | null;
 }
 
 export type TStory = InstanceType<typeof Story>;

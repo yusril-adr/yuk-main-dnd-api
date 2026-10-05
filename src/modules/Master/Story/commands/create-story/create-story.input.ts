@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Matches,
   MaxLength,
   Min,
@@ -55,4 +56,8 @@ export class CreateStoryInput {
   @IsString()
   @IsNotEmpty()
   locationDetail: string;
+
+  @IsOptional()
+  @IsUUID('4')
+  bannerFileId?: string | null;
 }

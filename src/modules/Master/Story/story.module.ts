@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { Story } from '@entities/main/story/story.entity';
+import { File } from '@entities/main/file.entity';
 import { StoryController } from './controllers/story.controller';
 import { StoryRepository } from './repositories/story.repository';
 import { StoryService } from './services/story.service';
@@ -19,7 +20,7 @@ const commandHandlers = [
 const queryHandlers = [PaginateStoriesHandler, FindOneStoryHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Story]), CqrsModule],
+  imports: [TypeOrmModule.forFeature([Story, File]), CqrsModule],
   controllers: [StoryController],
   providers: [
     StoryRepository,
