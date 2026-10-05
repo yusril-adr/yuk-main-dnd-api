@@ -7,9 +7,14 @@ export class PaginateStoriesOutput {
     public readonly count: number,
   ) {}
 
-  static from(data: TStory[], count: number): PaginateStoriesOutput {
+  static from(
+    data: { story: TStory; bannerUrl: string | null }[],
+    count: number,
+  ): PaginateStoriesOutput {
     return new PaginateStoriesOutput(
-      data.map((s) => new StoryEntityDto().parseEntity(s)),
+      data.map(({ story, bannerUrl }) =>
+        new StoryEntityDto().parseEntity(story, bannerUrl),
+      ),
       count,
     );
   }

@@ -9,6 +9,7 @@ import { extname } from 'path';
 import { FilePurposesEnum } from '@modules/File/enums/file-purposes.enum';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { UserAvatarPathService } from '@modules/Global/services/user-avatar-path.service';
+import { StoryBannerPathService } from '@modules/Global/services/story-banner-path.service';
 import { TFilePurposeUploadConfig } from '../types/file-purpose-upload-config.type';
 
 const DEFAULT_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
@@ -18,6 +19,7 @@ export class FilePurposeService {
   constructor(
     private readonly configService: ConfigService,
     private readonly userAvatarPathService: UserAvatarPathService,
+    private readonly storyBannerPathService: StoryBannerPathService,
   ) {}
 
   resolveUploadConfig(
@@ -27,6 +29,8 @@ export class FilePurposeService {
     switch (purpose) {
       case FilePurposesEnum.USER_AVATAR:
         return this.resolveUserAvatarConfig(originalName);
+      case FilePurposesEnum.STORY_BANNER:
+        return this.resolveStoryBannerConfig(originalName);
       case FilePurposesEnum.OTHER:
         return this.resolveOtherConfig(originalName);
       default:
@@ -45,6 +49,20 @@ export class FilePurposeService {
       upsert: false,
       maxFileSizeBytes: this.getMaxFileSizeBytes(
         'FILE_USER_AVATAR_MAX_FILE_SIZE_BYTES',
+      ),
+      status: FileStatusEnum.TEMPORARY,
+    };
+  }
+
+  private resolveStoryBannerConfig(
+    originalName: string,
+  ): TFilePurposeUploadConfig {
+    return {
+      bucket: this.storyBannerPathService.getBucket(),
+      path: this.storyBannerPathService.createTemporaryPath(originalName),
+      upsert: false,
+      maxFileSizeBytes: this.getMaxFileSizeBytes(
+        'FILE_STORY_BANNER_MAX_FILE_SIZE_BYTES',
       ),
       status: FileStatusEnum.TEMPORARY,
     };
