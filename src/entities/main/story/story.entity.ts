@@ -35,13 +35,13 @@ export class Story extends BaseEntity {
 
   @Index()
   @Column({ type: 'timestamp with time zone', nullable: true })
-  startAt?: Date;
+  startAt?: Date | null;
 
   @Column({ length: 20 })
   locationType: string;
 
-  @Column({ type: 'text', nullable: true })
-  locationDetail?: string;
+  @Column({ type: 'text' })
+  locationDetail: string;
 }
 
 export type TStory = InstanceType<typeof Story>;

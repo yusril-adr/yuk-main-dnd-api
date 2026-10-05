@@ -21,6 +21,7 @@ import { AuthModule } from '@modules/Auth/auth.module';
 import { PermissionModule } from '@modules/Master/Iam/Permission/permission.module';
 import { RoleModule } from '@modules/Master/Iam/Role/role.module';
 import { UserModule } from '@modules/Master/Iam/User/user.module';
+import { StoryModule } from '@modules/Master/Story/story.module';
 import { FileModule } from '@modules/File/file.module';
 import { GlobalModule } from '@modules/Global/global.module';
 
@@ -51,6 +52,7 @@ import { GlobalModule } from '@modules/Global/global.module';
     PermissionModule,
     RoleModule,
     UserModule,
+    StoryModule,
     FileModule,
   ],
   providers: [
