@@ -34,15 +34,12 @@ export class PaginateStoriesHandler implements IQueryHandler<
     findOptions = this.searchQuery(findOptions, params);
     findOptions = this.filterQuery(findOptions, params);
 
-    const [stories, count] = await Promise.all([
-      this.storyRepository.find({
-        ...findOptions,
-        relations: { createdBy: true, bannerFile: true },
-        take: params.perPage,
-        skip: params.perPage * (params.page - 1),
-      }),
-      this.storyRepository.count(findOptions),
-    ]);
+    const [stories, count] = await this.storyRepository.findAndCount({
+      ...findOptions,
+      relations: { createdBy: true, bannerFile: true },
+      take: params.perPage,
+      skip: params.perPage * (params.page - 1),
+    });
 
     return PaginateStoriesOutput.from(
       stories.map((story) => ({
