@@ -8,12 +8,16 @@ export class PaginateStoriesOutput {
   ) {}
 
   static from(
-    data: { story: TStory; bannerUrl: string | null }[],
+    data: {
+      story: TStory;
+      bannerUrl: string | null;
+      avatarCreatorUrl: string | null;
+    }[],
     count: number,
   ): PaginateStoriesOutput {
     return new PaginateStoriesOutput(
-      data.map(({ story, bannerUrl }) =>
-        new StoryEntityDto().parseEntity(story, bannerUrl),
+      data.map(({ story, bannerUrl, avatarCreatorUrl }) =>
+        new StoryEntityDto().parseEntity(story, bannerUrl, avatarCreatorUrl),
       ),
       count,
     );

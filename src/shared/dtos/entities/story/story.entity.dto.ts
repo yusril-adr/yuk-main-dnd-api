@@ -4,6 +4,7 @@ import dayjs from '@shared/utils/dayjs';
 export type TStoryCreatorDto = {
   id: string;
   displayName: string;
+  avatarUrl?: string | null;
 };
 
 export type TStoryEntityDto = Omit<
@@ -39,7 +40,11 @@ export class StoryEntityDto implements TStoryEntityDto {
   createdAt: string;
   updatedAt: string;
 
-  parseEntity(story: TStory, bannerUrl?: string | null): StoryEntityDto {
+  parseEntity(
+    story: TStory,
+    bannerUrl?: string | null,
+    avatarCreatorUrl?: string | null,
+  ): StoryEntityDto {
     this.id = story.id;
     this.title = story.title;
     this.slug = story.slug;
@@ -56,6 +61,7 @@ export class StoryEntityDto implements TStoryEntityDto {
       this.createdBy = {
         id: story.createdBy.id,
         displayName: story.createdBy.displayName,
+        avatarUrl: avatarCreatorUrl,
       };
     }
     this.createdAt = dayjs(story.createdAt).toISOString();

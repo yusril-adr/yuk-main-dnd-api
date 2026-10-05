@@ -141,6 +141,12 @@ export class StoryService {
       : null;
   }
 
+  resolveAvatarCreatorUrl(story: Story): string | null {
+    return story.createdBy.avatarFile
+      ? this.storageService.getPublicUrlSync(story.createdBy.avatarFile)
+      : null;
+  }
+
   async generateUniqueSlug(title: string): Promise<string> {
     const baseSlug = this.slugify(title);
     const existingBaseSlug = await this.storyRepository.findOne({

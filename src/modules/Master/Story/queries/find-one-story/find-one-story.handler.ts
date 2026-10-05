@@ -20,7 +20,7 @@ export class FindOneStoryHandler implements IQueryHandler<
 
     const story = await this.storyRepository.findOne({
       where: { id },
-      relations: { createdBy: true, bannerFile: true },
+      relations: { createdBy: { avatarFile: true }, bannerFile: true },
     });
     if (!story) {
       throw new NotFoundException(`Story with id ${id} not found`);
@@ -29,6 +29,7 @@ export class FindOneStoryHandler implements IQueryHandler<
     return FindOneStoryOutput.from(
       story,
       this.storyService.resolveBannerUrl(story),
+      this.storyService.resolveAvatarCreatorUrl(story),
     );
   }
 }

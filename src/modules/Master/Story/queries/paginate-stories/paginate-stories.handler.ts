@@ -36,7 +36,7 @@ export class PaginateStoriesHandler implements IQueryHandler<
 
     const [stories, count] = await this.storyRepository.findAndCount({
       ...findOptions,
-      relations: { createdBy: true, bannerFile: true },
+      relations: { createdBy: { avatarFile: true }, bannerFile: true },
       take: params.perPage,
       skip: params.perPage * (params.page - 1),
     });
@@ -45,6 +45,7 @@ export class PaginateStoriesHandler implements IQueryHandler<
       stories.map((story) => ({
         story,
         bannerUrl: this.storyService.resolveBannerUrl(story),
+        avatarCreatorUrl: this.storyService.resolveAvatarCreatorUrl(story),
       })),
       count,
     );
