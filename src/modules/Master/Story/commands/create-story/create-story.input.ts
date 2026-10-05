@@ -31,9 +31,8 @@ export class CreateStoryInput {
   @IsEnum(StoryStatusEnum)
   status?: StoryStatusEnum;
 
-  @IsOptional()
   @IsEnum(StoryTypeEnum)
-  type?: StoryTypeEnum;
+  type: StoryTypeEnum;
 
   @IsOptional()
   @IsString()
@@ -50,9 +49,8 @@ export class CreateStoryInput {
   @IsDateString()
   startAt?: string;
 
-  @IsOptional()
   @IsEnum(StoryLocationTypeEnum)
-  locationType?: StoryLocationTypeEnum;
+  locationType: StoryLocationTypeEnum;
 
   @IsOptional()
   @IsString()
