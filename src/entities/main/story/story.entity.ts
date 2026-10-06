@@ -31,6 +31,9 @@ export class Story extends BaseEntity {
   @Column({ length: 30, default: StoryStatusEnum.DRAFT })
   status: string = StoryStatusEnum.DRAFT;
 
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  statusBefore?: string | null;
+
   @Index()
   @Column({ length: 30 })
   type: string;

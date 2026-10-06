@@ -10,6 +10,8 @@ import { StoryPermissionService } from './services/story-permission.service';
 import { CreateStoryHandler } from './commands/create-story/create-story.handler';
 import { UpdateStoryHandler } from './commands/update-story/update-story.handler';
 import { RemoveStoryHandler } from './commands/remove-story/remove-story.handler';
+import { ArchiveStoryHandler } from './commands/archive-story/archive-story.handler';
+import { UnarchiveStoryHandler } from './commands/unarchive-story/unarchive-story.handler';
 import { PaginateStoriesHandler } from './queries/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/find-one-story/find-one-story.handler';
 
@@ -17,6 +19,8 @@ const commandHandlers = [
   CreateStoryHandler,
   UpdateStoryHandler,
   RemoveStoryHandler,
+  ArchiveStoryHandler,
+  UnarchiveStoryHandler,
 ];
 const queryHandlers = [PaginateStoriesHandler, FindOneStoryHandler];
 

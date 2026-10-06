@@ -21,6 +21,8 @@ import { CreateStoryInput } from '../commands/create-story/create-story.input';
 import { UpdateStoryCommand } from '../commands/update-story/update-story.command';
 import { UpdateStoryInput } from '../commands/update-story/update-story.input';
 import { RemoveStoryCommand } from '../commands/remove-story/remove-story.command';
+import { ArchiveStoryCommand } from '../commands/archive-story/archive-story.command';
+import { UnarchiveStoryCommand } from '../commands/unarchive-story/unarchive-story.command';
 import { PaginateStoriesQuery } from '../queries/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/find-one-story/find-one-story.query';
@@ -84,6 +86,34 @@ export class StoryController {
     return wrapper.response({
       data: null,
       message: 'Story updated successfully',
+    });
+  }
+
+  @Patch(':id/archive')
+  async archive(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+  ) {
+    await this.commandBus.execute(
+      new ArchiveStoryCommand(id, request.user),
+    );
+    return wrapper.response({
+      data: null,
+      message: 'Story archived successfully',
+    });
+  }
+
+  @Patch(':id/unarchive')
+  async unarchive(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+  ) {
+    await this.commandBus.execute(
+      new UnarchiveStoryCommand(id, request.user),
+    );
+    return wrapper.response({
+      data: null,
+      message: 'Story unarchived successfully',
     });
   }
 

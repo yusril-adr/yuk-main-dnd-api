@@ -74,7 +74,11 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
           ? await fileRepo.save(movedBannerFile)
           : nextBannerFile;
 
+        const previousStatus = storyEntity.status;
         Object.assign(storyEntity, storyPayload);
+        if (storyPayload.status && storyPayload.status !== previousStatus) {
+          storyEntity.statusBefore = previousStatus;
+        }
         if (startAt !== undefined) {
           storyEntity.startAt = startAt === null ? null : new Date(startAt);
         }

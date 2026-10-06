@@ -187,6 +187,7 @@ Table stories {
   description text
 
   status varchar(30) [not null, default: "draft"]
+  status_before varchar(30) [note: "previous status before archive/unarchive"]
   type varchar(30) [not null, note: "oneshot | campaign"]
   game_system varchar(100) [note: "free text, e.g. DnD 5e 2014, Werewolf, Ten Candles"]
 
