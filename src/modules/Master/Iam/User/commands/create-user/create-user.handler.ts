@@ -1,5 +1,6 @@
+import { ConflictException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryFailedError } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
@@ -66,6 +67,13 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
           movedAvatarFile,
           temporaryAvatarFile,
         );
+      }
+
+      if (
+        error instanceof QueryFailedError &&
+        (error as any).driverError?.code === '23505'
+      ) {
+        throw new ConflictException('A user with this email already exists');
       }
 
       throw error;
