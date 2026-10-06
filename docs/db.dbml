@@ -190,8 +190,8 @@ Table stories {
   type varchar(30) [not null, note: "oneshot | campaign"]
   game_system varchar(100) [note: "free text, e.g. DnD 5e 2014, Werewolf, Ten Candles"]
 
-  exp_awarded integer [note: "experience awarded for completing the campaign"]
-  point_awarded integer [note: "point awarded for completing the campaign"]
+  exp_awarded integer [not null, note: "experience awarded for completing the campaign"]
+  point_awarded integer [not null, note: "point awarded for completing the campaign"]
 
   max_members integer
 

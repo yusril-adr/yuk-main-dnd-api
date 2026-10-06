@@ -38,6 +38,12 @@ export class Story extends BaseEntity {
   @Column({ length: 100, nullable: true })
   gameSystem?: string;
 
+  @Column({ type: 'integer', default: 0 })
+  expAwarded: number = 0;
+
+  @Column({ type: 'integer', default: 0 })
+  pointAwarded: number = 0;
+
   @Column({ type: 'integer', nullable: true })
   maxMembers?: number;
 

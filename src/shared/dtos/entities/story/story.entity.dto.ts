@@ -31,6 +31,8 @@ export class StoryEntityDto implements TStoryEntityDto {
   status: string;
   type: string;
   gameSystem?: string;
+  expAwarded: number;
+  pointAwarded: number;
   maxMembers?: number;
   startAt: string | null;
   locationType: string;
@@ -52,6 +54,8 @@ export class StoryEntityDto implements TStoryEntityDto {
     this.status = story.status;
     this.type = story.type;
     this.gameSystem = story.gameSystem;
+    this.expAwarded = story.expAwarded;
+    this.pointAwarded = story.pointAwarded;
     this.maxMembers = story.maxMembers;
     this.startAt = story.startAt ? dayjs(story.startAt).toISOString() : null;
     this.locationType = story.locationType;

@@ -43,6 +43,18 @@ export class CreateStoryInput {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
+  @Min(0)
+  expAwarded?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  pointAwarded?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   @Min(1)
   maxMembers?: number;
 
