@@ -1,10 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
-import { PaginatePermissionsQuery } from '../queries/paginate-permissions/paginate-permissions.query';
-import { PaginatePermissionsInput } from '../queries/paginate-permissions/paginate-permissions.input';
-import { FindAllPermissionsQuery } from '../queries/find-all-permissions/find-all-permissions.query';
-import { FindAllPermissionsInput } from '../queries/find-all-permissions/find-all-permissions.input';
+import { PaginatePermissionsQuery } from '../queries/master/paginate-permissions/paginate-permissions.query';
+import { PaginatePermissionsInput } from '../queries/master/paginate-permissions/paginate-permissions.input';
+import { FindAllPermissionsQuery } from '../queries/master/find-all-permissions/find-all-permissions.query';
+import { FindAllPermissionsInput } from '../queries/master/find-all-permissions/find-all-permissions.input';
 
 @Controller({
   path: 'master/iam/permissions',

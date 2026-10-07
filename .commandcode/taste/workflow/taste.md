@@ -9,3 +9,4 @@
 - Use `npm run migration:generate migrations/main/<name>` (no `--` separator before the path). Confidence: 0.85
 - Don't run unnecessary exploratory/diagnostic commands (e.g., checking Docker status, listing .env files) before just running the actual needed command directly — prefer trying the command first and reacting to errors. Confidence: 0.70
 - When a correction is needed after implementation (e.g., user points out a pattern mismatch), treat it as a new task — update the plan first, then re-implement, rather than patching ad hoc. Confidence: 0.70
+- Uses conventional commits with gitmoji codes (e.g., `refactor: :building_construction: ...`) and a `Co-authored-by: CommandCodeBot` footer — follow existing commit message conventions when committing on their behalf. Confidence: 0.80

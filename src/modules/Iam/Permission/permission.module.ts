@@ -4,8 +4,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { MasterPermissionController } from './controllers/master-permission.controller';
 import { PermissionRepository } from './repositories/permission.repository';
-import { PaginatePermissionsHandler } from './queries/paginate-permissions/paginate-permissions.handler';
-import { FindAllPermissionsHandler } from './queries/find-all-permissions/find-all-permissions.handler';
+import { PaginatePermissionsHandler } from './queries/master/paginate-permissions/paginate-permissions.handler';
+import { FindAllPermissionsHandler } from './queries/master/find-all-permissions/find-all-permissions.handler';
 
 const queryHandlers = [PaginatePermissionsHandler, FindAllPermissionsHandler];
 

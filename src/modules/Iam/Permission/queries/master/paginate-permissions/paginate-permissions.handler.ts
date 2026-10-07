@@ -3,7 +3,7 @@ import { FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { mergeWhereConditions } from '@shared/utils/common';
-import { PermissionRepository } from '../../repositories/permission.repository';
+import { PermissionRepository } from '../../../repositories/permission.repository';
 import { PaginatePermissionsQuery } from './paginate-permissions.query';
 import { PaginatePermissionsOutput } from './paginate-permissions.output';
 import { PaginatePermissionsInput } from './paginate-permissions.input';

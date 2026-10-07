@@ -2,7 +2,7 @@ import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
-import { PermissionRepository } from '../../repositories/permission.repository';
+import { PermissionRepository } from '../../../repositories/permission.repository';
 import { FindAllPermissionsQuery } from './find-all-permissions.query';
 import { FindAllPermissionsOutput } from './find-all-permissions.output';
 import { FindAllPermissionsInput } from './find-all-permissions.input';
