@@ -1,7 +1,7 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
-import { StoryRepository } from '../../repositories/story.repository';
-import { StoryService } from '../../services/story.service';
+import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryService } from '../../../services/story.service';
 import { FindOneStoryQuery } from './find-one-story.query';
 import { FindOneStoryOutput } from './find-one-story.output';
 

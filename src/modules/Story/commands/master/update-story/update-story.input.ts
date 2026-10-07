@@ -8,8 +8,8 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { CreateStoryInput } from '../create-story/create-story.input';
-import { StoryTypeEnum } from '../../enums/story-type.enum';
-import { StoryLocationTypeEnum } from '../../enums/story-location-type.enum';
+import { StoryTypeEnum } from '../../../enums/story-type.enum';
+import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
 
 // Required columns may be omitted on update, but must not be sent as null.
 const isProvided = (_: unknown, value: unknown) => value !== undefined;

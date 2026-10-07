@@ -16,16 +16,16 @@ import * as wrapper from '@shared/utils/wrapper';
 import { Permissions } from '@shared/decorators/permissions.decorator';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import type { TRequestUser } from '@shared/types/request.type';
-import { CreateStoryCommand } from '../commands/create-story/create-story.command';
-import { CreateStoryInput } from '../commands/create-story/create-story.input';
-import { UpdateStoryCommand } from '../commands/update-story/update-story.command';
-import { UpdateStoryInput } from '../commands/update-story/update-story.input';
-import { RemoveStoryCommand } from '../commands/remove-story/remove-story.command';
-import { ArchiveStoryCommand } from '../commands/archive-story/archive-story.command';
-import { UnarchiveStoryCommand } from '../commands/unarchive-story/unarchive-story.command';
-import { PaginateStoriesQuery } from '../queries/paginate-stories/paginate-stories.query';
-import { PaginateStoriesInput } from '../queries/paginate-stories/paginate-stories.input';
-import { FindOneStoryQuery } from '../queries/find-one-story/find-one-story.query';
+import { CreateStoryCommand } from '../commands/master/create-story/create-story.command';
+import { CreateStoryInput } from '../commands/master/create-story/create-story.input';
+import { UpdateStoryCommand } from '../commands/master/update-story/update-story.command';
+import { UpdateStoryInput } from '../commands/master/update-story/update-story.input';
+import { RemoveStoryCommand } from '../commands/master/remove-story/remove-story.command';
+import { ArchiveStoryCommand } from '../commands/master/archive-story/archive-story.command';
+import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarchive-story.command';
+import { PaginateStoriesQuery } from '../queries/master/paginate-stories/paginate-stories.query';
+import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginate-stories.input';
+import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
 
 @Controller({
   path: 'master/stories',

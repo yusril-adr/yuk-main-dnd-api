@@ -11,9 +11,9 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { StoryStatusEnum } from '../../enums/story-status.enum';
-import { StoryTypeEnum } from '../../enums/story-type.enum';
-import { StoryLocationTypeEnum } from '../../enums/story-location-type.enum';
+import { StoryStatusEnum } from '../../../enums/story-status.enum';
+import { StoryTypeEnum } from '../../../enums/story-type.enum';
+import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
 
 export class CreateStoryInput {
   @IsString()

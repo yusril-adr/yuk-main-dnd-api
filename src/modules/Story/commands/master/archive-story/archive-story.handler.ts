@@ -1,18 +1,19 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { PermissionEnum } from '@shared/enums/permission.enum';
-import { StoryRepository } from '../../repositories/story.repository';
-import { StoryPermissionService } from '../../services/story-permission.service';
-import { RemoveStoryCommand } from './remove-story.command';
+import { StoryStatusEnum } from '../../../enums/story-status.enum';
+import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryPermissionService } from '../../../services/story-permission.service';
+import { ArchiveStoryCommand } from './archive-story.command';
 
-@CommandHandler(RemoveStoryCommand)
-export class RemoveStoryHandler implements ICommandHandler<RemoveStoryCommand> {
+@CommandHandler(ArchiveStoryCommand)
+export class ArchiveStoryHandler implements ICommandHandler<ArchiveStoryCommand> {
   constructor(
     private readonly storyRepository: StoryRepository,
     private readonly storyPermissionService: StoryPermissionService,
   ) {}
 
-  async execute(command: RemoveStoryCommand): Promise<void> {
+  async execute(command: ArchiveStoryCommand): Promise<void> {
     const { id, user } = command;
 
     const story = await this.storyRepository.findOne({
@@ -26,9 +27,12 @@ export class RemoveStoryHandler implements ICommandHandler<RemoveStoryCommand> {
     this.storyPermissionService.assertCanModify(
       story,
       user,
-      PermissionEnum.STORIES_DELETE,
+      PermissionEnum.STORIES_UPDATE,
     );
 
-    await this.storyRepository.softDelete(id);
+    story.statusBefore = story.status;
+    story.status = StoryStatusEnum.ARCHIVED;
+
+    await this.storyRepository.save(story);
   }
 }

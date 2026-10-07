@@ -3,9 +3,9 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 import { Story } from '@entities/main/story/story.entity';
 import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
 import { getAllEntityProperties } from '@shared/utils/common';
-import { StoryStatusEnum } from '../../enums/story-status.enum';
-import { StoryTypeEnum } from '../../enums/story-type.enum';
-import { StoryLocationTypeEnum } from '../../enums/story-location-type.enum';
+import { StoryStatusEnum } from '../../../enums/story-status.enum';
+import { StoryTypeEnum } from '../../../enums/story-type.enum';
+import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
 
 export class PaginateStoriesInput extends PaginateParamDto {
   @IsOptional()

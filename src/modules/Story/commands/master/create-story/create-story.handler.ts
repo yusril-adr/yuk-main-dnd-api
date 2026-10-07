@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
-import { StoryService } from '../../services/story.service';
+import { StoryService } from '../../../services/story.service';
 import { CreateStoryCommand } from './create-story.command';
 
 @CommandHandler(CreateStoryCommand)

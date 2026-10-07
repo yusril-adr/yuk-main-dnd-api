@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { PermissionEnum } from '@shared/enums/permission.enum';
-import { StoryRepository } from '../../repositories/story.repository';
-import { StoryPermissionService } from '../../services/story-permission.service';
+import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryPermissionService } from '../../../services/story-permission.service';
 import { UnarchiveStoryCommand } from './unarchive-story.command';
 
 @CommandHandler(UnarchiveStoryCommand)

@@ -6,8 +6,8 @@ import {
   mergeEachWhereConditions,
   mergeWhereConditions,
 } from '@shared/utils/common';
-import { StoryRepository } from '../../repositories/story.repository';
-import { StoryService } from '../../services/story.service';
+import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryService } from '../../../services/story.service';
 import { PaginateStoriesQuery } from './paginate-stories.query';
 import { PaginateStoriesOutput } from './paginate-stories.output';
 import { PaginateStoriesInput } from './paginate-stories.input';

@@ -5,9 +5,9 @@ import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { PermissionEnum } from '@shared/enums/permission.enum';
-import { StoryRepository } from '../../repositories/story.repository';
-import { StoryService } from '../../services/story.service';
-import { StoryPermissionService } from '../../services/story-permission.service';
+import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryService } from '../../../services/story.service';
+import { StoryPermissionService } from '../../../services/story-permission.service';
 import { UpdateStoryCommand } from './update-story.command';
 
 @CommandHandler(UpdateStoryCommand)
