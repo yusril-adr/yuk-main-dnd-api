@@ -28,3 +28,4 @@
 - Keep controllers at the `controllers/` root with a prefix naming convention (e.g., `master-story.controller.ts`) rather than nesting them into audience subfolders — only commands/queries get the audience grouping. Confidence: 0.75
 - Use real numeric (integer) enums starting from 1 (e.g., `1`, `2`, `3`) for module-level enums, with matching integer column types in entities — rather than numeric strings. Confidence: 0.85
 - Name enum files with kebab-case and `.enum.ts` suffix (e.g., `story-status.enum.ts`), placed in an `enums/` folder — shared enums under `src/shared/enums/`, module-specific enums under `src/modules/<Module>/enums/`. Confidence: 0.80
+- For numeric enum fields validated with `@IsEnum` on multipart/form-data endpoints, add `@Transform(({ value }) => Number(value))` before `@IsEnum` to coerce the string value to a number — multipart form data delivers all values as strings, causing `@IsEnum` to reject valid numeric inputs. Confidence: 0.80
