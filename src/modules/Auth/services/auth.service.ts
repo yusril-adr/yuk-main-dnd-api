@@ -8,8 +8,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { TJWTPayload } from '@shared/types/jwt-payload.type';
 import dayjs from '@shared/utils/dayjs';
-import { RolePermissionRepository } from '@modules/Master/Iam/Role/repositories/role-permission.repository';
-import { UserRepository } from '@modules/Master/Iam/User/repositories/user.repository';
+import { RolePermissionRepository } from '@modules/Iam/Role/repositories/role-permission.repository';
+import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { User } from '@entities/main/iam/user.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { LoginInput } from '../commands/login/login.input';

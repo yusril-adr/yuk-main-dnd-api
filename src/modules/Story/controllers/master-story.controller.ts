@@ -31,7 +31,7 @@ import { FindOneStoryQuery } from '../queries/find-one-story/find-one-story.quer
   path: 'master/stories',
   version: '1',
 })
-export class StoryController {
+export class MasterStoryController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
@@ -90,13 +90,8 @@ export class StoryController {
   }
 
   @Patch(':id/archive')
-  async archive(
-    @Request() request: TRequestUser,
-    @Param('id') id: string,
-  ) {
-    await this.commandBus.execute(
-      new ArchiveStoryCommand(id, request.user),
-    );
+  async archive(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new ArchiveStoryCommand(id, request.user));
     return wrapper.response({
       data: null,
       message: 'Story archived successfully',
@@ -104,13 +99,8 @@ export class StoryController {
   }
 
   @Patch(':id/unarchive')
-  async unarchive(
-    @Request() request: TRequestUser,
-    @Param('id') id: string,
-  ) {
-    await this.commandBus.execute(
-      new UnarchiveStoryCommand(id, request.user),
-    );
+  async unarchive(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new UnarchiveStoryCommand(id, request.user));
     return wrapper.response({
       data: null,
       message: 'Story unarchived successfully',

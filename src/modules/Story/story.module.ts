@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { Story } from '@entities/main/story/story.entity';
 import { File } from '@entities/main/file.entity';
-import { StoryController } from './controllers/story.controller';
+import { MasterStoryController } from './controllers/master-story.controller';
 import { StoryRepository } from './repositories/story.repository';
 import { StoryService } from './services/story.service';
 import { StoryPermissionService } from './services/story-permission.service';
@@ -26,7 +26,7 @@ const queryHandlers = [PaginateStoriesHandler, FindOneStoryHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([Story, File]), CqrsModule],
-  controllers: [StoryController],
+  controllers: [MasterStoryController],
   providers: [
     StoryRepository,
     StoryService,

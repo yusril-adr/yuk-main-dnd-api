@@ -29,7 +29,7 @@ import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
   path: 'master/iam/users',
   version: '1',
 })
-export class UserController {
+export class MasterUserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

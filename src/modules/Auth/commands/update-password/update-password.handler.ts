@@ -1,14 +1,12 @@
 import * as bcrypt from 'bcrypt';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { UserRepository } from '@modules/Master/Iam/User/repositories/user.repository';
-import { UserService } from '@modules/Master/Iam/User/services/user.service';
+import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
+import { UserService } from '@modules/Iam/User/services/user.service';
 import { UpdatePasswordCommand } from './update-password.command';
 
 @CommandHandler(UpdatePasswordCommand)
-export class UpdatePasswordHandler
-  implements ICommandHandler<UpdatePasswordCommand>
-{
+export class UpdatePasswordHandler implements ICommandHandler<UpdatePasswordCommand> {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userService: UserService,

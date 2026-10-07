@@ -27,7 +27,7 @@ import { FindOneRoleQuery } from '../queries/find-one-role/find-one-role.query';
   path: 'master/iam/roles',
   version: '1',
 })
-export class RoleController {
+export class MasterRoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

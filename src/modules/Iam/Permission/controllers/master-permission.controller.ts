@@ -10,7 +10,7 @@ import { FindAllPermissionsInput } from '../queries/find-all-permissions/find-al
   path: 'master/iam/permissions',
   version: '1',
 })
-export class PermissionController {
+export class MasterPermissionController {
   constructor(private readonly queryBus: QueryBus) {}
 
   @Get()

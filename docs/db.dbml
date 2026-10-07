@@ -221,6 +221,8 @@ Table story_members {
   story_id uuid [not null]
   user_id uuid [not null]
 
+  status varchar(30) [not null, note: "registered | attended | absent"]
+
   created_at timestamptz [not null, default: `now()`]
   updated_at timestamptz [not null, default: `now()`]
   deleted_at timestamptz

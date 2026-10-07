@@ -9,7 +9,7 @@ import {
 import { BaseEntity } from '../base.entity';
 import { User } from '../iam/user.entity';
 import { File } from '../file.entity';
-import { StoryStatusEnum } from '@modules/Master/Story/enums/story-status.enum';
+import { StoryStatusEnum } from '@modules/Story/enums/story-status.enum';
 
 @Entity()
 export class Story extends BaseEntity {

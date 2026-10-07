@@ -7,7 +7,7 @@ import { UserRole } from '@entities/main/iam/user-role.entity';
 import { RolePermission } from '@entities/main/iam/role-permission.entity';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { File } from '@entities/main/file.entity';
-import { UserController } from './controllers/user.controller';
+import { MasterUserController } from './controllers/master-user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
 import { CreateUserHandler } from './commands/create-user/create-user.handler';
@@ -35,7 +35,7 @@ const queryHandlers = [PaginateUsersHandler, FindOneUserHandler];
     ]),
     CqrsModule,
   ],
-  controllers: [UserController],
+  controllers: [MasterUserController],
   providers: [
     UserRepository,
     UserService,

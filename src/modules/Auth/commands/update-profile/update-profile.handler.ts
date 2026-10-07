@@ -4,14 +4,12 @@ import { DataSource, QueryFailedError } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
-import { UserRepository } from '@modules/Master/Iam/User/repositories/user.repository';
-import { UserService } from '@modules/Master/Iam/User/services/user.service';
+import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
+import { UserService } from '@modules/Iam/User/services/user.service';
 import { UpdateProfileCommand } from './update-profile.command';
 
 @CommandHandler(UpdateProfileCommand)
-export class UpdateProfileHandler
-  implements ICommandHandler<UpdateProfileCommand>
-{
+export class UpdateProfileHandler implements ICommandHandler<UpdateProfileCommand> {
   constructor(
     private readonly dataSource: DataSource,
     private readonly userRepository: UserRepository,
@@ -30,7 +28,10 @@ export class UpdateProfileHandler
     }
 
     if (payload.email) {
-      await this.userService.checkEmailUniqueness(payload.email, currentUser.id);
+      await this.userService.checkEmailUniqueness(
+        payload.email,
+        currentUser.id,
+      );
     }
 
     const { avatarFileId, ...userPayload } = payload;
