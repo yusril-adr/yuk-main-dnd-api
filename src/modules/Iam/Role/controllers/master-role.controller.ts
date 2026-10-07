@@ -14,14 +14,14 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
 import { Permissions } from '@shared/decorators/permissions.decorator';
 import { PermissionEnum } from '@shared/enums/permission.enum';
-import { CreateRoleCommand } from '../commands/create-role/create-role.command';
-import { CreateRoleInput } from '../commands/create-role/create-role.input';
-import { UpdateRoleCommand } from '../commands/update-role/update-role.command';
-import { UpdateRoleInput } from '../commands/update-role/update-role.input';
-import { RemoveRoleCommand } from '../commands/remove-role/remove-role.command';
-import { PaginateRolesQuery } from '../queries/paginate-roles/paginate-roles.query';
-import { PaginateRolesInput } from '../queries/paginate-roles/paginate-roles.input';
-import { FindOneRoleQuery } from '../queries/find-one-role/find-one-role.query';
+import { CreateRoleCommand } from '../commands/master/create-role/create-role.command';
+import { CreateRoleInput } from '../commands/master/create-role/create-role.input';
+import { UpdateRoleCommand } from '../commands/master/update-role/update-role.command';
+import { UpdateRoleInput } from '../commands/master/update-role/update-role.input';
+import { RemoveRoleCommand } from '../commands/master/remove-role/remove-role.command';
+import { PaginateRolesQuery } from '../queries/master/paginate-roles/paginate-roles.query';
+import { PaginateRolesInput } from '../queries/master/paginate-roles/paginate-roles.input';
+import { FindOneRoleQuery } from '../queries/master/find-one-role/find-one-role.query';
 
 @Controller({
   path: 'master/iam/roles',

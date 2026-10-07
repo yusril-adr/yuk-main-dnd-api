@@ -3,8 +3,8 @@ import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Role } from '@entities/main/iam/role.entity';
 import { RolePermission } from '@entities/main/iam/role-permission.entity';
-import { RoleRepository } from '../../repositories/role.repository';
-import { RoleService } from '../../services/role.service';
+import { RoleRepository } from '../../../repositories/role.repository';
+import { RoleService } from '../../../services/role.service';
 import { UpdateRoleCommand } from './update-role.command';
 
 @CommandHandler(UpdateRoleCommand)

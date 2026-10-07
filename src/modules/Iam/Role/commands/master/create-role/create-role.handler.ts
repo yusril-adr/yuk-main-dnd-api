@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DataSource } from 'typeorm';
 import { Role } from '@entities/main/iam/role.entity';
-import { RoleService } from '../../services/role.service';
+import { RoleService } from '../../../services/role.service';
 import { CreateRoleCommand } from './create-role.command';
 
 @CommandHandler(CreateRoleCommand)

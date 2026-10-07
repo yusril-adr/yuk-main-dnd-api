@@ -8,11 +8,11 @@ import { MasterRoleController } from './controllers/master-role.controller';
 import { RoleRepository } from './repositories/role.repository';
 import { RolePermissionRepository } from './repositories/role-permission.repository';
 import { RoleService } from './services/role.service';
-import { CreateRoleHandler } from './commands/create-role/create-role.handler';
-import { UpdateRoleHandler } from './commands/update-role/update-role.handler';
-import { RemoveRoleHandler } from './commands/remove-role/remove-role.handler';
-import { PaginateRolesHandler } from './queries/paginate-roles/paginate-roles.handler';
-import { FindOneRoleHandler } from './queries/find-one-role/find-one-role.handler';
+import { CreateRoleHandler } from './commands/master/create-role/create-role.handler';
+import { UpdateRoleHandler } from './commands/master/update-role/update-role.handler';
+import { RemoveRoleHandler } from './commands/master/remove-role/remove-role.handler';
+import { PaginateRolesHandler } from './queries/master/paginate-roles/paginate-roles.handler';
+import { FindOneRoleHandler } from './queries/master/find-one-role/find-one-role.handler';
 
 const commandHandlers = [
   CreateRoleHandler,

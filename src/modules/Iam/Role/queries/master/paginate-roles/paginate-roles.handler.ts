@@ -6,7 +6,7 @@ import {
   mergeEachWhereConditions,
   mergeWhereConditions,
 } from '@shared/utils/common';
-import { RoleRepository } from '../../repositories/role.repository';
+import { RoleRepository } from '../../../repositories/role.repository';
 import { PaginateRolesQuery } from './paginate-roles.query';
 import { PaginateRolesOutput } from './paginate-roles.output';
 import { PaginateRolesInput } from './paginate-roles.input';

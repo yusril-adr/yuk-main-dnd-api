@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Role } from '@entities/main/iam/role.entity';
-import { RoleRepository } from '../../repositories/role.repository';
+import { RoleRepository } from '../../../repositories/role.repository';
 import { RemoveRoleCommand } from './remove-role.command';
 
 @CommandHandler(RemoveRoleCommand)

@@ -1,6 +1,6 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
-import { RoleRepository } from '../../repositories/role.repository';
+import { RoleRepository } from '../../../repositories/role.repository';
 import { FindOneRoleQuery } from './find-one-role.query';
 import { FindOneRoleOutput } from './find-one-role.output';
 
