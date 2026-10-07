@@ -37,6 +37,12 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
     );
 
     const { startAt, bannerFileId, ...storyPayload } = params;
+
+    if (storyPayload.title) {
+      storyEntity.slug = await this.storyService.generateUniqueSlug(
+        storyPayload.title,
+      );
+    }
     const isBannerFileProvided = bannerFileId !== undefined;
     const previousBannerFile = storyEntity.bannerFile;
     const isCurrentBannerFile = bannerFileId === previousBannerFile?.id;
