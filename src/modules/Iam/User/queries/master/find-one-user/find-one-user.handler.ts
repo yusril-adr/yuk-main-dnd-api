@@ -1,7 +1,7 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { StorageService } from '@modules/Global/services/storage.service';
-import { UserRepository } from '../../repositories/user.repository';
+import { UserRepository } from '../../../repositories/user.repository';
 import { FindOneUserQuery } from './find-one-user.query';
 import { FindOneUserOutput } from './find-one-user.output';
 

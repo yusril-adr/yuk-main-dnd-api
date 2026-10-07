@@ -16,14 +16,14 @@ import * as wrapper from '@shared/utils/wrapper';
 import { Permissions } from '@shared/decorators/permissions.decorator';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import type { TRequestUser } from '@shared/types/request.type';
-import { CreateUserCommand } from '../commands/create-user/create-user.command';
-import { CreateUserInput } from '../commands/create-user/create-user.input';
-import { UpdateUserCommand } from '../commands/update-user/update-user.command';
-import { UpdateUserInput } from '../commands/update-user/update-user.input';
-import { RemoveUserCommand } from '../commands/remove-user/remove-user.command';
-import { PaginateUsersQuery } from '../queries/paginate-users/paginate-users.query';
-import { PaginateUsersInput } from '../queries/paginate-users/paginate-users.input';
-import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
+import { CreateUserCommand } from '../commands/master/create-user/create-user.command';
+import { CreateUserInput } from '../commands/master/create-user/create-user.input';
+import { UpdateUserCommand } from '../commands/master/update-user/update-user.command';
+import { UpdateUserInput } from '../commands/master/update-user/update-user.input';
+import { RemoveUserCommand } from '../commands/master/remove-user/remove-user.command';
+import { PaginateUsersQuery } from '../queries/master/paginate-users/paginate-users.query';
+import { PaginateUsersInput } from '../queries/master/paginate-users/paginate-users.input';
+import { FindOneUserQuery } from '../queries/master/find-one-user/find-one-user.query';
 
 @Controller({
   path: 'master/iam/users',

@@ -10,11 +10,11 @@ import { File } from '@entities/main/file.entity';
 import { MasterUserController } from './controllers/master-user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
-import { CreateUserHandler } from './commands/create-user/create-user.handler';
-import { UpdateUserHandler } from './commands/update-user/update-user.handler';
-import { RemoveUserHandler } from './commands/remove-user/remove-user.handler';
-import { PaginateUsersHandler } from './queries/paginate-users/paginate-users.handler';
-import { FindOneUserHandler } from './queries/find-one-user/find-one-user.handler';
+import { CreateUserHandler } from './commands/master/create-user/create-user.handler';
+import { UpdateUserHandler } from './commands/master/update-user/update-user.handler';
+import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
+import { PaginateUsersHandler } from './queries/master/paginate-users/paginate-users.handler';
+import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
 
 const commandHandlers = [
   CreateUserHandler,

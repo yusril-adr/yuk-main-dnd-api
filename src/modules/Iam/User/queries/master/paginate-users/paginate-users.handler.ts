@@ -13,7 +13,7 @@ import {
   mergeWhereConditions,
 } from '@shared/utils/common';
 import { StorageService } from '@modules/Global/services/storage.service';
-import { UserRepository } from '../../repositories/user.repository';
+import { UserRepository } from '../../../repositories/user.repository';
 import { PaginateUsersQuery } from './paginate-users.query';
 import { PaginateUsersOutput } from './paginate-users.output';
 import { PaginateUsersInput } from './paginate-users.input';

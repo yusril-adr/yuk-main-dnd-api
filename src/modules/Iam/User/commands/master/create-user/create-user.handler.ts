@@ -4,7 +4,7 @@ import { DataSource, QueryFailedError } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { CreateUserCommand } from './create-user.command';
 
 @CommandHandler(CreateUserCommand)

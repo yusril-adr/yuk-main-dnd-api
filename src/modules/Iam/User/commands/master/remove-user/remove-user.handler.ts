@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
-import { UserRepository } from '../../repositories/user.repository';
+import { UserRepository } from '../../../repositories/user.repository';
 import { RemoveUserCommand } from './remove-user.command';
 
 @CommandHandler(RemoveUserCommand)

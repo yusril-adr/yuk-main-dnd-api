@@ -5,8 +5,8 @@ import { User } from '@entities/main/iam/user.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
 import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
-import { UserRepository } from '../../repositories/user.repository';
-import { UserService } from '../../services/user.service';
+import { UserRepository } from '../../../repositories/user.repository';
+import { UserService } from '../../../services/user.service';
 import { UpdateUserCommand } from './update-user.command';
 
 @CommandHandler(UpdateUserCommand)
