@@ -26,3 +26,5 @@
 - Class-validator decorators must be on separate lines, one per line (e.g. `@IsOptional()\n@IsString()\n@IsNotEmpty()`), not stacked on a single line. Confidence: 0.95
 - Group CQRS commands and queries by audience/scope (e.g., `commands/master/`, `queries/master/`, `commands/public/`, `queries/public/`) when a module serves multiple audiences, rather than keeping them flat. Confidence: 0.80
 - Keep controllers at the `controllers/` root with a prefix naming convention (e.g., `master-story.controller.ts`) rather than nesting them into audience subfolders — only commands/queries get the audience grouping. Confidence: 0.75
+- Use real numeric (integer) enums starting from 1 (e.g., `1`, `2`, `3`) for module-level enums, with matching integer column types in entities — rather than numeric strings. Confidence: 0.85
+- Name enum files with kebab-case and `.enum.ts` suffix (e.g., `story-status.enum.ts`), placed in an `enums/` folder — shared enums under `src/shared/enums/`, module-specific enums under `src/modules/<Module>/enums/`. Confidence: 0.80

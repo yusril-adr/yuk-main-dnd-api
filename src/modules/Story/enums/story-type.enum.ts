@@ -1,4 +1,4 @@
 export enum StoryTypeEnum {
-  ONESHOT = 'oneshot',
-  CAMPAIGN = 'campaign',
+  ONESHOT = 1,
+  CAMPAIGN = 2,
 }

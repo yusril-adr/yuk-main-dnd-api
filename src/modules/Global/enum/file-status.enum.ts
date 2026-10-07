@@ -1,4 +1,4 @@
 export enum FileStatusEnum {
-  TEMPORARY = 'temporary',
-  ACTIVE = 'active'
+  TEMPORARY = 1,
+  ACTIVE = 2,
 }

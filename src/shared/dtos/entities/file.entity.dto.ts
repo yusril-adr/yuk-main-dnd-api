@@ -16,9 +16,9 @@ export class FileEntityDto implements TFileEntityDto {
   path: string;
   mimetype: string;
   size: number;
-  driver: string;
+  driver: number;
   url?: string;
-  status: string;
+  status: number;
   createdAt: string;
   updatedAt: string;
 

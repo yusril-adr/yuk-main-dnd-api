@@ -28,15 +28,15 @@ export class Story extends BaseEntity {
   description?: string;
 
   @Index()
-  @Column({ length: 30, default: StoryStatusEnum.DRAFT })
-  status: string = StoryStatusEnum.DRAFT;
+  @Column({ type: 'integer', default: StoryStatusEnum.DRAFT })
+  status: number = StoryStatusEnum.DRAFT;
 
-  @Column({ type: 'varchar', length: 30, nullable: true })
-  statusBefore?: string | null;
+  @Column({ type: 'integer', nullable: true })
+  statusBefore?: number | null;
 
   @Index()
-  @Column({ length: 30 })
-  type: string;
+  @Column({ type: 'integer' })
+  type: number;
 
   @Column({ length: 100, nullable: true })
   gameSystem?: string;
@@ -54,8 +54,8 @@ export class Story extends BaseEntity {
   @Column({ type: 'timestamp with time zone', nullable: true })
   startAt?: Date | null;
 
-  @Column({ length: 20 })
-  locationType: string;
+  @Column({ type: 'integer' })
+  locationType: number;
 
   @Column({ type: 'text' })
   locationDetail: string;

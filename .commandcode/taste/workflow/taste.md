@@ -11,3 +11,4 @@
 - When a correction is needed after implementation (e.g., user points out a pattern mismatch), treat it as a new task — update the plan first, then re-implement, rather than patching ad hoc. Confidence: 0.70
 - Uses conventional commits with gitmoji codes (e.g., `refactor: :building_construction: ...`) and a `Co-authored-by: CommandCodeBot` footer — follow existing commit message conventions when committing on their behalf. Confidence: 0.80
 - Only do git commits when explicitly told to — do not commit automatically after completing tasks. Confidence: 0.95
+- When refactoring enum value types (e.g., string → integer), update entity column types to match, but let the user generate the ALTER TABLE migration themselves via CLI — don't manually write migrations for schema changes. Confidence: 0.85

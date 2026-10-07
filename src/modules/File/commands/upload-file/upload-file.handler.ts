@@ -7,6 +7,7 @@ import { DataSource } from 'typeorm';
 import { File as FileEntity } from '@entities/main/file.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { FilePurposeService } from '../../services/file-purpose.service';
+import { FilePurposesEnum } from '../../enums/file-purposes.enum';
 import { UploadFileCommand } from './upload-file.command';
 import { UploadFileOutput } from './upload-file.output';
 
@@ -63,7 +64,7 @@ export class UploadFileHandler
     return UploadFileOutput.from(savedFile);
   }
 
-  private validateMetadata(purpose: string, metadata?: string): void {
+  private validateMetadata(purpose: number, metadata?: string): void {
     if (!metadata) {
       return;
     }
@@ -84,7 +85,7 @@ export class UploadFileHandler
     }
 
     if (
-      purpose === 'user_avatar' &&
+      purpose === FilePurposesEnum.USER_AVATAR &&
       Object.prototype.hasOwnProperty.call(parsedMetadata, 'target_id')
     ) {
       throw new BadRequestException('metadata.target_id is not supported');

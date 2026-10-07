@@ -1,4 +1,4 @@
 export enum StoryLocationTypeEnum {
-  ONLINE = 'online',
-  OFFLINE = 'offline',
+  ONLINE = 1,
+  OFFLINE = 2,
 }

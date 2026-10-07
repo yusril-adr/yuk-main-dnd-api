@@ -118,14 +118,16 @@ export class StorageService {
     }
   }
 
-  private getConfiguredDriver(): string {
-    return (
-      this.configService.get<string>('STORAGE_DRIVER') ??
-      FileDriverEnum.SUPABASE
-    );
+  private getConfiguredDriver(): FileDriverEnum {
+    const driver = this.configService.get<string>('STORAGE_DRIVER') ?? 'supabase';
+    const map: Record<string, FileDriverEnum> = {
+      local: FileDriverEnum.LOCAL,
+      supabase: FileDriverEnum.SUPABASE,
+    };
+    return map[driver] ?? FileDriverEnum.SUPABASE;
   }
 
-  private unsupportedDriverError(driver: string): InternalServerErrorException {
+  private unsupportedDriverError(driver: number): InternalServerErrorException {
     return new InternalServerErrorException(
       `Storage driver '${driver}' is not supported`,
     );

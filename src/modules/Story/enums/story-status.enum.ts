@@ -1,5 +1,5 @@
 export enum StoryStatusEnum {
-  DRAFT = 'draft',
-  PUBLISHED = 'published',
-  ARCHIVED = 'archived',
+  DRAFT = 1,
+  PUBLISHED = 2,
+  ARCHIVED = 3,
 }

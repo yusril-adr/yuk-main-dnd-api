@@ -19,11 +19,11 @@ export class File extends BaseEntity {
   @Column()
   mimetype: string;
 
-  @Column({ length: 50 })
-  driver: string;
+  @Column({ type: 'integer' })
+  driver: number;
 
-  @Column({ length: 50, default: FileStatusEnum.ACTIVE })
-  status: string = FileStatusEnum.ACTIVE;
+  @Column({ type: 'integer', default: FileStatusEnum.ACTIVE })
+  status: number = FileStatusEnum.ACTIVE;
 }
 
 export type TFile = InstanceType<typeof File>;

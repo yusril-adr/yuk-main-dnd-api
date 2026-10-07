@@ -1,10 +1,5 @@
 export enum FilePurposesEnum {
-  // User avatar
-  USER_AVATAR = "user_avatar",
-
-  // Story banner
-  STORY_BANNER = "story_banner",
-
-  // Other utilities
-  OTHER = "others",
+  USER_AVATAR = 1,
+  STORY_BANNER = 2,
+  OTHER = 3,
 }

@@ -1,4 +1,4 @@
 export enum FileDriverEnum {
-  LOCAL = "local",
-  SUPABASE = "supabase",
+  LOCAL = 1,
+  SUPABASE = 2,
 }

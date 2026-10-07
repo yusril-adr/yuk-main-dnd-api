@@ -28,14 +28,14 @@ export class StoryEntityDto implements TStoryEntityDto {
   title: string;
   slug: string;
   description?: string;
-  status: string;
-  type: string;
+  status: number;
+  type: number;
   gameSystem?: string;
   expAwarded: number;
   pointAwarded: number;
   maxMembers?: number;
   startAt: string | null;
-  locationType: string;
+  locationType: number;
   locationDetail: string;
   bannerUrl: string | null;
   createdBy?: TStoryCreatorDto;
