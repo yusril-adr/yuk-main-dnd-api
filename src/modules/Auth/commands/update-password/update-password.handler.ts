@@ -1,0 +1,40 @@
+import * as bcrypt from 'bcrypt';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UserRepository } from '@modules/Master/Iam/User/repositories/user.repository';
+import { UserService } from '@modules/Master/Iam/User/services/user.service';
+import { UpdatePasswordCommand } from './update-password.command';
+
+@CommandHandler(UpdatePasswordCommand)
+export class UpdatePasswordHandler
+  implements ICommandHandler<UpdatePasswordCommand>
+{
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userService: UserService,
+  ) {}
+
+  async execute(command: UpdatePasswordCommand): Promise<void> {
+    const { payload, currentUser } = command;
+
+    const userEntity = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+    });
+    if (!userEntity) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      payload.currentPassword,
+      userEntity.password,
+    );
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    userEntity.password = await this.userService.hashPassword(
+      payload.newPassword,
+    );
+    await this.userRepository.save(userEntity);
+  }
+}

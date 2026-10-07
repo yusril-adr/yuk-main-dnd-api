@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Request,
 } from '@nestjs/common';
@@ -15,6 +16,10 @@ import { LoginCommand } from '../commands/login/login.command';
 import { LoginInput } from '../commands/login/login.input';
 import { SwitchRoleCommand } from '../commands/switch-role/switch-role.command';
 import { SwitchRoleInput } from '../commands/switch-role/switch-role.input';
+import { UpdateProfileCommand } from '../commands/update-profile/update-profile.command';
+import { UpdateProfileInput } from '../commands/update-profile/update-profile.input';
+import { UpdatePasswordCommand } from '../commands/update-password/update-password.command';
+import { UpdatePasswordInput } from '../commands/update-password/update-password.input';
 import { GetMeQuery } from '../queries/get-me/get-me.query';
 
 @Controller({
@@ -59,6 +64,33 @@ export class AuthController {
     return wrapper.response({
       data: output,
       message: 'Login By Token successfully',
+    });
+  }
+
+  @Patch('profile')
+  async updateProfile(
+    @Request() request: TRequestUser,
+    @Body() payload: UpdateProfileInput,
+  ) {
+    await this.commandBus.execute(
+      new UpdateProfileCommand(payload, request.user),
+    );
+    return wrapper.response({
+      message: 'Profile updated successfully',
+    });
+  }
+
+  @Patch('password')
+  @HttpCode(HttpStatus.OK)
+  async updatePassword(
+    @Request() request: TRequestUser,
+    @Body() payload: UpdatePasswordInput,
+  ) {
+    await this.commandBus.execute(
+      new UpdatePasswordCommand(payload, request.user),
+    );
+    return wrapper.response({
+      message: 'Password updated successfully',
     });
   }
 }

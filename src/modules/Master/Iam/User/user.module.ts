@@ -16,7 +16,11 @@ import { RemoveUserHandler } from './commands/remove-user/remove-user.handler';
 import { PaginateUsersHandler } from './queries/paginate-users/paginate-users.handler';
 import { FindOneUserHandler } from './queries/find-one-user/find-one-user.handler';
 
-const commandHandlers = [CreateUserHandler, UpdateUserHandler, RemoveUserHandler];
+const commandHandlers = [
+  CreateUserHandler,
+  UpdateUserHandler,
+  RemoveUserHandler,
+];
 const queryHandlers = [PaginateUsersHandler, FindOneUserHandler];
 
 @Module({
@@ -38,6 +42,6 @@ const queryHandlers = [PaginateUsersHandler, FindOneUserHandler];
     ...commandHandlers,
     ...queryHandlers,
   ],
-  exports: [UserRepository],
+  exports: [UserRepository, UserService],
 })
 export class UserModule {}

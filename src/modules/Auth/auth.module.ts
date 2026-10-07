@@ -8,9 +8,16 @@ import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { LoginHandler } from './commands/login/login.handler';
 import { SwitchRoleHandler } from './commands/switch-role/switch-role.handler';
+import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
+import { UpdatePasswordHandler } from './commands/update-password/update-password.handler';
 import { GetMeHandler } from './queries/get-me/get-me.handler';
 
-const commandHandlers = [LoginHandler, SwitchRoleHandler];
+const commandHandlers = [
+  LoginHandler,
+  SwitchRoleHandler,
+  UpdateProfileHandler,
+  UpdatePasswordHandler,
+];
 const queryHandlers = [GetMeHandler];
 
 @Module({
