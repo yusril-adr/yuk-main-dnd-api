@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { UserService } from '@modules/Iam/User/services/user.service';
 import { UpdatePasswordCommand } from './update-password.command';
@@ -27,7 +27,7 @@ export class UpdatePasswordHandler implements ICommandHandler<UpdatePasswordComm
       userEntity.password,
     );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Current password is incorrect');
+      throw new BadRequestException('Current password is incorrect');
     }
 
     userEntity.password = await this.userService.hashPassword(

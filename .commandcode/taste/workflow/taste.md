@@ -1,5 +1,5 @@
 # workflow
-- Plan before implementing code changes — write a plan first, get approval, then implement. Confidence: 0.70
+- Plan before implementing code changes — write a plan first, get approval, then implement. User corrected the assistant for jumping straight into execution without a plan. Confidence: 0.85
 - When refactoring (e.g., to CQRS), preserve existing API behavior exactly — same return values, same HTTP status codes, same response shapes. Flag and fix any behavioral drift immediately. Confidence: 0.85
 - When asked to see the plan again (e.g., after a missclick), re-present the full plan in detail rather than just a one-line summary. Confidence: 0.55
 - Treats `docs/db.dbml` and TypeORM entities as kept in sync bidirectionally — when changing a column property (e.g., nullability), update both the DBML and entity together, not just one side. Confidence: 0.75
@@ -10,3 +10,4 @@
 - Don't run unnecessary exploratory/diagnostic commands (e.g., checking Docker status, listing .env files) before just running the actual needed command directly — prefer trying the command first and reacting to errors. Confidence: 0.70
 - When a correction is needed after implementation (e.g., user points out a pattern mismatch), treat it as a new task — update the plan first, then re-implement, rather than patching ad hoc. Confidence: 0.70
 - Uses conventional commits with gitmoji codes (e.g., `refactor: :building_construction: ...`) and a `Co-authored-by: CommandCodeBot` footer — follow existing commit message conventions when committing on their behalf. Confidence: 0.80
+- Only do git commits when explicitly told to — do not commit automatically after completing tasks. Confidence: 0.95
