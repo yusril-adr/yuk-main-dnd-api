@@ -2,6 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { User } from '../iam/user.entity';
 import { Story } from './story.entity';
+import { StoryMemberStatusEnum } from '@modules/Story/enums/story-member-status.enum';
 
 @Entity()
 export class StoryMember extends BaseEntity {
@@ -15,8 +16,8 @@ export class StoryMember extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'integer' })
-  status: number;
+  @Column({ type: 'integer', default: StoryMemberStatusEnum.REGISTERED })
+  status: number = StoryMemberStatusEnum.REGISTERED;
 }
 
 export type TStoryMember = InstanceType<typeof StoryMember>;
