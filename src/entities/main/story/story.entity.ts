@@ -4,12 +4,14 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { User } from '../iam/user.entity';
 import { File } from '../file.entity';
 import { StoryStatusEnum } from '@modules/Story/enums/story-status.enum';
+import { StoryMember } from './story-member.entity';
 
 @Entity()
 export class Story extends BaseEntity {
@@ -63,6 +65,9 @@ export class Story extends BaseEntity {
   @OneToOne(() => File, (file) => file.id, { cascade: true })
   @JoinColumn()
   bannerFile?: File | null;
+
+  @OneToMany(() => StoryMember, (storyMember) => storyMember.story)
+  storyMembers: StoryMember[];
 }
 
 export type TStory = InstanceType<typeof Story>;

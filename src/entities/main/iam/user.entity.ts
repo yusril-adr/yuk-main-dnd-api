@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { UserRole } from './user-role.entity';
 import { File } from '../file.entity';
+import { StoryMember } from '../story/story-member.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -41,6 +42,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];
+
+  @OneToMany(() => StoryMember, (storyMember) => storyMember.user)
+  storyMembers: StoryMember[];
 }
 
 export type TUser = InstanceType<typeof User>;
