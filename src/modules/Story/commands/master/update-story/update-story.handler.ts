@@ -41,7 +41,7 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
       delete storyPayload.status;
     }
 
-    if (storyPayload.title) {
+    if (storyPayload.title && storyEntity.title !== storyPayload.title) {
       storyEntity.slug = await this.storyService.generateUniqueSlug(
         storyPayload.title,
       );
