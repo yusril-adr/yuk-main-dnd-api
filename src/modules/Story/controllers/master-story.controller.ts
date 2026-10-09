@@ -22,6 +22,8 @@ import { UpdateStoryCommand } from '../commands/master/update-story/update-story
 import { UpdateStoryInput } from '../commands/master/update-story/update-story.input';
 import { AddStoryMembersCommand } from '../commands/master/add-story-members/add-story-members.command';
 import { AddStoryMembersInput } from '../commands/master/add-story-members/add-story-members.input';
+import { RemoveStoryMembersCommand } from '../commands/master/remove-story-members/remove-story-members.command';
+import { RemoveStoryMembersInput } from '../commands/master/remove-story-members/remove-story-members.input';
 import { RemoveStoryCommand } from '../commands/master/remove-story/remove-story.command';
 import { ArchiveStoryCommand } from '../commands/master/archive-story/archive-story.command';
 import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarchive-story.command';
@@ -108,6 +110,23 @@ export class MasterStoryController {
       statusCode: HttpStatus.CREATED,
       data: null,
       message: 'Story members added successfully',
+    });
+  }
+
+  @Delete(':id/members')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeMembers(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Body() payload: RemoveStoryMembersInput,
+  ) {
+    await this.commandBus.execute(
+      new RemoveStoryMembersCommand(id, payload, request.user),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.NO_CONTENT,
+      data: null,
+      message: 'Story members removed successfully',
     });
   }
 

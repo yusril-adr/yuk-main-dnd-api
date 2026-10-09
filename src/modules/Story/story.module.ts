@@ -12,6 +12,7 @@ import { StoryPermissionService } from './services/story-permission.service';
 import { CreateStoryHandler } from './commands/master/create-story/create-story.handler';
 import { UpdateStoryHandler } from './commands/master/update-story/update-story.handler';
 import { AddStoryMembersHandler } from './commands/master/add-story-members/add-story-members.handler';
+import { RemoveStoryMembersHandler } from './commands/master/remove-story-members/remove-story-members.handler';
 import { RemoveStoryHandler } from './commands/master/remove-story/remove-story.handler';
 import { ArchiveStoryHandler } from './commands/master/archive-story/archive-story.handler';
 import { UnarchiveStoryHandler } from './commands/master/unarchive-story/unarchive-story.handler';
@@ -24,6 +25,7 @@ const commandHandlers = [
   CreateStoryHandler,
   UpdateStoryHandler,
   AddStoryMembersHandler,
+  RemoveStoryMembersHandler,
   RemoveStoryHandler,
   ArchiveStoryHandler,
   UnarchiveStoryHandler,
