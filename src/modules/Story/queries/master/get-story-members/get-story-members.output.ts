@@ -12,5 +12,8 @@ export class StoryMemberItemDto {
 }
 
 export class GetStoryMembersOutput {
-  constructor(public readonly data: StoryMemberItemDto[]) {}
+  constructor(
+    public readonly data: StoryMemberItemDto[],
+    public readonly count: number,
+  ) {}
 }

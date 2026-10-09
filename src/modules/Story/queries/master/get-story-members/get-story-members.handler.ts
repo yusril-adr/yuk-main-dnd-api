@@ -26,7 +26,7 @@ export class GetStoryMembersHandler implements IQueryHandler<
   ) {}
 
   async execute(query: GetStoryMembersQuery): Promise<GetStoryMembersOutput> {
-    const { id } = query;
+    const { id, params } = query;
 
     const story = await this.storyRepository.findOne({ where: { id } });
     if (!story) {
@@ -35,11 +35,13 @@ export class GetStoryMembersHandler implements IQueryHandler<
 
     // withDeleted keeps a soft-deleted user on the row.
     // find() without it left-joins user and omits that user.
-    const members = await this.storyMemberRepository.find({
+    const [members, count] = await this.storyMemberRepository.findAndCount({
       where: { story: { id }, deletedAt: IsNull() },
       relations: { user: { avatarFile: true } },
       withDeleted: true,
       order: { createdAt: OrderKeyEnum.ASC, id: OrderKeyEnum.ASC },
+      take: params.perPage,
+      skip: params.perPage * (params.page - 1),
     });
 
     const items: StoryMemberItemDto[] = [];
@@ -63,6 +65,6 @@ export class GetStoryMembersHandler implements IQueryHandler<
       });
     }
 
-    return new GetStoryMembersOutput(items);
+    return new GetStoryMembersOutput(items, count);
   }
 }
