@@ -20,7 +20,7 @@ import { UnarchiveStoryHandler } from './commands/master/unarchive-story/unarchi
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
 import { PaginateStoryMembersHandler } from './queries/master/paginate-story-members/paginate-story-members.handler';
-import { GetAvailableStoryUsersHandler } from './queries/master/get-available-story-users/get-available-story-users.handler';
+import { PaginateAvailableStoryUsersHandler } from './queries/master/paginate-available-story-users/paginate-available-story-users.handler';
 
 const commandHandlers = [
   CreateStoryHandler,
@@ -36,7 +36,7 @@ const queryHandlers = [
   PaginateStoriesHandler,
   FindOneStoryHandler,
   PaginateStoryMembersHandler,
-  GetAvailableStoryUsersHandler,
+  PaginateAvailableStoryUsersHandler,
 ];
 
 @Module({

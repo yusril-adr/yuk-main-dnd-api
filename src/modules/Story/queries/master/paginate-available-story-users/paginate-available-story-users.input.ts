@@ -6,11 +6,11 @@ import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
 import { getAllEntityProperties } from '@shared/utils/common';
 
-export class GetAvailableStoryUsersInput extends PaginateParamDto {
+export class PaginateAvailableStoryUsersInput extends PaginateParamDto {
   @IsOptional()
   @IsString()
   @IsIn(getAllEntityProperties(User).map((prop) => snakeCase(prop)))
-  sortBy: string = 'display_name';
+  sortBy: string = 'updated_at';
 
   @IsOptional()
   @Transform(({ value }) => `${value}`.toLowerCase())

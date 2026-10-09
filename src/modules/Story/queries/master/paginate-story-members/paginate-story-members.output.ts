@@ -1,14 +1,10 @@
-export class StoryMemberUserDto {
-  id: string;
-  displayName: string;
-  avatarUrl: string | null;
-}
+import { TStoryMemberUserDto } from '@shared/dtos/entities/story/story-member.entity.dto';
 
 export class StoryMemberItemDto {
   id: string;
   status: number;
   createdAt: string;
-  user: StoryMemberUserDto;
+  user: TStoryMemberUserDto;
 }
 
 export class PaginateStoryMembersOutput {

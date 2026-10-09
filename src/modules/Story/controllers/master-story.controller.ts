@@ -33,8 +33,8 @@ import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginat
 import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
 import { PaginateStoryMembersQuery } from '../queries/master/paginate-story-members/paginate-story-members.query';
 import { PaginateStoryMembersInput } from '../queries/master/paginate-story-members/paginate-story-members.input';
-import { GetAvailableStoryUsersQuery } from '../queries/master/get-available-story-users/get-available-story-users.query';
-import { GetAvailableStoryUsersInput } from '../queries/master/get-available-story-users/get-available-story-users.input';
+import { PaginateAvailableStoryUsersQuery } from '../queries/master/paginate-available-story-users/paginate-available-story-users.query';
+import { PaginateAvailableStoryUsersInput } from '../queries/master/paginate-available-story-users/paginate-available-story-users.input';
 
 @Controller({
   path: 'master/stories',
@@ -149,12 +149,12 @@ export class MasterStoryController {
   }
 
   @Get(':id/available-users')
-  async getAvailableUsers(
+  async paginateAvailableUsers(
     @Param('id') id: string,
-    @Query() query: GetAvailableStoryUsersInput,
+    @Query() query: PaginateAvailableStoryUsersInput,
   ) {
     const output = await this.queryBus.execute(
-      new GetAvailableStoryUsersQuery(id, query),
+      new PaginateAvailableStoryUsersQuery(id, query),
     );
     return wrapper.paginationResponse({
       data: output.data,

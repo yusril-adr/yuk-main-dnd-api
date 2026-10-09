@@ -20,13 +20,14 @@ import {
   mergeWhereConditions,
 } from '@shared/utils/common';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { GetAvailableStoryUsersQuery } from './get-available-story-users.query';
-import { GetAvailableStoryUsersOutput } from './get-available-story-users.output';
+import { PaginateAvailableStoryUsersQuery } from './paginate-available-story-users.query';
+import { PaginateAvailableStoryUsersOutput } from './paginate-available-story-users.output';
+import { PaginateAvailableStoryUsersInput } from './paginate-available-story-users.input';
 
-@QueryHandler(GetAvailableStoryUsersQuery)
-export class GetAvailableStoryUsersHandler implements IQueryHandler<
-  GetAvailableStoryUsersQuery,
-  GetAvailableStoryUsersOutput
+@QueryHandler(PaginateAvailableStoryUsersQuery)
+export class PaginateAvailableStoryUsersHandler implements IQueryHandler<
+  PaginateAvailableStoryUsersQuery,
+  PaginateAvailableStoryUsersOutput
 > {
   constructor(
     private readonly storyRepository: StoryRepository,
@@ -37,8 +38,8 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
   ) {}
 
   async execute(
-    query: GetAvailableStoryUsersQuery,
-  ): Promise<GetAvailableStoryUsersOutput> {
+    query: PaginateAvailableStoryUsersQuery,
+  ): Promise<PaginateAvailableStoryUsersOutput> {
     const { id, params } = query;
 
     const story = await this.storyRepository.findOne({
@@ -60,33 +61,14 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
       excludedUserIds.push(story.createdBy.id);
     }
 
-    const findOptions: FindManyOptions<User> = {
-      order: {
-        [camelCase(params.sortBy)]: params.order,
-      },
-    };
-
-    if (params.search) {
-      const searchCondition: FindOptionsWhere<User>[] = [
-        { username: ILike(`%${params.search}%`) },
-        { displayName: ILike(`%${params.search}%`) },
-        { email: ILike(`%${params.search}%`) },
-      ];
-      findOptions.where = mergeWhereConditions(
-        findOptions.where,
-        ...searchCondition,
-      );
-    }
-
-    if (excludedUserIds.length > 0) {
-      findOptions.where = mergeEachWhereConditions(findOptions.where, {
-        id: Not(In(excludedUserIds)),
-      });
-    }
+    let findOptions: FindManyOptions<User> = {};
+    findOptions = this.sortQuery(findOptions, params);
+    findOptions = this.searchQuery(findOptions, params);
+    findOptions = this.filterQuery(findOptions, excludedUserIds);
 
     const users = await this.userRepository.find({
       ...findOptions,
-      relations: { userRoles: { role: true }, avatarFile: true },
+      relations: { avatarFile: true },
       take: params.perPage,
       skip: params.perPage * (params.page - 1),
     });
@@ -99,6 +81,43 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
 
     const count = await this.userRepository.count(findOptions);
 
-    return GetAvailableStoryUsersOutput.from(users, avatarUrls, count);
+    return PaginateAvailableStoryUsersOutput.from(users, avatarUrls, count);
+  }
+
+  private sortQuery(
+    query: FindManyOptions<User>,
+    params: PaginateAvailableStoryUsersInput,
+  ): FindManyOptions<User> {
+    query.order = {
+      [camelCase(params.sortBy)]: params.order,
+    };
+    return query;
+  }
+
+  private searchQuery(
+    query: FindManyOptions<User>,
+    params: PaginateAvailableStoryUsersInput,
+  ): FindManyOptions<User> {
+    if (params.search) {
+      const searchCondition: FindOptionsWhere<User>[] = [
+        { username: ILike(`%${params.search}%`) },
+        { displayName: ILike(`%${params.search}%`) },
+        { email: ILike(`%${params.search}%`) },
+      ];
+      query.where = mergeWhereConditions(query.where, ...searchCondition);
+    }
+    return query;
+  }
+
+  private filterQuery(
+    query: FindManyOptions<User>,
+    excludedUserIds: string[],
+  ): FindManyOptions<User> {
+    if (excludedUserIds.length > 0) {
+      query.where = mergeEachWhereConditions(query.where, {
+        id: Not(In(excludedUserIds)),
+      });
+    }
+    return query;
   }
 }
