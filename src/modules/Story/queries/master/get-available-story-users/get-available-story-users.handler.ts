@@ -41,7 +41,10 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
   ): Promise<GetAvailableStoryUsersOutput> {
     const { id, params } = query;
 
-    const story = await this.storyRepository.findOne({ where: { id } });
+    const story = await this.storyRepository.findOne({
+      where: { id },
+      relations: { createdBy: true },
+    });
     if (!story) {
       throw new NotFoundException(`Story with id ${id} not found`);
     }
@@ -50,9 +53,15 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
       where: { story: { id }, deletedAt: IsNull() },
       relations: { user: true },
     });
-    const memberUserIds = members
+    const excludedUserIds = members
       .map((member) => member.user?.id)
       .filter((userId): userId is string => Boolean(userId));
+    if (
+      story.createdBy?.id &&
+      !excludedUserIds.includes(story.createdBy.id)
+    ) {
+      excludedUserIds.push(story.createdBy.id);
+    }
 
     let findOptions: FindManyOptions<User> = {
       order: {
@@ -72,9 +81,9 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
       );
     }
 
-    if (memberUserIds.length > 0) {
+    if (excludedUserIds.length > 0) {
       findOptions.where = mergeEachWhereConditions(findOptions.where, {
-        id: Not(In(memberUserIds)),
+        id: Not(In(excludedUserIds)),
       });
     }
 

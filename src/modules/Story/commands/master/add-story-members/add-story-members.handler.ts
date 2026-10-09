@@ -41,6 +41,14 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
 
     const uniqueUserIds = [...new Set(params.userIds)];
     await this.userRepository.findAndValidateUserByIds(uniqueUserIds);
+    if (!story.createdBy?.id) {
+      throw new BadRequestException('Story creator is missing');
+    }
+    if (uniqueUserIds.includes(story.createdBy.id)) {
+      throw new BadRequestException(
+        `User with id ${story.createdBy.id} is the creator of this story`,
+      );
+    }
 
     await this.dataSource.transaction(async (manager) => {
       const storyMemberRepo = manager.getRepository(StoryMember);
