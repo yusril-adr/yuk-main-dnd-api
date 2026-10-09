@@ -31,8 +31,8 @@ import { PublishStoryCommand } from '../commands/master/publish-story/publish-st
 import { PaginateStoriesQuery } from '../queries/master/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
-import { GetStoryMembersQuery } from '../queries/master/get-story-members/get-story-members.query';
-import { GetStoryMembersInput } from '../queries/master/get-story-members/get-story-members.input';
+import { PaginateStoryMembersQuery } from '../queries/master/paginate-story-members/paginate-story-members.query';
+import { PaginateStoryMembersInput } from '../queries/master/paginate-story-members/paginate-story-members.input';
 import { GetAvailableStoryUsersQuery } from '../queries/master/get-available-story-users/get-available-story-users.query';
 import { GetAvailableStoryUsersInput } from '../queries/master/get-available-story-users/get-available-story-users.input';
 
@@ -133,12 +133,12 @@ export class MasterStoryController {
   }
 
   @Get(':id/members')
-  async getMembers(
+  async paginateMembers(
     @Param('id') id: string,
-    @Query() query: GetStoryMembersInput,
+    @Query() query: PaginateStoryMembersInput,
   ) {
     const output = await this.queryBus.execute(
-      new GetStoryMembersQuery(id, query),
+      new PaginateStoryMembersQuery(id, query),
     );
     return wrapper.paginationResponse({
       data: output.data,

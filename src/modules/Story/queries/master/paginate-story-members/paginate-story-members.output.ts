@@ -11,7 +11,7 @@ export class StoryMemberItemDto {
   user: StoryMemberUserDto;
 }
 
-export class GetStoryMembersOutput {
+export class PaginateStoryMembersOutput {
   constructor(
     public readonly data: StoryMemberItemDto[],
     public readonly count: number,

@@ -19,7 +19,7 @@ import { PublishStoryHandler } from './commands/master/publish-story/publish-sto
 import { UnarchiveStoryHandler } from './commands/master/unarchive-story/unarchive-story.handler';
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
-import { GetStoryMembersHandler } from './queries/master/get-story-members/get-story-members.handler';
+import { PaginateStoryMembersHandler } from './queries/master/paginate-story-members/paginate-story-members.handler';
 import { GetAvailableStoryUsersHandler } from './queries/master/get-available-story-users/get-available-story-users.handler';
 
 const commandHandlers = [
@@ -35,7 +35,7 @@ const commandHandlers = [
 const queryHandlers = [
   PaginateStoriesHandler,
   FindOneStoryHandler,
-  GetStoryMembersHandler,
+  PaginateStoryMembersHandler,
   GetAvailableStoryUsersHandler,
 ];
 
