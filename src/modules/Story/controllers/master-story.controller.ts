@@ -20,6 +20,8 @@ import { CreateStoryCommand } from '../commands/master/create-story/create-story
 import { CreateStoryInput } from '../commands/master/create-story/create-story.input';
 import { UpdateStoryCommand } from '../commands/master/update-story/update-story.command';
 import { UpdateStoryInput } from '../commands/master/update-story/update-story.input';
+import { AddStoryMembersCommand } from '../commands/master/add-story-members/add-story-members.command';
+import { AddStoryMembersInput } from '../commands/master/add-story-members/add-story-members.input';
 import { RemoveStoryCommand } from '../commands/master/remove-story/remove-story.command';
 import { ArchiveStoryCommand } from '../commands/master/archive-story/archive-story.command';
 import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarchive-story.command';
@@ -86,6 +88,23 @@ export class MasterStoryController {
     return wrapper.response({
       data: null,
       message: 'Story updated successfully',
+    });
+  }
+
+  @Post(':id/members')
+  @HttpCode(HttpStatus.CREATED)
+  async addMembers(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Body() payload: AddStoryMembersInput,
+  ) {
+    await this.commandBus.execute(
+      new AddStoryMembersCommand(id, payload, request.user),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.CREATED,
+      data: null,
+      message: 'Story members added successfully',
     });
   }
 

@@ -4,7 +4,12 @@ import { RoleEntityDto } from '@shared/dtos/entities/iam/role.entity.dto';
 
 export type TUserEntityDto = Omit<
   TUser,
-  'password' | 'userRoles' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  | 'password'
+  | 'userRoles'
+  | 'storyMembers'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'deletedAt'
 > & {
   roles?: RoleEntityDto[];
   createdAt: string;
