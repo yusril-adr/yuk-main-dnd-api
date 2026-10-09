@@ -1,11 +1,13 @@
-import { Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { Role } from './role.entity';
 import { Permission } from './permission.entity';
 
 @Entity()
 export class RolePermission extends BaseEntity {
-  @ManyToOne(() => Role, (role) => role.rolePermissions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Role, (role) => role.rolePermissions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 

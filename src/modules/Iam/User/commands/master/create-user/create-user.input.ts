@@ -7,7 +7,6 @@ import {
   IsStrongPassword,
   IsUUID,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 
 export class CreateUserInput {

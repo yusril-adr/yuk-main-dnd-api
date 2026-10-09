@@ -56,14 +56,11 @@ export class GetAvailableStoryUsersHandler implements IQueryHandler<
     const excludedUserIds = members
       .map((member) => member.user?.id)
       .filter((userId): userId is string => Boolean(userId));
-    if (
-      story.createdBy?.id &&
-      !excludedUserIds.includes(story.createdBy.id)
-    ) {
+    if (story.createdBy?.id && !excludedUserIds.includes(story.createdBy.id)) {
       excludedUserIds.push(story.createdBy.id);
     }
 
-    let findOptions: FindManyOptions<User> = {
+    const findOptions: FindManyOptions<User> = {
       order: {
         [camelCase(params.sortBy)]: params.order,
       },

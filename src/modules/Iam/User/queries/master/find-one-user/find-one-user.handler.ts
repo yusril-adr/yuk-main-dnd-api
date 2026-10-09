@@ -6,9 +6,10 @@ import { FindOneUserQuery } from './find-one-user.query';
 import { FindOneUserOutput } from './find-one-user.output';
 
 @QueryHandler(FindOneUserQuery)
-export class FindOneUserHandler
-  implements IQueryHandler<FindOneUserQuery, FindOneUserOutput>
-{
+export class FindOneUserHandler implements IQueryHandler<
+  FindOneUserQuery,
+  FindOneUserOutput
+> {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly storageService: StorageService,

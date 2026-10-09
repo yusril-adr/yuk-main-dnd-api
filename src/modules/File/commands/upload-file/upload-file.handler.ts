@@ -1,8 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  BadRequestException,
-  PayloadTooLargeException,
-} from '@nestjs/common';
+import { BadRequestException, PayloadTooLargeException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { File as FileEntity } from '@entities/main/file.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
@@ -12,9 +9,10 @@ import { UploadFileCommand } from './upload-file.command';
 import { UploadFileOutput } from './upload-file.output';
 
 @CommandHandler(UploadFileCommand)
-export class UploadFileHandler
-  implements ICommandHandler<UploadFileCommand, UploadFileOutput>
-{
+export class UploadFileHandler implements ICommandHandler<
+  UploadFileCommand,
+  UploadFileOutput
+> {
   constructor(
     private readonly dataSource: DataSource,
     private readonly storageService: StorageService,

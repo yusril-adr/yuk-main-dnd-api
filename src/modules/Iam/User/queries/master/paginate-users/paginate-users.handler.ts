@@ -1,10 +1,5 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
-import {
-  FindManyOptions,
-  FindOptionsWhere,
-  ILike,
-  In,
-} from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, ILike, In } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { User } from '@entities/main/iam/user.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
@@ -19,9 +14,10 @@ import { PaginateUsersOutput } from './paginate-users.output';
 import { PaginateUsersInput } from './paginate-users.input';
 
 @QueryHandler(PaginateUsersQuery)
-export class PaginateUsersHandler
-  implements IQueryHandler<PaginateUsersQuery, PaginateUsersOutput>
-{
+export class PaginateUsersHandler implements IQueryHandler<
+  PaginateUsersQuery,
+  PaginateUsersOutput
+> {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly storageService: StorageService,

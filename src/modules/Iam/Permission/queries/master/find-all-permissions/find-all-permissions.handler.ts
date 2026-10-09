@@ -10,9 +10,10 @@ import { FindAllPermissionsInput } from './find-all-permissions.input';
 type PermissionWhere = FindOptionsWhere<Permission>;
 
 @QueryHandler(FindAllPermissionsQuery)
-export class FindAllPermissionsHandler
-  implements IQueryHandler<FindAllPermissionsQuery, FindAllPermissionsOutput>
-{
+export class FindAllPermissionsHandler implements IQueryHandler<
+  FindAllPermissionsQuery,
+  FindAllPermissionsOutput
+> {
   constructor(private readonly permissionRepository: PermissionRepository) {}
 
   async execute(

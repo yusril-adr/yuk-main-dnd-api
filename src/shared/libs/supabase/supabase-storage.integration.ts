@@ -21,7 +21,7 @@ export class SupabaseStorageIntegration {
     file: TUploadedFile,
     upsert: boolean,
   ): Promise<void> {
-    const settings = this.getSettings();
+    this.getSettings();
     const client = this.supabaseClientIntegration.getClient();
     this.validateBucket(bucket);
 
@@ -40,7 +40,10 @@ export class SupabaseStorageIntegration {
     }
   }
 
-  async createSignedUrl(bucket: string, path: string): Promise<{
+  async createSignedUrl(
+    bucket: string,
+    path: string,
+  ): Promise<{
     url: string;
     expiresAt: Date;
   }> {
@@ -128,10 +131,7 @@ export class SupabaseStorageIntegration {
 
   private getSettings(): TSupabaseStorageSettings {
     const signedUrlExpiresInSeconds = Number(
-      this.configService.get<string>(
-        'SUPABASE_SIGNED_URL_EXPIRES_IN',
-        '900',
-      ),
+      this.configService.get<string>('SUPABASE_SIGNED_URL_EXPIRES_IN', '900'),
     );
 
     if (

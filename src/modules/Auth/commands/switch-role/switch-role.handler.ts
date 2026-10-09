@@ -4,9 +4,10 @@ import { LoginOutput } from '../login/login.output';
 import { SwitchRoleCommand } from './switch-role.command';
 
 @CommandHandler(SwitchRoleCommand)
-export class SwitchRoleHandler
-  implements ICommandHandler<SwitchRoleCommand, LoginOutput>
-{
+export class SwitchRoleHandler implements ICommandHandler<
+  SwitchRoleCommand,
+  LoginOutput
+> {
   constructor(private readonly authService: AuthService) {}
 
   async execute(command: SwitchRoleCommand): Promise<LoginOutput> {

@@ -12,9 +12,10 @@ import { PaginateRolesOutput } from './paginate-roles.output';
 import { PaginateRolesInput } from './paginate-roles.input';
 
 @QueryHandler(PaginateRolesQuery)
-export class PaginateRolesHandler
-  implements IQueryHandler<PaginateRolesQuery, PaginateRolesOutput>
-{
+export class PaginateRolesHandler implements IQueryHandler<
+  PaginateRolesQuery,
+  PaginateRolesOutput
+> {
   constructor(private readonly roleRepository: RoleRepository) {}
 
   async execute(query: PaginateRolesQuery): Promise<PaginateRolesOutput> {

@@ -11,9 +11,10 @@ import { PaginatePermissionsInput } from './paginate-permissions.input';
 type PermissionWhere = FindOptionsWhere<Permission>;
 
 @QueryHandler(PaginatePermissionsQuery)
-export class PaginatePermissionsHandler
-  implements IQueryHandler<PaginatePermissionsQuery, PaginatePermissionsOutput>
-{
+export class PaginatePermissionsHandler implements IQueryHandler<
+  PaginatePermissionsQuery,
+  PaginatePermissionsOutput
+> {
   constructor(private readonly permissionRepository: PermissionRepository) {}
 
   async execute(

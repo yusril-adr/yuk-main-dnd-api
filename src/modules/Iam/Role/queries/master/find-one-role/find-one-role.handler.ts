@@ -5,9 +5,10 @@ import { FindOneRoleQuery } from './find-one-role.query';
 import { FindOneRoleOutput } from './find-one-role.output';
 
 @QueryHandler(FindOneRoleQuery)
-export class FindOneRoleHandler
-  implements IQueryHandler<FindOneRoleQuery, FindOneRoleOutput>
-{
+export class FindOneRoleHandler implements IQueryHandler<
+  FindOneRoleQuery,
+  FindOneRoleOutput
+> {
   constructor(private readonly roleRepository: RoleRepository) {}
 
   async execute(query: FindOneRoleQuery): Promise<FindOneRoleOutput> {

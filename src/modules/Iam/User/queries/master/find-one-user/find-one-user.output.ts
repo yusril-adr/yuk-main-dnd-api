@@ -5,6 +5,8 @@ export class FindOneUserOutput {
   constructor(public readonly data: UserEntityDto) {}
 
   static from(user: TUser, avatarUrl?: string): FindOneUserOutput {
-    return new FindOneUserOutput(new UserEntityDto().parseEntity(user, avatarUrl));
+    return new FindOneUserOutput(
+      new UserEntityDto().parseEntity(user, avatarUrl),
+    );
   }
 }

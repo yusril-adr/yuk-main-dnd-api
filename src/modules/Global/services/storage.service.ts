@@ -41,6 +41,7 @@ export class StorageService {
         };
       case FileDriverEnum.LOCAL:
       // TODO: upload to local
+      // @eslint-disable-next-line no-fallthrough
       default:
         throw this.unsupportedDriverError(driver);
     }
@@ -119,7 +120,8 @@ export class StorageService {
   }
 
   private getConfiguredDriver(): FileDriverEnum {
-    const driver = this.configService.get<string>('STORAGE_DRIVER') ?? 'supabase';
+    const driver =
+      this.configService.get<string>('STORAGE_DRIVER') ?? 'supabase';
     const map: Record<string, FileDriverEnum> = {
       local: FileDriverEnum.LOCAL,
       supabase: FileDriverEnum.SUPABASE,

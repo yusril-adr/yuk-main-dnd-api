@@ -10,9 +10,7 @@ export function snakeToCamel(obj: any): any {
       const camelKey = cleanKey.replace(/_([a-z])/g, (_, letter) =>
         letter.toUpperCase(),
       );
-      acc[camelKey] = isArrayKey
-        ? [snakeToCamel(value)]
-        : snakeToCamel(value);
+      acc[camelKey] = isArrayKey ? [snakeToCamel(value)] : snakeToCamel(value);
       return acc;
     }, {} as any);
   }

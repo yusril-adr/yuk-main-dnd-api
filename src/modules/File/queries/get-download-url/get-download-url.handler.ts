@@ -1,8 +1,5 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
-import {
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { FileRepository } from '../../repositories/file.repository';
@@ -10,9 +7,10 @@ import { GetDownloadUrlQuery } from './get-download-url.query';
 import { GetDownloadUrlOutput } from './get-download-url.output';
 
 @QueryHandler(GetDownloadUrlQuery)
-export class GetDownloadUrlHandler
-  implements IQueryHandler<GetDownloadUrlQuery, GetDownloadUrlOutput>
-{
+export class GetDownloadUrlHandler implements IQueryHandler<
+  GetDownloadUrlQuery,
+  GetDownloadUrlOutput
+> {
   constructor(
     private readonly fileRepository: FileRepository,
     private readonly storageService: StorageService,
