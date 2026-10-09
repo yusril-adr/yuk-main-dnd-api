@@ -34,6 +34,7 @@ export class PublishStoryHandler implements ICommandHandler<PublishStoryCommand>
       throw new BadRequestException('Only draft stories can be published');
     }
 
+    story.statusBefore = story.status;
     story.status = StoryStatusEnum.PUBLISHED;
 
     await this.storyRepository.save(story);
