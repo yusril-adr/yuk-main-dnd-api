@@ -27,6 +27,7 @@ import { RemoveStoryMembersInput } from '../commands/master/remove-story-members
 import { RemoveStoryCommand } from '../commands/master/remove-story/remove-story.command';
 import { ArchiveStoryCommand } from '../commands/master/archive-story/archive-story.command';
 import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarchive-story.command';
+import { PublishStoryCommand } from '../commands/master/publish-story/publish-story.command';
 import { PaginateStoriesQuery } from '../queries/master/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
@@ -162,6 +163,15 @@ export class MasterStoryController {
     return wrapper.response({
       data: null,
       message: 'Story archived successfully',
+    });
+  }
+
+  @Patch(':id/publish')
+  async publish(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new PublishStoryCommand(id, request.user));
+    return wrapper.response({
+      data: null,
+      message: 'Story published successfully',
     });
   }
 

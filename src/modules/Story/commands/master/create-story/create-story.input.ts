@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -29,7 +30,7 @@ export class CreateStoryInput {
   description?: string;
 
   @IsOptional()
-  @IsEnum(StoryStatusEnum)
+  @IsIn([StoryStatusEnum.DRAFT, StoryStatusEnum.PUBLISHED])
   status?: StoryStatusEnum;
 
   @IsEnum(StoryTypeEnum)

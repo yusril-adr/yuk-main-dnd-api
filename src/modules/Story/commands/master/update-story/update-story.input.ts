@@ -20,6 +20,7 @@ export class UpdateStoryInput extends PartialType(
     'type',
     'locationType',
     'locationDetail',
+    'status',
   ] as const),
 ) {
   @ValidateIf(isProvided)

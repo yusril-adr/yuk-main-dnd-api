@@ -15,6 +15,7 @@ import { AddStoryMembersHandler } from './commands/master/add-story-members/add-
 import { RemoveStoryMembersHandler } from './commands/master/remove-story-members/remove-story-members.handler';
 import { RemoveStoryHandler } from './commands/master/remove-story/remove-story.handler';
 import { ArchiveStoryHandler } from './commands/master/archive-story/archive-story.handler';
+import { PublishStoryHandler } from './commands/master/publish-story/publish-story.handler';
 import { UnarchiveStoryHandler } from './commands/master/unarchive-story/unarchive-story.handler';
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
@@ -29,6 +30,7 @@ const commandHandlers = [
   RemoveStoryHandler,
   ArchiveStoryHandler,
   UnarchiveStoryHandler,
+  PublishStoryHandler,
 ];
 const queryHandlers = [
   PaginateStoriesHandler,
