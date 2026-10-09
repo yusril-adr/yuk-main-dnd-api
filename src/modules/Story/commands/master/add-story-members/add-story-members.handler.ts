@@ -72,17 +72,6 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
         );
       }
 
-      if (story.maxMembers != null) {
-        const activeCount = await storyMemberRepo.count({
-          where: { story: { id } },
-        });
-        if (activeCount + uniqueUserIds.length > story.maxMembers) {
-          throw new BadRequestException(
-            `Story member limit of ${story.maxMembers} would be exceeded`,
-          );
-        }
-      }
-
       const softDeletedMembers = existingMembers.filter(
         (member) => member.deletedAt != null,
       );
