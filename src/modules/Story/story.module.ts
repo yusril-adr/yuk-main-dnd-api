@@ -17,6 +17,8 @@ import { ArchiveStoryHandler } from './commands/master/archive-story/archive-sto
 import { UnarchiveStoryHandler } from './commands/master/unarchive-story/unarchive-story.handler';
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
+import { GetStoryMembersHandler } from './queries/master/get-story-members/get-story-members.handler';
+import { GetAvailableStoryUsersHandler } from './queries/master/get-available-story-users/get-available-story-users.handler';
 
 const commandHandlers = [
   CreateStoryHandler,
@@ -26,7 +28,12 @@ const commandHandlers = [
   ArchiveStoryHandler,
   UnarchiveStoryHandler,
 ];
-const queryHandlers = [PaginateStoriesHandler, FindOneStoryHandler];
+const queryHandlers = [
+  PaginateStoriesHandler,
+  FindOneStoryHandler,
+  GetStoryMembersHandler,
+  GetAvailableStoryUsersHandler,
+];
 
 @Module({
   imports: [

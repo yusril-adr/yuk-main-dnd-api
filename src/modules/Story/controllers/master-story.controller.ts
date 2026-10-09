@@ -28,6 +28,9 @@ import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarch
 import { PaginateStoriesQuery } from '../queries/master/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
+import { GetStoryMembersQuery } from '../queries/master/get-story-members/get-story-members.query';
+import { GetAvailableStoryUsersQuery } from '../queries/master/get-available-story-users/get-available-story-users.query';
+import { GetAvailableStoryUsersInput } from '../queries/master/get-available-story-users/get-available-story-users.input';
 
 @Controller({
   path: 'master/stories',
@@ -105,6 +108,32 @@ export class MasterStoryController {
       statusCode: HttpStatus.CREATED,
       data: null,
       message: 'Story members added successfully',
+    });
+  }
+
+  @Get(':id/members')
+  async getMembers(@Param('id') id: string) {
+    const output = await this.queryBus.execute(new GetStoryMembersQuery(id));
+    return wrapper.listResponse({
+      data: output.data,
+      total: output.data.length,
+      message: 'Story members retrieved successfully',
+    });
+  }
+
+  @Get(':id/available-users')
+  async getAvailableUsers(
+    @Param('id') id: string,
+    @Query() query: GetAvailableStoryUsersInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new GetAvailableStoryUsersQuery(id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Available story users retrieved successfully',
     });
   }
 

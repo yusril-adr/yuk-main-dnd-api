@@ -4,7 +4,7 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { PermissionEnum } from '@shared/enums/permission.enum';
@@ -48,6 +48,7 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
         where: uniqueUserIds.map((userId) => ({
           story: { id },
           user: { id: userId },
+          deletedAt: IsNull(),
         })),
         relations: { user: true },
         withDeleted: true,
