@@ -14,9 +14,11 @@ import { CreateUserHandler } from './commands/master/create-user/create-user.han
 import { UpdateUserHandler } from './commands/master/update-user/update-user.handler';
 import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
 import { AddUserExperiencePointsHandler } from './commands/master/add-user-experience-points/add-user-experience-points.handler';
+import { AddUserPointsHandler } from './commands/master/add-user-points/add-user-points.handler';
 import { PaginateUsersHandler } from './queries/master/paginate-users/paginate-users.handler';
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
 import { PaginateUserExperiencePointsHandler } from './queries/master/paginate-user-experience-points/paginate-user-experience-points.handler';
+import { PaginateUserPointsHandler } from './queries/master/paginate-user-points/paginate-user-points.handler';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
 import { UserPointLog } from '@entities/main/iam/user-point-log.entity';
 
@@ -25,11 +27,13 @@ const commandHandlers = [
   UpdateUserHandler,
   RemoveUserHandler,
   AddUserExperiencePointsHandler,
+  AddUserPointsHandler,
 ];
 const queryHandlers = [
   PaginateUsersHandler,
   FindOneUserHandler,
   PaginateUserExperiencePointsHandler,
+  PaginateUserPointsHandler,
 ];
 
 @Module({

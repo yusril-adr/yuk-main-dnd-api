@@ -23,11 +23,15 @@ import { UpdateUserInput } from '../commands/master/update-user/update-user.inpu
 import { RemoveUserCommand } from '../commands/master/remove-user/remove-user.command';
 import { AddUserExperiencePointsCommand } from '../commands/master/add-user-experience-points/add-user-experience-points.command';
 import { AddUserExperiencePointsInput } from '../commands/master/add-user-experience-points/add-user-experience-points.input';
+import { AddUserPointsCommand } from '../commands/master/add-user-points/add-user-points.command';
+import { AddUserPointsInput } from '../commands/master/add-user-points/add-user-points.input';
 import { PaginateUsersQuery } from '../queries/master/paginate-users/paginate-users.query';
 import { PaginateUsersInput } from '../queries/master/paginate-users/paginate-users.input';
 import { FindOneUserQuery } from '../queries/master/find-one-user/find-one-user.query';
 import { PaginateUserExperiencePointsQuery } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.query';
 import { PaginateUserExperiencePointsInput } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.input';
+import { PaginateUserPointsQuery } from '../queries/master/paginate-user-points/paginate-user-points.query';
+import { PaginateUserPointsInput } from '../queries/master/paginate-user-points/paginate-user-points.input';
 
 @Controller({
   path: 'master/iam/users',
@@ -117,6 +121,37 @@ export class MasterUserController {
       statusCode: HttpStatus.CREATED,
       data: null,
       message: 'Experience points added successfully',
+    });
+  }
+
+  @Get(':id/points')
+  async paginatePoints(
+    @Param('id') id: string,
+    @Query() query: PaginateUserPointsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateUserPointsQuery(id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Points retrieved successfully',
+    });
+  }
+
+  @Post(':id/points')
+  @Permissions([PermissionEnum.USERS_UPDATE])
+  @HttpCode(HttpStatus.CREATED)
+  async addPoints(
+    @Param('id') id: string,
+    @Body() payload: AddUserPointsInput,
+  ) {
+    await this.commandBus.execute(new AddUserPointsCommand(id, payload));
+    return wrapper.response({
+      statusCode: HttpStatus.CREATED,
+      data: null,
+      message: 'Points added successfully',
     });
   }
 
