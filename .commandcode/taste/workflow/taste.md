@@ -1,10 +1,11 @@
 # workflow
 - Plan before implementing code changes — write a plan first, get approval, then implement. User corrected the assistant for jumping straight into execution without a plan. Confidence: 0.85
+- Keep the plan file up-to-date throughout implementation — update it proactively (not just on request) as steps are completed or when scope changes. User called the assistant "lazy" for not updating the plan before proceeding with work. Confidence: 0.85
 - When refactoring (e.g., to CQRS), preserve existing API behavior exactly — same return values, same HTTP status codes, same response shapes. Flag and fix any behavioral drift immediately. Confidence: 0.85
 - When asked to see the plan again (e.g., after a missclick), re-present the full plan in detail rather than just a one-line summary. Confidence: 0.55
 - Treats `docs/db.dbml` and TypeORM entities as kept in sync bidirectionally — when changing a column property (e.g., nullability), update both the DBML and entity together, not just one side. Confidence: 0.75
 - New non-relational columns (integers, strings) should default to `not null` in both DBML and TypeORM entity, unless the user explicitly says otherwise. Confidence: 0.65
-- After implementing, verifies changes with `npm run build` and `npm run lint` (and checks diagnostics), clearly separating pre-existing failures from new ones. Confidence: 0.60
+- Always run `npm run lint` after `npm run build` to verify changes — both are required after implementation, in that order. User explicitly stated this expectation. Confidence: 0.95
 - Migrations should be auto-generated via CLI (e.g., `npm run migration:generate`) rather than manually written — the entity change drives the migration. Confidence: 0.80
 - Use `npm run migration:generate migrations/main/<name>` (no `--` separator before the path). Confidence: 0.85
 - Don't run unnecessary exploratory/diagnostic commands (e.g., checking Docker status, listing .env files) before just running the actual needed command directly — prefer trying the command first and reacting to errors. Confidence: 0.70
@@ -14,3 +15,4 @@
 - When refactoring enum value types (e.g., string → integer), update entity column types to match, but let the user generate the ALTER TABLE migration themselves via CLI — don't manually write migrations for schema changes. Confidence: 0.85
 - Enforces cross-module consistency — when one module (e.g., Role) establishes a pattern, all sibling modules (e.g., Permission) should be standardized to match. When asked to standardize, identify the reference module and replicate its exact pattern. Confidence: 0.85
 - When asked to standardize a module to match a reference module, analyze ALL layers (controller, handler, output, decorators, bus types) — not just outputs and handlers. User had to redirect the assistant to also check the controller layer when the initial plan missed it. Confidence: 0.75
+- Automate pre-commit quality gates with Husky — set up a `.husky/pre-commit` hook that runs `npm run build && npm run lint` so validation happens on every commit, not just manual checks. Confidence: 0.85
