@@ -3,6 +3,7 @@ import { TStoryMember } from '@entities/main/story/story-member.entity';
 export type TStoryMemberUserDto = {
   id: string;
   displayName: string;
+  username: string | null;
   avatarUrl?: string | null;
 };
 
@@ -25,6 +26,7 @@ export class StoryMemberEntityDto implements TStoryMemberEntityDto {
     this.user = {
       id: storyMember.user.id,
       displayName: storyMember.user.displayName,
+      username: storyMember.user.username ?? null,
       avatarUrl: avatarUrl ?? null,
     };
 
