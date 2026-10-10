@@ -78,7 +78,7 @@ export class MasterStoryController {
   async findOne(@Param('id') id: string) {
     const output = await this.queryBus.execute(new FindOneStoryQuery(id));
     return wrapper.response({
-      data: output.data,
+      data: output,
       message: 'Story retrieved successfully',
     });
   }

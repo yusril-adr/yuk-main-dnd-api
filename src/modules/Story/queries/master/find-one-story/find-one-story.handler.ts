@@ -26,7 +26,7 @@ export class FindOneStoryHandler implements IQueryHandler<
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    return FindOneStoryOutput.from(
+    return new FindOneStoryOutput(
       story,
       this.storyService.resolveBannerUrl(story),
       this.storyService.resolveAvatarCreatorUrl(story),

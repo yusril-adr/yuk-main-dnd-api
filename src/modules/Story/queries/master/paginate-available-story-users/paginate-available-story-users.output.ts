@@ -1,24 +1,30 @@
-import { User } from '@entities/main/iam/user.entity';
-import { TStoryMemberUserDto } from '@shared/dtos/entities/story/story-member.entity.dto';
+import type { TUser } from '@entities/main/iam/user.entity';
+
+export class PaginateAvailableStoryUsersItemOutput {
+  id: string;
+  displayName: string;
+  avatarUrl: string | null;
+
+  constructor(user: TUser, avatarUrl?: string | null) {
+    this.id = user.id;
+    this.displayName = user.displayName;
+    this.avatarUrl = avatarUrl ?? null;
+  }
+}
 
 export class PaginateAvailableStoryUsersOutput {
-  constructor(
-    public readonly data: TStoryMemberUserDto[],
-    public readonly count: number,
-  ) {}
+  public readonly data: PaginateAvailableStoryUsersItemOutput[];
+  public readonly count: number;
 
-  static from(
-    users: User[],
+  constructor(
+    users: TUser[],
     avatarUrls: (string | undefined)[],
     count: number,
-  ): PaginateAvailableStoryUsersOutput {
-    return new PaginateAvailableStoryUsersOutput(
-      users.map((user, i) => ({
-        id: user.id,
-        displayName: user.displayName,
-        avatarUrl: avatarUrls[i] ?? null,
-      })),
-      count,
+  ) {
+    this.data = users.map(
+      (user, i) =>
+        new PaginateAvailableStoryUsersItemOutput(user, avatarUrls[i]),
     );
+    this.count = count;
   }
 }

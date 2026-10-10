@@ -1,25 +1,35 @@
 import type { TStory } from '@entities/main/story/story.entity';
 import { StoryEntityDto } from '@shared/dtos/entities/story/story.entity.dto';
 
-export class PaginateStoriesOutput {
+export class PaginateStoriesItemOutput extends StoryEntityDto {
   constructor(
-    public readonly data: StoryEntityDto[],
-    public readonly count: number,
-  ) {}
+    payload: TStory,
+    bannerUrl: string | null,
+    avatarCreatorUrl: string | null,
+  ) {
+    super();
+    this.parseEntity(payload, bannerUrl, avatarCreatorUrl);
+  }
+}
 
-  static from(
-    data: {
-      story: TStory;
-      bannerUrl: string | null;
-      avatarCreatorUrl: string | null;
-    }[],
+export class PaginateStoriesOutput {
+  public readonly data: PaginateStoriesItemOutput[];
+  public readonly count: number;
+
+  constructor(
+    stories: TStory[],
+    bannerUrls: (string | null)[],
+    avatarCreatorUrls: (string | null)[],
     count: number,
-  ): PaginateStoriesOutput {
-    return new PaginateStoriesOutput(
-      data.map(({ story, bannerUrl, avatarCreatorUrl }) =>
-        new StoryEntityDto().parseEntity(story, bannerUrl, avatarCreatorUrl),
-      ),
-      count,
+  ) {
+    this.data = stories.map(
+      (story, i) =>
+        new PaginateStoriesItemOutput(
+          story,
+          bannerUrls[i],
+          avatarCreatorUrls[i],
+        ),
     );
+    this.count = count;
   }
 }

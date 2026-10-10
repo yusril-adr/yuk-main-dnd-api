@@ -41,12 +41,17 @@ export class PaginateStoriesHandler implements IQueryHandler<
       skip: params.perPage * (params.page - 1),
     });
 
-    return PaginateStoriesOutput.from(
-      stories.map((story) => ({
-        story,
-        bannerUrl: this.storyService.resolveBannerUrl(story),
-        avatarCreatorUrl: this.storyService.resolveAvatarCreatorUrl(story),
-      })),
+    const bannerUrls = stories.map((story) =>
+      this.storyService.resolveBannerUrl(story),
+    );
+    const avatarCreatorUrls = stories.map((story) =>
+      this.storyService.resolveAvatarCreatorUrl(story),
+    );
+
+    return new PaginateStoriesOutput(
+      stories,
+      bannerUrls,
+      avatarCreatorUrls,
       count,
     );
   }

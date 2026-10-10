@@ -11,7 +11,6 @@ import {
 import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
-import dayjs from '@shared/utils/dayjs';
 import {
   getAllEntityProperties,
   mergeEachWhereConditions,
@@ -20,10 +19,7 @@ import {
 import { OrderKeyEnum } from '@shared/enums/order.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
 import { PaginateStoryMembersQuery } from './paginate-story-members.query';
-import {
-  PaginateStoryMembersOutput,
-  StoryMemberItemDto,
-} from './paginate-story-members.output';
+import { PaginateStoryMembersOutput } from './paginate-story-members.output';
 import { PaginateStoryMembersInput } from './paginate-story-members.input';
 
 @QueryHandler(PaginateStoryMembersQuery)
@@ -68,28 +64,21 @@ export class PaginateStoryMembersHandler implements IQueryHandler<
       skip: params.perPage * (params.page - 1),
     });
 
-    const items: StoryMemberItemDto[] = [];
+    const visibleMembers: StoryMember[] = [];
+    const avatarUrls: (string | null)[] = [];
     for (const member of members) {
       if (member.deletedAt != null || !member.user) {
         continue;
       }
-      items.push({
-        id: member.id,
-        status: member.status,
-        createdAt: dayjs(member.createdAt).toISOString(),
-        user: {
-          id: member.user.id,
-          displayName: member.user.deletedAt
-            ? `${member.user.displayName} (Deleted User)`
-            : member.user.displayName,
-          avatarUrl: member.user.avatarFile
-            ? this.storageService.getPublicUrlSync(member.user.avatarFile)
-            : null,
-        },
-      });
+      visibleMembers.push(member);
+      avatarUrls.push(
+        member.user.avatarFile
+          ? this.storageService.getPublicUrlSync(member.user.avatarFile)
+          : null,
+      );
     }
 
-    return new PaginateStoryMembersOutput(items, count);
+    return new PaginateStoryMembersOutput(visibleMembers, avatarUrls, count);
   }
 
   private sortQuery(

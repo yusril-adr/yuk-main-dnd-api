@@ -18,14 +18,14 @@ export class StoryMemberEntityDto implements TStoryMemberEntityDto {
 
   parseEntity(
     storyMember: TStoryMember,
-    avatarUrl?: string,
+    avatarUrl?: string | null,
   ): StoryMemberEntityDto {
     this.id = storyMember.id;
     this.status = storyMember.status;
     this.user = {
       id: storyMember.user.id,
       displayName: storyMember.user.displayName,
-      avatarUrl: avatarUrl,
+      avatarUrl: avatarUrl ?? null,
     };
 
     return this;
