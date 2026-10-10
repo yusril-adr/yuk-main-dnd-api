@@ -4,7 +4,10 @@ import { DataSource } from 'typeorm';
 import { Story } from '@entities/main/story/story.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
+import { UserBalanceService } from '@modules/Iam/User/services/user-balance.service';
 import { PermissionEnum } from '@shared/enums/permission.enum';
+import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
+import { UserPointLogTypeEnum } from '@shared/enums/user-point-log-type.enum';
 import { StoryMemberStatusEnum } from '../../../enums/story-member-status.enum';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
@@ -20,6 +23,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
     private readonly userRepository: UserRepository,
     private readonly storyService: StoryService,
     private readonly storyPermissionService: StoryPermissionService,
+    private readonly userBalanceService: UserBalanceService,
   ) {}
 
   async execute(command: CompleteStoryCommand): Promise<void> {
@@ -58,6 +62,12 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         `Attended members cannot exceed max members of ${story.maxMembers}`,
       );
     }
+    if (story.expAwarded < 0) {
+      throw new BadRequestException('Story experience award is invalid');
+    }
+    if (story.pointAwarded < 0) {
+      throw new BadRequestException('Story point award is invalid');
+    }
 
     await this.dataSource.transaction(async (manager) => {
       const storyMemberRepo = manager.getRepository(StoryMember);
@@ -86,9 +96,30 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         await storyMemberRepo.save(members);
       }
 
-      // TODO: Implement batch XP and point awards for the attended user ids.
-      // Credit story.expAwarded and story.pointAwarded only to attended members,
-      // inside this transaction. Absent members get nothing. Not implemented yet.
+      const rewardDescription = `Player reward for story ${story.id}`;
+      if (uniqueUserIds.length > 0 && story.expAwarded > 0) {
+        await this.userBalanceService.addExperiencePointsToMany(
+          {
+            userIds: uniqueUserIds,
+            type: UserExpLogTypeEnum.PLAYER,
+            amount: story.expAwarded,
+            description: rewardDescription,
+          },
+          manager,
+        );
+      }
+      if (uniqueUserIds.length > 0 && story.pointAwarded > 0) {
+        await this.userBalanceService.addPointsToMany(
+          {
+            userIds: uniqueUserIds,
+            type: UserPointLogTypeEnum.INCOME,
+            amount: story.pointAwarded,
+            description: rewardDescription,
+          },
+          manager,
+        );
+      }
+
       // TODO: If a DM award is required, update the story creator's DM XP and points
       // inside this same transaction. The DM is story.createdBy. XP must use
       // UserExpLogTypeEnum.DM so it updates dmExp, not playerExp. Points use
