@@ -33,7 +33,7 @@ export class FindAllPermissionsHandler implements IQueryHandler<
 
     const permissions = await this.permissionRepository.find(findOptions);
 
-    return FindAllPermissionsOutput.from(permissions);
+    return new FindAllPermissionsOutput(permissions);
   }
 
   private filterQuery(

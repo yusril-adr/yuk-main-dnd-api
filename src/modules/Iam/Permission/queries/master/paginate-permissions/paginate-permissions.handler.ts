@@ -40,7 +40,7 @@ export class PaginatePermissionsHandler implements IQueryHandler<
       this.permissionRepository.count(findOptions),
     ]);
 
-    return PaginatePermissionsOutput.from(permissions, count);
+    return new PaginatePermissionsOutput(permissions, count);
   }
 
   private filterQuery(

@@ -1,16 +1,19 @@
 import type { TPermission } from '@entities/main/iam/permission.entity';
 import { PermissionEntityDto } from '@shared/dtos/entities/iam/permission.entity.dto';
 
-export class PaginatePermissionsOutput {
-  constructor(
-    public readonly data: PermissionEntityDto[],
-    public readonly count: number,
-  ) {}
+export class PaginatePermissionsItemOutput extends PermissionEntityDto {
+  constructor(payload: TPermission) {
+    super();
+    this.parseEntity(payload);
+  }
+}
 
-  static from(data: TPermission[], count: number): PaginatePermissionsOutput {
-    return new PaginatePermissionsOutput(
-      data.map((p) => new PermissionEntityDto().parseEntity(p)),
-      count,
-    );
+export class PaginatePermissionsOutput {
+  public readonly data: PaginatePermissionsItemOutput[];
+  public readonly count: number;
+
+  constructor(data: TPermission[], count: number) {
+    this.data = data.map((item) => new PaginatePermissionsItemOutput(item));
+    this.count = count;
   }
 }

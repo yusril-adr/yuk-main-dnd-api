@@ -12,3 +12,5 @@
 - Uses conventional commits with gitmoji codes (e.g., `refactor: :building_construction: ...`) and a `Co-authored-by: CommandCodeBot` footer — follow existing commit message conventions when committing on their behalf. Confidence: 0.80
 - Only do git commits when explicitly told to — do not commit automatically after completing tasks. Confidence: 0.95
 - When refactoring enum value types (e.g., string → integer), update entity column types to match, but let the user generate the ALTER TABLE migration themselves via CLI — don't manually write migrations for schema changes. Confidence: 0.85
+- Enforces cross-module consistency — when one module (e.g., Role) establishes a pattern, all sibling modules (e.g., Permission) should be standardized to match. When asked to standardize, identify the reference module and replicate its exact pattern. Confidence: 0.85
+- When asked to standardize a module to match a reference module, analyze ALL layers (controller, handler, output, decorators, bus types) — not just outputs and handlers. User had to redirect the assistant to also check the controller layer when the initial plan missed it. Confidence: 0.75
