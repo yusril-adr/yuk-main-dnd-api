@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { BaseEntity } from '../base.entity';
 import { User } from './user.entity';
 
@@ -11,6 +12,9 @@ export class UserExpLog extends BaseEntity {
 
   @Column({ type: 'integer' })
   amount: number;
+
+  @Column({ type: 'integer' })
+  type: UserExpLogTypeEnum;
 
   @Column({ type: 'text', nullable: true })
   description?: string;

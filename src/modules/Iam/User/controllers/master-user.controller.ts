@@ -21,6 +21,8 @@ import { CreateUserInput } from '../commands/master/create-user/create-user.inpu
 import { UpdateUserCommand } from '../commands/master/update-user/update-user.command';
 import { UpdateUserInput } from '../commands/master/update-user/update-user.input';
 import { RemoveUserCommand } from '../commands/master/remove-user/remove-user.command';
+import { AddUserExperiencePointsCommand } from '../commands/master/add-user-experience-points/add-user-experience-points.command';
+import { AddUserExperiencePointsInput } from '../commands/master/add-user-experience-points/add-user-experience-points.input';
 import { PaginateUsersQuery } from '../queries/master/paginate-users/paginate-users.query';
 import { PaginateUsersInput } from '../queries/master/paginate-users/paginate-users.input';
 import { FindOneUserQuery } from '../queries/master/find-one-user/find-one-user.query';
@@ -80,6 +82,23 @@ export class MasterUserController {
     return wrapper.response({
       data: null,
       message: 'User updated successfully',
+    });
+  }
+
+  @Post(':id/experience-points')
+  @Permissions([PermissionEnum.USERS_UPDATE])
+  @HttpCode(HttpStatus.CREATED)
+  async addExperiencePoints(
+    @Param('id') id: string,
+    @Body() payload: AddUserExperiencePointsInput,
+  ) {
+    await this.commandBus.execute(
+      new AddUserExperiencePointsCommand(id, payload),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.CREATED,
+      data: null,
+      message: 'Experience points added successfully',
     });
   }
 

@@ -13,6 +13,7 @@ import { UserService } from './services/user.service';
 import { CreateUserHandler } from './commands/master/create-user/create-user.handler';
 import { UpdateUserHandler } from './commands/master/update-user/update-user.handler';
 import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
+import { AddUserExperiencePointsHandler } from './commands/master/add-user-experience-points/add-user-experience-points.handler';
 import { PaginateUsersHandler } from './queries/master/paginate-users/paginate-users.handler';
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
@@ -22,6 +23,7 @@ const commandHandlers = [
   CreateUserHandler,
   UpdateUserHandler,
   RemoveUserHandler,
+  AddUserExperiencePointsHandler,
 ];
 const queryHandlers = [PaginateUsersHandler, FindOneUserHandler];
 

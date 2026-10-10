@@ -245,6 +245,7 @@ Table story_members {
    user_id uuid [not null]
 
    amount integer [not null]
+   type integer [not null, note: "1 player | 2 dm"]
 
    description text
 
