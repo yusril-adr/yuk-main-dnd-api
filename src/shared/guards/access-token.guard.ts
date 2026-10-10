@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +13,8 @@ import { ConfigEnum } from '@shared/enums/config.enum';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
+  private readonly logger = new Logger(AccessTokenGuard.name);
+
   constructor(
     public readonly configService: ConfigService,
     private reflector: Reflector,
@@ -23,13 +26,12 @@ export class AccessTokenGuard implements CanActivate {
       ConfigEnum.IS_PUBLIC_KEY,
       context.getHandler(),
     );
-    if (isPublic) {
-      return true; // ✅ Skip authentication
-    }
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-    if (!token) {
+    if (!token && isPublic) {
+      return true; // ✅ Skip authentication
+    } else if (!token) {
       throw new UnauthorizedException();
     }
     try {
@@ -40,6 +42,11 @@ export class AccessTokenGuard implements CanActivate {
       request['user'] = payload;
       request['token'] = token;
     } catch (error) {
+      if (error && isPublic) {
+        this.logger.warn('Public access token is invalid');
+        return true;
+      }
+
       if (error instanceof jwt.JsonWebTokenError) {
         throw new UnauthorizedException('Token expired');
       }
