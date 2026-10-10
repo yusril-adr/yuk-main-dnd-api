@@ -29,6 +29,8 @@ import { ArchiveStoryCommand } from '../commands/master/archive-story/archive-st
 import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarchive-story.command';
 import { PublishStoryCommand } from '../commands/master/publish-story/publish-story.command';
 import { CancelStoryCommand } from '../commands/master/cancel-story/cancel-story.command';
+import { CompleteStoryCommand } from '../commands/master/complete-story/complete-story.command';
+import { CompleteStoryInput } from '../commands/master/complete-story/complete-story.input';
 import { PaginateStoriesQuery } from '../queries/master/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
@@ -198,6 +200,21 @@ export class MasterStoryController {
     return wrapper.response({
       data: null,
       message: 'Story cancelled successfully',
+    });
+  }
+
+  @Patch(':id/complete')
+  async complete(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Body() payload: CompleteStoryInput,
+  ) {
+    await this.commandBus.execute(
+      new CompleteStoryCommand(id, payload, request.user),
+    );
+    return wrapper.response({
+      data: null,
+      message: 'Story completed successfully',
     });
   }
 

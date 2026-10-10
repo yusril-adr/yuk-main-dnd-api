@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { PermissionEnum } from '@shared/enums/permission.enum';
+import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
 import { StoryService } from '../../../services/story.service';
 import { StoryPermissionService } from '../../../services/story-permission.service';
@@ -37,6 +38,9 @@ export class RemoveStoryMembersHandler implements ICommandHandler<RemoveStoryMem
     );
     if (this.storyService.isCancelledStory(story)) {
       throw new BadRequestException('Cancelled stories cannot modify members');
+    }
+    if (story.status === StoryStatusEnum.COMPLETED) {
+      throw new BadRequestException('Completed stories cannot modify members');
     }
 
     const uniqueUserIds = [...new Set(params.userIds)];
