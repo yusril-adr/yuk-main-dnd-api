@@ -96,7 +96,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         await storyMemberRepo.save(members);
       }
 
-      const rewardDescription = `Player reward for story ${story.id}`;
+      const rewardDescription = `Player reward for story ${story.title}`;
       if (uniqueUserIds.length > 0 && story.expAwarded > 0) {
         await this.userBalanceService.addExperiencePointsToMany(
           {
