@@ -22,6 +22,6 @@ export class FindOneRoleHandler implements IQueryHandler<
       throw new NotFoundException(`Role with id ${id} not found`);
     }
 
-    return FindOneRoleOutput.from(role);
+    return new FindOneRoleOutput(role);
   }
 }

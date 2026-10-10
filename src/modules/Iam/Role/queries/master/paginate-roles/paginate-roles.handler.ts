@@ -39,7 +39,7 @@ export class PaginateRolesHandler implements IQueryHandler<
       this.roleRepository.count(findOptions),
     ]);
 
-    return PaginateRolesOutput.from(roles, count);
+    return new PaginateRolesOutput(roles, count);
   }
 
   private searchQuery(

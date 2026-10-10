@@ -20,13 +20,4 @@ export class GetMeOutput extends UserEntityDto {
     this.permissions = payload.permissions;
     this.avatarUrl = payload.avatarUrl;
   }
-
-  static from(payload: {
-    user: User;
-    selectedRole: string | null;
-    permissions: string[];
-    avatarUrl?: string;
-  }): GetMeOutput {
-    return new GetMeOutput(payload);
-  }
 }

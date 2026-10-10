@@ -270,7 +270,7 @@ Table user_point_logs {
 
   amount integer [not null]
 
-  type varchar(30) [not null]
+  type varchar(30) [not null, note: "income | expense"]
 
   description text
 
