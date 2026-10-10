@@ -60,7 +60,7 @@ export class MasterRoleController {
   async findOne(@Param('id') id: string) {
     const output = await this.queryBus.execute(new FindOneRoleQuery(id));
     return wrapper.response({
-      data: output.data,
+      data: output,
       message: 'Role retrieved successfully',
     });
   }

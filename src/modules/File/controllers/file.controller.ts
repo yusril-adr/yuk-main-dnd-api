@@ -52,7 +52,7 @@ export class FileController {
     const output = await this.queryBus.execute(new GetDownloadUrlQuery(id));
 
     return wrapper.response({
-      data: output.data,
+      data: output,
       message: 'File download URL generated successfully',
     });
   }

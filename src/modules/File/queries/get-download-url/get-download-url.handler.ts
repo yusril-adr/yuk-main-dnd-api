@@ -30,6 +30,6 @@ export class GetDownloadUrlHandler implements IQueryHandler<
 
     const signedUrl = await this.storageService.createSignedUrl(file);
 
-    return GetDownloadUrlOutput.from(file, signedUrl.url);
+    return new GetDownloadUrlOutput(file, signedUrl.url);
   }
 }
