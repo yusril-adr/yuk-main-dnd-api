@@ -5,3 +5,8 @@ export enum StoryStatusEnum {
   CANCELLED = 4,
   COMPLETED = 5,
 }
+
+export const PUBLIC_STORY_STATUSES = [
+  StoryStatusEnum.PUBLISHED,
+  StoryStatusEnum.COMPLETED,
+];

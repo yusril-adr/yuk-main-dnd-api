@@ -6,6 +6,7 @@ import { File } from '@entities/main/file.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserModule } from '@modules/Iam/User/user.module';
 import { MasterStoryController } from './controllers/master-story.controller';
+import { StoryController } from './controllers/story.controller';
 import { StoryRepository } from './repositories/story.repository';
 import { StoryService } from './services/story.service';
 import { StoryPermissionService } from './services/story-permission.service';
@@ -20,6 +21,7 @@ import { UnarchiveStoryHandler } from './commands/master/unarchive-story/unarchi
 import { CancelStoryHandler } from './commands/master/cancel-story/cancel-story.handler';
 import { CompleteStoryHandler } from './commands/master/complete-story/complete-story.handler';
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
+import { PaginateStoriesHandler as PublicPaginateStoriesHandler } from './queries/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
 import { PaginateStoryMembersHandler } from './queries/master/paginate-story-members/paginate-story-members.handler';
 import { PaginateAvailableStoryUsersHandler } from './queries/master/paginate-available-story-users/paginate-available-story-users.handler';
@@ -41,6 +43,7 @@ const queryHandlers = [
   FindOneStoryHandler,
   PaginateStoryMembersHandler,
   PaginateAvailableStoryUsersHandler,
+  PublicPaginateStoriesHandler,
 ];
 
 @Module({
@@ -49,7 +52,7 @@ const queryHandlers = [
     UserModule,
     CqrsModule,
   ],
-  controllers: [MasterStoryController],
+  controllers: [MasterStoryController, StoryController],
   providers: [
     StoryRepository,
     StoryService,
