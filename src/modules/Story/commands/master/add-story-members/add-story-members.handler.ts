@@ -10,6 +10,7 @@ import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import { StoryMemberStatusEnum } from '../../../enums/story-member-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryService } from '../../../services/story.service';
 import { StoryPermissionService } from '../../../services/story-permission.service';
 import { AddStoryMembersCommand } from './add-story-members.command';
 
@@ -19,6 +20,7 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
     private readonly dataSource: DataSource,
     private readonly storyRepository: StoryRepository,
     private readonly userRepository: UserRepository,
+    private readonly storyService: StoryService,
     private readonly storyPermissionService: StoryPermissionService,
   ) {}
 
@@ -38,6 +40,9 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
       user,
       PermissionEnum.STORIES_UPDATE,
     );
+    if (this.storyService.isCancelledStory(story)) {
+      throw new BadRequestException('Cancelled stories cannot modify members');
+    }
 
     const uniqueUserIds = [...new Set(params.userIds)];
     await this.userRepository.findAndValidateUserByIds(uniqueUserIds);

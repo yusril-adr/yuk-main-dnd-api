@@ -28,6 +28,7 @@ import { RemoveStoryCommand } from '../commands/master/remove-story/remove-story
 import { ArchiveStoryCommand } from '../commands/master/archive-story/archive-story.command';
 import { UnarchiveStoryCommand } from '../commands/master/unarchive-story/unarchive-story.command';
 import { PublishStoryCommand } from '../commands/master/publish-story/publish-story.command';
+import { CancelStoryCommand } from '../commands/master/cancel-story/cancel-story.command';
 import { PaginateStoriesQuery } from '../queries/master/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/master/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/master/find-one-story/find-one-story.query';
@@ -188,6 +189,15 @@ export class MasterStoryController {
     return wrapper.response({
       data: null,
       message: 'Story unarchived successfully',
+    });
+  }
+
+  @Patch(':id/cancel')
+  async cancel(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new CancelStoryCommand(id, request.user));
+    return wrapper.response({
+      data: null,
+      message: 'Story cancelled successfully',
     });
   }
 

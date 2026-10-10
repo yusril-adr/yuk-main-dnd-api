@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
@@ -35,6 +35,9 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
       user,
       PermissionEnum.STORIES_UPDATE,
     );
+    if (this.storyService.isCancelledStory(storyEntity)) {
+      throw new BadRequestException('Cancelled stories cannot be updated');
+    }
 
     const { startAt, bannerFileId, ...storyPayload } = params;
     if ('status' in storyPayload) {

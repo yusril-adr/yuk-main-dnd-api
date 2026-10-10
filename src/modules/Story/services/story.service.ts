@@ -14,6 +14,7 @@ import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { StoryBannerPathService } from '@modules/Global/services/story-banner-path.service';
 import { StoryRepository } from '../repositories/story.repository';
+import { StoryStatusEnum } from '../enums/story-status.enum';
 
 const STORY_SLUG_MAX_LENGTH = 180;
 const STORY_SLUG_SUFFIX_LENGTH = 6;
@@ -34,6 +35,17 @@ export class StoryService {
 
   generateStoryId(): string {
     return randomUUID();
+  }
+
+  isCancelledStory(story: {
+    status: number;
+    statusBefore?: number | null;
+  }): boolean {
+    return (
+      story.status === StoryStatusEnum.CANCELLED ||
+      (story.status === StoryStatusEnum.ARCHIVED &&
+        story.statusBefore === StoryStatusEnum.CANCELLED)
+    );
   }
 
   async resolveBannerFile(

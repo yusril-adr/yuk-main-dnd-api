@@ -1,10 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
+import { StoryService } from '../../../services/story.service';
 import { StoryPermissionService } from '../../../services/story-permission.service';
 import { RemoveStoryMembersCommand } from './remove-story-members.command';
 
@@ -14,6 +15,7 @@ export class RemoveStoryMembersHandler implements ICommandHandler<RemoveStoryMem
     private readonly dataSource: DataSource,
     private readonly storyRepository: StoryRepository,
     private readonly userRepository: UserRepository,
+    private readonly storyService: StoryService,
     private readonly storyPermissionService: StoryPermissionService,
   ) {}
 
@@ -33,6 +35,9 @@ export class RemoveStoryMembersHandler implements ICommandHandler<RemoveStoryMem
       user,
       PermissionEnum.STORIES_UPDATE,
     );
+    if (this.storyService.isCancelledStory(story)) {
+      throw new BadRequestException('Cancelled stories cannot modify members');
+    }
 
     const uniqueUserIds = [...new Set(params.userIds)];
     await this.userRepository.findAndValidateUserByIds(uniqueUserIds);
