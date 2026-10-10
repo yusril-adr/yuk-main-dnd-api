@@ -26,6 +26,8 @@ import { AddUserExperiencePointsInput } from '../commands/master/add-user-experi
 import { PaginateUsersQuery } from '../queries/master/paginate-users/paginate-users.query';
 import { PaginateUsersInput } from '../queries/master/paginate-users/paginate-users.input';
 import { FindOneUserQuery } from '../queries/master/find-one-user/find-one-user.query';
+import { PaginateUserExperiencePointsQuery } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.query';
+import { PaginateUserExperiencePointsInput } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.input';
 
 @Controller({
   path: 'master/iam/users',
@@ -82,6 +84,22 @@ export class MasterUserController {
     return wrapper.response({
       data: null,
       message: 'User updated successfully',
+    });
+  }
+
+  @Get(':id/experience-points')
+  async paginateExperiencePoints(
+    @Param('id') id: string,
+    @Query() query: PaginateUserExperiencePointsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateUserExperiencePointsQuery(id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Experience points retrieved successfully',
     });
   }
 
