@@ -16,6 +16,7 @@ export type TStoryEntityDto = Omit<
   | 'updatedAt'
   | 'deletedAt'
   | 'storyMembers'
+  | 'statusBefore'
 > & {
   createdBy?: TStoryCreatorDto;
   bannerUrl: string | null;
