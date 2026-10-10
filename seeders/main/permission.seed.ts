@@ -8,6 +8,7 @@ import { PermissionEnum } from '@shared/enums/permission.enum';
 export default class PermissionSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     factoryManager: SeederFactoryManager,
   ): Promise<void> {
     const logger = new Logger(PermissionSeeder.name);

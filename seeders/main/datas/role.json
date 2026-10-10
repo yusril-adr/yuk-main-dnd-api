@@ -26,17 +26,13 @@
       "goods:update",
       "goods:delete",
       "points:create",
-      "points:view",
-      "points:update",
-      "points:delete"
+      "points:view"
     ]
   },
   {
     "name": "Player",
     "key": "player",
     "description": "Player",
-    "permissions": [
-      "player_board:view"
-    ]
+    "permissions": ["player_board:view"]
   }
 ]

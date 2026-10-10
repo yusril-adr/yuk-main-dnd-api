@@ -42,6 +42,4 @@ export enum PermissionEnum {
   // Points
   POINTS_CREATE = 'points:create',
   POINTS_VIEW = 'points:view',
-  POINTS_UPDATE = 'points:update',
-  POINTS_DELETE = 'points:delete',
 }
