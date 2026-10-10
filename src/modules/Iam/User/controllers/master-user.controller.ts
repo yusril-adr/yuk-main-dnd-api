@@ -108,7 +108,7 @@ export class MasterUserController {
   }
 
   @Post(':id/experience-points')
-  @Permissions([PermissionEnum.USERS_UPDATE])
+  @Permissions([PermissionEnum.POINTS_CREATE])
   @HttpCode(HttpStatus.CREATED)
   async addExperiencePoints(
     @Param('id') id: string,
@@ -141,7 +141,7 @@ export class MasterUserController {
   }
 
   @Post(':id/points')
-  @Permissions([PermissionEnum.USERS_UPDATE])
+  @Permissions([PermissionEnum.POINTS_CREATE])
   @HttpCode(HttpStatus.CREATED)
   async addPoints(
     @Param('id') id: string,
