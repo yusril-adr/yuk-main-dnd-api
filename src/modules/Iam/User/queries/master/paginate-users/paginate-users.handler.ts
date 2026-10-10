@@ -50,7 +50,7 @@ export class PaginateUsersHandler implements IQueryHandler<
 
     const count = await this.userRepository.count(findOptions);
 
-    return PaginateUsersOutput.from(users, avatarUrls, count);
+    return new PaginateUsersOutput(users, avatarUrls, count);
   }
 
   private searchQuery(

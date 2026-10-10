@@ -33,6 +33,6 @@ export class FindOneUserHandler implements IQueryHandler<
       ? this.storageService.getPublicUrlSync(user.avatarFile)
       : undefined;
 
-    return FindOneUserOutput.from(user, avatarUrl);
+    return new FindOneUserOutput(user, avatarUrl);
   }
 }

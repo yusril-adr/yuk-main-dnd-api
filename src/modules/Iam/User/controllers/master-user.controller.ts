@@ -62,7 +62,7 @@ export class MasterUserController {
   async findOne(@Param('id') id: string) {
     const output = await this.queryBus.execute(new FindOneUserQuery(id));
     return wrapper.response({
-      data: output.data,
+      data: output,
       message: 'User retrieved successfully',
     });
   }
