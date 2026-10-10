@@ -6,12 +6,16 @@ import {
   IsString,
   IsStrongPassword,
   IsUUID,
+  Matches,
   MaxLength,
 } from 'class-validator';
 
 export class CreateUserInput {
   @IsOptional()
   @IsString()
+  @Matches(/^\S*$/, {
+    message: 'username must not contain spaces',
+  })
   @MaxLength(50)
   username?: string;
 

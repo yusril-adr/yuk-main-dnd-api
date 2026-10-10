@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Matches,
   MaxLength,
 } from 'class-validator';
 
@@ -15,6 +16,9 @@ export class UpdateProfileInput {
 
   @IsOptional()
   @IsString()
+  @Matches(/^\S*$/, {
+    message: 'username must not contain spaces',
+  })
   @MaxLength(50)
   username?: string;
 
