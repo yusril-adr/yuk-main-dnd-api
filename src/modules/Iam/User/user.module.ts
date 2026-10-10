@@ -15,6 +15,8 @@ import { UpdateUserHandler } from './commands/master/update-user/update-user.han
 import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
 import { PaginateUsersHandler } from './queries/master/paginate-users/paginate-users.handler';
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
+import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
+import { UserPointLog } from '@entities/main/iam/user-point-log.entity';
 
 const commandHandlers = [
   CreateUserHandler,
@@ -27,6 +29,8 @@ const queryHandlers = [PaginateUsersHandler, FindOneUserHandler];
   imports: [
     TypeOrmModule.forFeature([
       User,
+      UserExpLog,
+      UserPointLog,
       Role,
       UserRole,
       RolePermission,

@@ -270,7 +270,7 @@ Table user_point_logs {
 
   amount integer [not null]
 
-  type varchar(30) [not null, note: "income | expense"]
+  type integer [not null, note: "1 income | 2 expense"]
 
   description text
 
@@ -339,6 +339,7 @@ Ref: users.id < stories.created_by
 Ref: users.id < story_members.user_id
 Ref: stories.id < story_members.story_id
 
-Ref: users.id < point_transactions.user_id
+Ref: users.id < user_exp_logs.user_id
+Ref: users.id < user_point_logs.user_id
 
 Ref: users.id < goods.created_by

@@ -7,6 +7,8 @@ export type TUserEntityDto = Omit<
   | 'password'
   | 'userRoles'
   | 'storyMembers'
+  | 'userExpLogs'
+  | 'userPointLogs'
   | 'createdAt'
   | 'updatedAt'
   | 'deletedAt'

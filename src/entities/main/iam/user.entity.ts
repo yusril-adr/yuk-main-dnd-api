@@ -2,6 +2,8 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { UserRole } from './user-role.entity';
 import { File } from '../file.entity';
+import { UserExpLog } from './user-exp-log.entity';
+import { UserPointLog } from './user-point-log.entity';
 import { StoryMember } from '../story/story-member.entity';
 
 @Entity()
@@ -45,6 +47,12 @@ export class User extends BaseEntity {
 
   @OneToMany(() => StoryMember, (storyMember) => storyMember.user)
   storyMembers: StoryMember[];
+
+  @OneToMany(() => UserExpLog, (userExpLog) => userExpLog.user)
+  userExpLogs: UserExpLog[];
+
+  @OneToMany(() => UserPointLog, (userPointLog) => userPointLog.user)
+  userPointLogs: UserPointLog[];
 }
 
 export type TUser = InstanceType<typeof User>;
