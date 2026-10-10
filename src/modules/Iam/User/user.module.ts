@@ -10,6 +10,7 @@ import { File } from '@entities/main/file.entity';
 import { MasterUserController } from './controllers/master-user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
+import { UserBalanceService } from './services/user-balance.service';
 import { CreateUserHandler } from './commands/master/create-user/create-user.handler';
 import { UpdateUserHandler } from './commands/master/update-user/update-user.handler';
 import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
@@ -54,9 +55,10 @@ const queryHandlers = [
   providers: [
     UserRepository,
     UserService,
+    UserBalanceService,
     ...commandHandlers,
     ...queryHandlers,
   ],
-  exports: [UserRepository, UserService],
+  exports: [UserRepository, UserService, UserBalanceService],
 })
 export class UserModule {}
