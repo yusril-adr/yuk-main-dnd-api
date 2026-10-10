@@ -35,8 +35,8 @@ export class CancelStoryHandler implements ICommandHandler<CancelStoryCommand> {
     if (this.storyService.isCancelledStory(story)) {
       throw new BadRequestException('Story is already cancelled');
     }
-    if (story.status === StoryStatusEnum.ARCHIVED) {
-      throw new BadRequestException('Archived stories cannot be cancelled');
+    if (story.status !== StoryStatusEnum.PUBLISHED) {
+      throw new BadRequestException('Only published stories can be cancelled');
     }
 
     story.status = StoryStatusEnum.CANCELLED;

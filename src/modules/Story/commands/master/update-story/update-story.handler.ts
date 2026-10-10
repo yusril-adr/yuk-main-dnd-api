@@ -5,6 +5,7 @@ import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { PermissionEnum } from '@shared/enums/permission.enum';
+import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
 import { StoryService } from '../../../services/story.service';
 import { StoryPermissionService } from '../../../services/story-permission.service';
@@ -37,6 +38,9 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
     );
     if (this.storyService.isCancelledStory(storyEntity)) {
       throw new BadRequestException('Cancelled stories cannot be updated');
+    }
+    if (storyEntity.status === StoryStatusEnum.COMPLETED) {
+      throw new BadRequestException('Completed stories cannot be updated');
     }
 
     const { startAt, bannerFileId, ...storyPayload } = params;
