@@ -3,17 +3,19 @@ import { StoryEntityDto } from '@shared/dtos/entities/story/story.entity.dto';
 
 export class FindOneStoryOutput extends StoryEntityDto {
   actionList: {
-    canJoin: boolean;
+    isCanJoin: boolean;
+    isCanCancelJoin: boolean;
   };
 
   constructor(
     payload: TStory,
     bannerUrl: string | null,
     avatarCreatorUrl: string | null,
-    canJoin: boolean,
+    isCanJoin: boolean,
+    isCanCancelJoin: boolean,
   ) {
     super();
     this.parseEntity(payload, bannerUrl, avatarCreatorUrl);
-    this.actionList = { canJoin };
+    this.actionList = { isCanJoin, isCanCancelJoin };
   }
 }

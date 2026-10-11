@@ -38,19 +38,25 @@ export class FindOneStoryHandler implements IQueryHandler<
     const bannerUrl = this.storyService.resolveBannerUrl(story);
     const avatarCreatorUrl = this.storyService.resolveAvatarCreatorUrl(story);
 
-    let canJoin = false;
-    if (
-      userId !== null &&
-      story.status === StoryStatusEnum.PUBLISHED &&
-      story.createdBy?.id &&
-      userId !== story.createdBy.id
-    ) {
+    let isCanJoin = false;
+    let isCanCancelJoin = false;
+    if (userId !== null && story.status === StoryStatusEnum.PUBLISHED) {
       const member = await this.storyMemberRepository.findOne({
         where: { story: { id }, user: { id: userId } },
       });
-      canJoin = !member;
+      isCanJoin =
+        Boolean(story.createdBy?.id) &&
+        userId !== story.createdBy?.id &&
+        !member;
+      isCanCancelJoin = Boolean(member);
     }
 
-    return new FindOneStoryOutput(story, bannerUrl, avatarCreatorUrl, canJoin);
+    return new FindOneStoryOutput(
+      story,
+      bannerUrl,
+      avatarCreatorUrl,
+      isCanJoin,
+      isCanCancelJoin,
+    );
   }
 }
