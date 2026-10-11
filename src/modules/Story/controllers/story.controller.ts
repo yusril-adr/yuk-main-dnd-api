@@ -16,6 +16,7 @@ import { PaginateStoriesQuery } from '../queries/paginate-stories/paginate-stori
 import { PaginateStoriesInput } from '../queries/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/find-one-story/find-one-story.query';
 import { JoinStoryCommand } from '../commands/join-story/join-story.command';
+import { CancelJoinStoryCommand } from '../commands/cancel-join-story/cancel-join-story.command';
 
 @Controller({
   path: 'stories',
@@ -62,6 +63,17 @@ export class StoryController {
       statusCode: HttpStatus.CREATED,
       data: null,
       message: 'Story joined successfully',
+    });
+  }
+
+  @Post(':id/cancel-join')
+  @HttpCode(HttpStatus.OK)
+  async cancelJoin(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new CancelJoinStoryCommand(id, request.user));
+    return wrapper.response({
+      statusCode: HttpStatus.OK,
+      data: null,
+      message: 'Story join cancelled successfully',
     });
   }
 }
