@@ -1,18 +1,31 @@
-import { Controller, Get, Param, Query, Request } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Request,
+} from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
 import { Public } from '@shared/decorators/public.decorator';
 import type { TRequestUser } from '@shared/types/request.type';
 import { PaginateStoriesQuery } from '../queries/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/find-one-story/find-one-story.query';
+import { JoinStoryCommand } from '../commands/join-story/join-story.command';
 
 @Controller({
   path: 'stories',
   version: '1',
 })
 export class StoryController {
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Get()
   @Public()
@@ -38,6 +51,17 @@ export class StoryController {
     return wrapper.response({
       data: output,
       message: 'Story retrieved successfully',
+    });
+  }
+
+  @Post(':id/join')
+  @HttpCode(HttpStatus.CREATED)
+  async join(@Request() request: TRequestUser, @Param('id') id: string) {
+    await this.commandBus.execute(new JoinStoryCommand(id, request.user));
+    return wrapper.response({
+      statusCode: HttpStatus.CREATED,
+      data: null,
+      message: 'Story joined successfully',
     });
   }
 }
