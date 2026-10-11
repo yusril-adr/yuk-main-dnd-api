@@ -15,6 +15,8 @@ import type { TRequestUser } from '@shared/types/request.type';
 import { PaginateStoriesQuery } from '../queries/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/paginate-stories/paginate-stories.input';
 import { FindOneStoryQuery } from '../queries/find-one-story/find-one-story.query';
+import { PaginateStoryMembersQuery } from '../queries/paginate-story-members/paginate-story-members.query';
+import { PaginateStoryMembersInput } from '../queries/paginate-story-members/paginate-story-members.input';
 import { JoinStoryCommand } from '../commands/join-story/join-story.command';
 import { CancelJoinStoryCommand } from '../commands/cancel-join-story/cancel-join-story.command';
 
@@ -52,6 +54,23 @@ export class StoryController {
     return wrapper.response({
       data: output,
       message: 'Story retrieved successfully',
+    });
+  }
+
+  @Get(':id/members')
+  @Public()
+  async paginateMembers(
+    @Param('id') id: string,
+    @Query() query: PaginateStoryMembersInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateStoryMembersQuery(id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Story members retrieved successfully',
     });
   }
 

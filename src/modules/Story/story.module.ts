@@ -27,6 +27,7 @@ import { PaginateStoriesHandler as PublicPaginateStoriesHandler } from './querie
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
 import { FindOneStoryHandler as PublicFindOneStoryHandler } from './queries/find-one-story/find-one-story.handler';
 import { PaginateStoryMembersHandler } from './queries/master/paginate-story-members/paginate-story-members.handler';
+import { PaginateStoryMembersHandler as PublicPaginateStoryMembersHandler } from './queries/paginate-story-members/paginate-story-members.handler';
 import { PaginateAvailableStoryUsersHandler } from './queries/master/paginate-available-story-users/paginate-available-story-users.handler';
 
 const commandHandlers = [
@@ -50,6 +51,7 @@ const queryHandlers = [
   PaginateAvailableStoryUsersHandler,
   PublicPaginateStoriesHandler,
   PublicFindOneStoryHandler,
+  PublicPaginateStoryMembersHandler,
 ];
 
 @Module({
