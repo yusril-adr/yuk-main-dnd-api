@@ -8,8 +8,12 @@ import {
 } from '@shared/utils/common';
 import { StoryRepository } from '../../../repositories/story.repository';
 import { StoryService } from '../../../services/story.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { PaginateStoriesQuery } from './paginate-stories.query';
-import { PaginateStoriesOutput } from './paginate-stories.output';
+import {
+  PaginateStoriesOutput,
+  TStoryMasterActionList,
+} from './paginate-stories.output';
 import { PaginateStoriesInput } from './paginate-stories.input';
 
 @QueryHandler(PaginateStoriesQuery)
@@ -20,10 +24,11 @@ export class PaginateStoriesHandler implements IQueryHandler<
   constructor(
     private readonly storyRepository: StoryRepository,
     private readonly storyService: StoryService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(query: PaginateStoriesQuery): Promise<PaginateStoriesOutput> {
-    const { params } = query;
+    const { params, user } = query;
 
     let findOptions: FindManyOptions<Story> = {
       order: {
@@ -48,10 +53,29 @@ export class PaginateStoriesHandler implements IQueryHandler<
       this.storyService.resolveAvatarCreatorUrl(story),
     );
 
+    const actionLists: TStoryMasterActionList[] = stories.map((story) => ({
+      isCanCreate: this.storyMasterActionService.isCanCreate(user),
+      isCanUpdate: this.storyMasterActionService.isCanUpdate(story, user),
+      isCanPublish: this.storyMasterActionService.isCanPublish(story, user),
+      isCanCancel: this.storyMasterActionService.isCanCancel(story, user),
+      isCanArchive: this.storyMasterActionService.isCanArchive(story, user),
+      isCanUnarchive: this.storyMasterActionService.isCanUnarchive(story, user),
+      isCanDelete: this.storyMasterActionService.isCanDelete(story, user),
+      isCanAddMembers: this.storyMasterActionService.isCanAddMembers(
+        story,
+        user,
+      ),
+      isCanRemoveMembers: this.storyMasterActionService.isCanRemoveMembers(
+        story,
+        user,
+      ),
+    }));
+
     return new PaginateStoriesOutput(
       stories,
       bannerUrls,
       avatarCreatorUrls,
+      actionLists,
       count,
     );
   }

@@ -10,6 +10,7 @@ import { StoryController } from './controllers/story.controller';
 import { StoryRepository } from './repositories/story.repository';
 import { StoryService } from './services/story.service';
 import { StoryPermissionService } from './services/story-permission.service';
+import { StoryMasterActionService } from './services/story-master-action.service';
 import { CreateStoryHandler } from './commands/master/create-story/create-story.handler';
 import { UpdateStoryHandler } from './commands/master/update-story/update-story.handler';
 import { AddStoryMembersHandler } from './commands/master/add-story-members/add-story-members.handler';
@@ -65,6 +66,7 @@ const queryHandlers = [
     StoryRepository,
     StoryService,
     StoryPermissionService,
+    StoryMasterActionService,
     ...commandHandlers,
     ...queryHandlers,
   ],

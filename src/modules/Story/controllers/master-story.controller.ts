@@ -67,8 +67,13 @@ export class MasterStoryController {
   }
 
   @Get()
-  async paginate(@Query() query: PaginateStoriesInput) {
-    const output = await this.queryBus.execute(new PaginateStoriesQuery(query));
+  async paginate(
+    @Request() request: TRequestUser,
+    @Query() query: PaginateStoriesInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateStoriesQuery(query, request.user),
+    );
     return wrapper.paginationResponse({
       data: output.data,
       count: output.count,
@@ -78,8 +83,10 @@ export class MasterStoryController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const output = await this.queryBus.execute(new FindOneStoryQuery(id));
+  async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
+    const output = await this.queryBus.execute(
+      new FindOneStoryQuery(id, request.user),
+    );
     return wrapper.response({
       data: output,
       message: 'Story retrieved successfully',
