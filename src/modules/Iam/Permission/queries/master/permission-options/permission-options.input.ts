@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class FindAllPermissionsInput {
+export class PermissionOptionsInput {
   @IsOptional()
   @IsString()
   module?: string;

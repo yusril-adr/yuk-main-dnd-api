@@ -5,8 +5,8 @@ import { Permissions } from '@shared/decorators/permissions.decorator';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import { PaginatePermissionsQuery } from '../queries/master/paginate-permissions/paginate-permissions.query';
 import { PaginatePermissionsInput } from '../queries/master/paginate-permissions/paginate-permissions.input';
-import { FindAllPermissionsQuery } from '../queries/master/find-all-permissions/find-all-permissions.query';
-import { FindAllPermissionsInput } from '../queries/master/find-all-permissions/find-all-permissions.input';
+import { PermissionOptionsQuery } from '../queries/master/permission-options/permission-options.query';
+import { PermissionOptionsInput } from '../queries/master/permission-options/permission-options.input';
 
 @Controller({
   path: 'master/iam/permissions',
@@ -29,15 +29,15 @@ export class MasterPermissionController {
     });
   }
 
-  @Get('full')
-  async findAll(@Query() query: FindAllPermissionsInput) {
+  @Get('options')
+  async options(@Query() query: PermissionOptionsInput) {
     const output = await this.queryBus.execute(
-      new FindAllPermissionsQuery(query),
+      new PermissionOptionsQuery(query),
     );
     return wrapper.listResponse({
       data: output.data,
       total: output.data.length,
-      message: 'Permissions retrieved successfully',
+      message: 'Permission options retrieved successfully',
     });
   }
 }

@@ -3,22 +3,22 @@ import { FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
 import { PermissionRepository } from '../../../repositories/permission.repository';
-import { FindAllPermissionsQuery } from './find-all-permissions.query';
-import { FindAllPermissionsOutput } from './find-all-permissions.output';
-import { FindAllPermissionsInput } from './find-all-permissions.input';
+import { PermissionOptionsQuery } from './permission-options.query';
+import { PermissionOptionsOutput } from './permission-options.output';
+import { PermissionOptionsInput } from './permission-options.input';
 
 type PermissionWhere = FindOptionsWhere<Permission>;
 
-@QueryHandler(FindAllPermissionsQuery)
-export class FindAllPermissionsHandler implements IQueryHandler<
-  FindAllPermissionsQuery,
-  FindAllPermissionsOutput
+@QueryHandler(PermissionOptionsQuery)
+export class PermissionOptionsHandler implements IQueryHandler<
+  PermissionOptionsQuery,
+  PermissionOptionsOutput
 > {
   constructor(private readonly permissionRepository: PermissionRepository) {}
 
   async execute(
-    query: FindAllPermissionsQuery,
-  ): Promise<FindAllPermissionsOutput> {
+    query: PermissionOptionsQuery,
+  ): Promise<PermissionOptionsOutput> {
     const { params } = query;
 
     let findOptions: FindManyOptions<Permission> = {
@@ -33,12 +33,12 @@ export class FindAllPermissionsHandler implements IQueryHandler<
 
     const permissions = await this.permissionRepository.find(findOptions);
 
-    return new FindAllPermissionsOutput(permissions);
+    return new PermissionOptionsOutput(permissions);
   }
 
   private filterQuery(
     query: FindManyOptions<Permission>,
-    params: FindAllPermissionsInput,
+    params: PermissionOptionsInput,
   ): FindManyOptions<Permission> {
     const filterCondition: PermissionWhere = {};
 
