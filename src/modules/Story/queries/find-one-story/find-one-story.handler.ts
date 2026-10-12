@@ -10,7 +10,10 @@ import {
 import { StoryRepository } from '../../repositories/story.repository';
 import { StoryService } from '../../services/story.service';
 import { FindOneStoryQuery } from './find-one-story.query';
-import { FindOneStoryOutput } from './find-one-story.output';
+import {
+  FindOneStoryOutput,
+  TStoryDetailActionList,
+} from './find-one-story.output';
 
 @QueryHandler(FindOneStoryQuery)
 export class FindOneStoryHandler implements IQueryHandler<
@@ -38,25 +41,28 @@ export class FindOneStoryHandler implements IQueryHandler<
     const bannerUrl = this.storyService.resolveBannerUrl(story);
     const avatarCreatorUrl = this.storyService.resolveAvatarCreatorUrl(story);
 
-    let isCanJoin = false;
-    let isCanCancelJoin = false;
+    let actionList: TStoryDetailActionList = {
+      isCanJoin: false,
+      isCanCancelJoin: false,
+    };
     if (userId !== null && story.status === StoryStatusEnum.PUBLISHED) {
       const member = await this.storyMemberRepository.findOne({
         where: { story: { id }, user: { id: userId } },
       });
-      isCanJoin =
-        Boolean(story.createdBy?.id) &&
-        userId !== story.createdBy?.id &&
-        !member;
-      isCanCancelJoin = Boolean(member);
+      actionList = {
+        isCanJoin:
+          Boolean(story.createdBy?.id) &&
+          userId !== story.createdBy?.id &&
+          !member,
+        isCanCancelJoin: Boolean(member),
+      };
     }
 
     return new FindOneStoryOutput(
       story,
+      actionList,
       bannerUrl,
       avatarCreatorUrl,
-      isCanJoin,
-      isCanCancelJoin,
     );
   }
 }
