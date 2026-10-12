@@ -1,6 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
+import { Permissions } from '@shared/decorators/permissions.decorator';
+import { PermissionEnum } from '@shared/enums/permission.enum';
 import { PaginatePermissionsQuery } from '../queries/master/paginate-permissions/paginate-permissions.query';
 import { PaginatePermissionsInput } from '../queries/master/paginate-permissions/paginate-permissions.input';
 import { FindAllPermissionsQuery } from '../queries/master/find-all-permissions/find-all-permissions.query';
@@ -14,6 +16,7 @@ export class MasterPermissionController {
   constructor(private readonly queryBus: QueryBus) {}
 
   @Get()
+  @Permissions([PermissionEnum.PERMISSIONS_VIEW])
   async paginate(@Query() query: PaginatePermissionsInput) {
     const output = await this.queryBus.execute(
       new PaginatePermissionsQuery(query),

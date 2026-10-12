@@ -67,6 +67,7 @@ export class MasterStoryController {
   }
 
   @Get()
+  @Permissions([PermissionEnum.STORIES_VIEW])
   async paginate(
     @Request() request: TRequestUser,
     @Query() query: PaginateStoriesInput,
@@ -83,6 +84,7 @@ export class MasterStoryController {
   }
 
   @Get(':id')
+  @Permissions([PermissionEnum.STORIES_VIEW])
   async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
     const output = await this.queryBus.execute(
       new FindOneStoryQuery(id, request.user),
@@ -143,6 +145,7 @@ export class MasterStoryController {
   }
 
   @Get(':id/members')
+  @Permissions([PermissionEnum.STORIES_VIEW])
   async paginateMembers(
     @Param('id') id: string,
     @Query() query: PaginateStoryMembersInput,
@@ -159,6 +162,7 @@ export class MasterStoryController {
   }
 
   @Get(':id/available-users')
+  @Permissions([PermissionEnum.STORIES_VIEW])
   async paginateAvailableUsers(
     @Param('id') id: string,
     @Query() query: PaginateAvailableStoryUsersInput,

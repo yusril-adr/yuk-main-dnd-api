@@ -50,6 +50,7 @@ export class MasterRoleController {
   }
 
   @Get()
+  @Permissions([PermissionEnum.ROLES_VIEW])
   async paginate(
     @Request() request: TRequestUser,
     @Query() query: PaginateRolesInput,
@@ -66,6 +67,7 @@ export class MasterRoleController {
   }
 
   @Get('options')
+  @Permissions([PermissionEnum.ROLES_VIEW])
   async paginateOptions(@Query() query: PaginateRoleOptionsInput) {
     const output = await this.queryBus.execute(
       new PaginateRoleOptionsQuery(query),
@@ -79,6 +81,7 @@ export class MasterRoleController {
   }
 
   @Get(':id')
+  @Permissions([PermissionEnum.ROLES_VIEW])
   async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
     const output = await this.queryBus.execute(
       new FindOneRoleQuery(id, request.user),

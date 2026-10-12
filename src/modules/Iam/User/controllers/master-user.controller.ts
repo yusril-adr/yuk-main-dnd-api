@@ -58,6 +58,7 @@ export class MasterUserController {
   }
 
   @Get()
+  @Permissions([PermissionEnum.USERS_VIEW])
   async paginate(
     @Request() request: TRequestUser,
     @Query() query: PaginateUsersInput,
@@ -74,6 +75,7 @@ export class MasterUserController {
   }
 
   @Get('options')
+  @Permissions([PermissionEnum.USERS_VIEW])
   async paginateOptions(@Query() query: PaginateUserOptionsInput) {
     const output = await this.queryBus.execute(
       new PaginateUserOptionsQuery(query),
@@ -87,6 +89,7 @@ export class MasterUserController {
   }
 
   @Get(':id')
+  @Permissions([PermissionEnum.USERS_VIEW])
   async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
     const output = await this.queryBus.execute(
       new FindOneUserQuery(id, request.user),
@@ -114,6 +117,7 @@ export class MasterUserController {
   }
 
   @Get(':id/experience-points')
+  @Permissions([PermissionEnum.POINTS_VIEW])
   async paginateExperiencePoints(
     @Param('id') id: string,
     @Query() query: PaginateUserExperiencePointsInput,
@@ -147,6 +151,7 @@ export class MasterUserController {
   }
 
   @Get(':id/points')
+  @Permissions([PermissionEnum.POINTS_VIEW])
   async paginatePoints(
     @Param('id') id: string,
     @Query() query: PaginateUserPointsInput,
