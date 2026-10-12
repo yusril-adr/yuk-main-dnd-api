@@ -1,15 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NotFoundException } from '@nestjs/common';
-import { PermissionEnum } from '@shared/enums/permission.enum';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { RemoveStoryCommand } from './remove-story.command';
 
 @CommandHandler(RemoveStoryCommand)
 export class RemoveStoryHandler implements ICommandHandler<RemoveStoryCommand> {
   constructor(
     private readonly storyRepository: StoryRepository,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: RemoveStoryCommand): Promise<void> {
@@ -23,11 +22,9 @@ export class RemoveStoryHandler implements ICommandHandler<RemoveStoryCommand> {
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_DELETE,
-    );
+    if (!this.storyMasterActionService.isCanDelete(story, user)) {
+      throw new ForbiddenException('Story cannot be deleted');
+    }
 
     await this.storyRepository.softDelete(id);
   }

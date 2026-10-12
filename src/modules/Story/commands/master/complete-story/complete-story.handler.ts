@@ -1,18 +1,20 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Story } from '@entities/main/story/story.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { UserBalanceService } from '@modules/Iam/User/services/user-balance.service';
-import { PermissionEnum } from '@shared/enums/permission.enum';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserPointLogTypeEnum } from '@shared/enums/user-point-log-type.enum';
 import { StoryMemberStatusEnum } from '../../../enums/story-member-status.enum';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryService } from '../../../services/story.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { CompleteStoryCommand } from './complete-story.command';
 
 @CommandHandler(CompleteStoryCommand)
@@ -21,8 +23,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
     private readonly dataSource: DataSource,
     private readonly storyRepository: StoryRepository,
     private readonly userRepository: UserRepository,
-    private readonly storyService: StoryService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
     private readonly userBalanceService: UserBalanceService,
   ) {}
 
@@ -37,20 +38,8 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-
-    if (this.storyService.isCancelledStory(story)) {
-      throw new BadRequestException('Cancelled stories cannot be completed');
-    }
-    if (story.status === StoryStatusEnum.COMPLETED) {
-      throw new BadRequestException('Story is already completed');
-    }
-    if (story.status !== StoryStatusEnum.PUBLISHED) {
-      throw new BadRequestException('Only published stories can be completed');
+    if (!this.storyMasterActionService.isCanComplete(story, user)) {
+      throw new ForbiddenException('Story cannot be completed');
     }
 
     const uniqueUserIds = [...new Set(params.userIds)];

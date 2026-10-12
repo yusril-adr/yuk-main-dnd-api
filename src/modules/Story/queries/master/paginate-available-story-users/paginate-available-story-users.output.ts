@@ -4,11 +4,13 @@ export class PaginateAvailableStoryUsersItemOutput {
   id: string;
   displayName: string;
   avatarUrl: string | null;
+  username?: string | null;
 
   constructor(user: TUser, avatarUrl?: string | null) {
     this.id = user.id;
     this.displayName = user.displayName;
     this.avatarUrl = avatarUrl ?? null;
+    this.username = user.username;
   }
 }
 

@@ -1,15 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PermissionEnum } from '@shared/enums/permission.enum';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { UnarchiveStoryCommand } from './unarchive-story.command';
 
 @CommandHandler(UnarchiveStoryCommand)
 export class UnarchiveStoryHandler implements ICommandHandler<UnarchiveStoryCommand> {
   constructor(
     private readonly storyRepository: StoryRepository,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: UnarchiveStoryCommand): Promise<void> {
@@ -23,19 +22,11 @@ export class UnarchiveStoryHandler implements ICommandHandler<UnarchiveStoryComm
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-
-    if (!story.statusBefore) {
-      throw new BadRequestException(
-        'Story has no previous status to restore to',
-      );
+    if (!this.storyMasterActionService.isCanUnarchive(story, user)) {
+      throw new ForbiddenException('Story cannot be unarchived');
     }
 
-    story.status = story.statusBefore;
+    story.status = story.statusBefore!;
     story.statusBefore = null;
 
     await this.storyRepository.save(story);

@@ -1,14 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
-import { PermissionEnum } from '@shared/enums/permission.enum';
-import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
 import { StoryService } from '../../../services/story.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { UpdateStoryCommand } from './update-story.command';
 
 @CommandHandler(UpdateStoryCommand)
@@ -17,7 +15,7 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
     private readonly dataSource: DataSource,
     private readonly storyRepository: StoryRepository,
     private readonly storyService: StoryService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: UpdateStoryCommand): Promise<void> {
@@ -31,16 +29,8 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      storyEntity,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-    if (this.storyService.isCancelledStory(storyEntity)) {
-      throw new BadRequestException('Cancelled stories cannot be updated');
-    }
-    if (storyEntity.status === StoryStatusEnum.COMPLETED) {
-      throw new BadRequestException('Completed stories cannot be updated');
+    if (!this.storyMasterActionService.isCanUpdate(storyEntity, user)) {
+      throw new ForbiddenException('Story cannot be updated');
     }
 
     const { startAt, bannerFileId, ...storyPayload } = params;

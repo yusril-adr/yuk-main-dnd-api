@@ -1,13 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
-import { PermissionEnum } from '@shared/enums/permission.enum';
-import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryService } from '../../../services/story.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { RemoveStoryMembersCommand } from './remove-story-members.command';
 
 @CommandHandler(RemoveStoryMembersCommand)
@@ -16,8 +13,7 @@ export class RemoveStoryMembersHandler implements ICommandHandler<RemoveStoryMem
     private readonly dataSource: DataSource,
     private readonly storyRepository: StoryRepository,
     private readonly userRepository: UserRepository,
-    private readonly storyService: StoryService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: RemoveStoryMembersCommand): Promise<void> {
@@ -31,16 +27,8 @@ export class RemoveStoryMembersHandler implements ICommandHandler<RemoveStoryMem
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-    if (this.storyService.isCancelledStory(story)) {
-      throw new BadRequestException('Cancelled stories cannot modify members');
-    }
-    if (story.status === StoryStatusEnum.COMPLETED) {
-      throw new BadRequestException('Completed stories cannot modify members');
+    if (!this.storyMasterActionService.isCanRemoveMembers(story, user)) {
+      throw new ForbiddenException('Story members cannot be removed');
     }
 
     const uniqueUserIds = [...new Set(params.userIds)];

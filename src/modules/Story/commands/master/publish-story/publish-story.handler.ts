@@ -1,18 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PermissionEnum } from '@shared/enums/permission.enum';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryService } from '../../../services/story.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { PublishStoryCommand } from './publish-story.command';
 
 @CommandHandler(PublishStoryCommand)
 export class PublishStoryHandler implements ICommandHandler<PublishStoryCommand> {
   constructor(
     private readonly storyRepository: StoryRepository,
-    private readonly storyService: StoryService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: PublishStoryCommand): Promise<void> {
@@ -26,17 +23,8 @@ export class PublishStoryHandler implements ICommandHandler<PublishStoryCommand>
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-    if (this.storyService.isCancelledStory(story)) {
-      throw new BadRequestException('Cancelled stories cannot be published');
-    }
-
-    if (story.status !== StoryStatusEnum.DRAFT) {
-      throw new BadRequestException('Only draft stories can be published');
+    if (!this.storyMasterActionService.isCanPublish(story, user)) {
+      throw new ForbiddenException('Story cannot be published');
     }
 
     story.statusBefore = story.status;

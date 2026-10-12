@@ -32,7 +32,6 @@ export class FindOneStoryHandler implements IQueryHandler<
     }
 
     const actionList: TStoryMasterDetailActionList = {
-      isCanCreate: this.storyMasterActionService.isCanCreate(user),
       isCanUpdate: this.storyMasterActionService.isCanUpdate(story, user),
       isCanPublish: this.storyMasterActionService.isCanPublish(story, user),
       isCanComplete: this.storyMasterActionService.isCanComplete(story, user),

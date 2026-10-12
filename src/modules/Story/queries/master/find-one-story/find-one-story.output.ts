@@ -2,7 +2,6 @@ import type { TStory } from '@entities/main/story/story.entity';
 import { StoryEntityDto } from '@shared/dtos/entities/story/story.entity.dto';
 
 export type TStoryMasterDetailActionList = {
-  isCanCreate: boolean;
   isCanUpdate: boolean;
   isCanPublish: boolean;
   isCanComplete: boolean;

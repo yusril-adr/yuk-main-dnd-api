@@ -1,18 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PermissionEnum } from '@shared/enums/permission.enum';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryService } from '../../../services/story.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { CancelStoryCommand } from './cancel-story.command';
 
 @CommandHandler(CancelStoryCommand)
 export class CancelStoryHandler implements ICommandHandler<CancelStoryCommand> {
   constructor(
     private readonly storyRepository: StoryRepository,
-    private readonly storyService: StoryService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: CancelStoryCommand): Promise<void> {
@@ -26,17 +23,8 @@ export class CancelStoryHandler implements ICommandHandler<CancelStoryCommand> {
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-
-    if (this.storyService.isCancelledStory(story)) {
-      throw new BadRequestException('Story is already cancelled');
-    }
-    if (story.status !== StoryStatusEnum.PUBLISHED) {
-      throw new BadRequestException('Only published stories can be cancelled');
+    if (!this.storyMasterActionService.isCanCancel(story, user)) {
+      throw new ForbiddenException('Story cannot be cancelled');
     }
 
     story.status = StoryStatusEnum.CANCELLED;

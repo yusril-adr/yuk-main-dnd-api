@@ -1,16 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PermissionEnum } from '@shared/enums/permission.enum';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { ArchiveStoryCommand } from './archive-story.command';
 
 @CommandHandler(ArchiveStoryCommand)
 export class ArchiveStoryHandler implements ICommandHandler<ArchiveStoryCommand> {
   constructor(
     private readonly storyRepository: StoryRepository,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: ArchiveStoryCommand): Promise<void> {
@@ -24,13 +23,8 @@ export class ArchiveStoryHandler implements ICommandHandler<ArchiveStoryCommand>
       throw new NotFoundException(`Story with id ${id} not found`);
     }
 
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
-    if (story.status === StoryStatusEnum.ARCHIVED) {
-      throw new BadRequestException('Story is already archived');
+    if (!this.storyMasterActionService.isCanArchive(story, user)) {
+      throw new ForbiddenException('Story cannot be archived');
     }
 
     story.statusBefore = story.status;

@@ -1,9 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ForbiddenException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { StoryService } from '../../../services/story.service';
+import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { CreateStoryCommand } from './create-story.command';
 
 @CommandHandler(CreateStoryCommand)
@@ -11,10 +13,15 @@ export class CreateStoryHandler implements ICommandHandler<CreateStoryCommand> {
   constructor(
     private readonly dataSource: DataSource,
     private readonly storyService: StoryService,
+    private readonly storyMasterActionService: StoryMasterActionService,
   ) {}
 
   async execute(command: CreateStoryCommand): Promise<void> {
     const { params, user } = command;
+    if (!this.storyMasterActionService.isCanCreate(user)) {
+      throw new ForbiddenException('Story cannot be created');
+    }
+
     const slug = await this.storyService.generateUniqueSlug(params.title);
     const { startAt, bannerFileId, ...storyPayload } = params;
 
