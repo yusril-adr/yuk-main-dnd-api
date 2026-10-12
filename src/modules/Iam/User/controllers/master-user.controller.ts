@@ -56,8 +56,13 @@ export class MasterUserController {
   }
 
   @Get()
-  async paginate(@Query() query: PaginateUsersInput) {
-    const output = await this.queryBus.execute(new PaginateUsersQuery(query));
+  async paginate(
+    @Request() request: TRequestUser,
+    @Query() query: PaginateUsersInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateUsersQuery(query, request.user),
+    );
     return wrapper.paginationResponse({
       data: output.data,
       count: output.count,
@@ -67,8 +72,10 @@ export class MasterUserController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const output = await this.queryBus.execute(new FindOneUserQuery(id));
+  async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
+    const output = await this.queryBus.execute(
+      new FindOneUserQuery(id, request.user),
+    );
     return wrapper.response({
       data: output,
       message: 'User retrieved successfully',

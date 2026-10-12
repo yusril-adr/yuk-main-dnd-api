@@ -1,6 +1,7 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { StorageService } from '@modules/Global/services/storage.service';
+import { UserPermissionService } from '../../../services/user-permission.service';
 import { UserRepository } from '../../../repositories/user.repository';
 import { FindOneUserQuery } from './find-one-user.query';
 import { FindOneUserOutput } from './find-one-user.output';
@@ -12,6 +13,7 @@ export class FindOneUserHandler implements IQueryHandler<
 > {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly userPermissionService: UserPermissionService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -33,6 +35,7 @@ export class FindOneUserHandler implements IQueryHandler<
       ? this.storageService.getPublicUrlSync(user.avatarFile)
       : undefined;
 
-    return new FindOneUserOutput(user, avatarUrl);
+    const actionList = this.userPermissionService.resolveActionList(query.user);
+    return new FindOneUserOutput(user, actionList, avatarUrl);
   }
 }

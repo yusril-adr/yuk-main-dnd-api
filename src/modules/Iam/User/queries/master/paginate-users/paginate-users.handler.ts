@@ -8,6 +8,7 @@ import {
   mergeWhereConditions,
 } from '@shared/utils/common';
 import { StorageService } from '@modules/Global/services/storage.service';
+import { UserPermissionService } from '../../../services/user-permission.service';
 import { UserRepository } from '../../../repositories/user.repository';
 import { PaginateUsersQuery } from './paginate-users.query';
 import { PaginateUsersOutput } from './paginate-users.output';
@@ -20,6 +21,7 @@ export class PaginateUsersHandler implements IQueryHandler<
 > {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly userPermissionService: UserPermissionService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -49,8 +51,9 @@ export class PaginateUsersHandler implements IQueryHandler<
     );
 
     const count = await this.userRepository.count(findOptions);
+    const actionList = this.userPermissionService.resolveActionList(query.user);
 
-    return new PaginateUsersOutput(users, avatarUrls, count);
+    return new PaginateUsersOutput(users, avatarUrls, actionList, count);
   }
 
   private searchQuery(
