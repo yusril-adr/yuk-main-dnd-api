@@ -1,6 +1,11 @@
 import type { TUser } from '@entities/main/iam/user.entity';
 import { UserEntityDto } from '@shared/dtos/entities/iam/user.entity.dto';
-import type { TUserActionList } from '../../../types/user-action-list.type';
+
+export type TUserActionList = {
+  isCanUpdate: boolean;
+  isCanDelete: boolean;
+  isCanViewBalances: boolean;
+};
 
 export class PaginateUsersItemOutput extends UserEntityDto {
   actionList: TUserActionList;

@@ -3,12 +3,12 @@ import { FindManyOptions, FindOptionsWhere, ILike, In } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { User } from '@entities/main/iam/user.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
+import { PermissionEnum } from '@shared/enums/permission.enum';
 import {
   mergeEachWhereConditions,
   mergeWhereConditions,
 } from '@shared/utils/common';
 import { StorageService } from '@modules/Global/services/storage.service';
-import { UserPermissionService } from '../../../services/user-permission.service';
 import { UserRepository } from '../../../repositories/user.repository';
 import { PaginateUsersQuery } from './paginate-users.query';
 import { PaginateUsersOutput } from './paginate-users.output';
@@ -21,7 +21,6 @@ export class PaginateUsersHandler implements IQueryHandler<
 > {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly userPermissionService: UserPermissionService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -51,7 +50,14 @@ export class PaginateUsersHandler implements IQueryHandler<
     );
 
     const count = await this.userRepository.count(findOptions);
-    const actionList = this.userPermissionService.resolveActionList(query.user);
+    const permissionKeys = new Set(
+      Array.isArray(query.user.permissions) ? query.user.permissions : [],
+    );
+    const actionList = {
+      isCanUpdate: permissionKeys.has(PermissionEnum.USERS_UPDATE),
+      isCanDelete: permissionKeys.has(PermissionEnum.USERS_DELETE),
+      isCanViewBalances: permissionKeys.has(PermissionEnum.POINTS_VIEW),
+    };
 
     return new PaginateUsersOutput(users, avatarUrls, actionList, count);
   }

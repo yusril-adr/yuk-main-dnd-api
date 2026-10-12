@@ -11,7 +11,6 @@ import { MasterUserController } from './controllers/master-user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
 import { UserBalanceService } from './services/user-balance.service';
-import { UserPermissionService } from './services/user-permission.service';
 import { CreateUserHandler } from './commands/master/create-user/create-user.handler';
 import { UpdateUserHandler } from './commands/master/update-user/update-user.handler';
 import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
@@ -57,7 +56,6 @@ const queryHandlers = [
     UserRepository,
     UserService,
     UserBalanceService,
-    UserPermissionService,
     ...commandHandlers,
     ...queryHandlers,
   ],
