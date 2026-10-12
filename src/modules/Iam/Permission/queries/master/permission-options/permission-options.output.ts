@@ -1,10 +1,18 @@
 import type { TPermission } from '@entities/main/iam/permission.entity';
-import { PermissionEntityDto } from '@shared/dtos/entities/iam/permission.entity.dto';
+import type { TPermissionEntityDto } from '@shared/dtos/entities/iam/permission.entity.dto';
 
-export class PermissionOptionsItemOutput extends PermissionEntityDto {
+export class PermissionOptionsItemOutput implements Pick<
+  TPermissionEntityDto,
+  'id' | 'module' | 'action'
+> {
+  id: string;
+  module: string;
+  action: string;
+
   constructor(payload: TPermission) {
-    super();
-    this.parseEntity(payload);
+    this.id = payload.id;
+    this.module = payload.module;
+    this.action = payload.action;
   }
 }
 
