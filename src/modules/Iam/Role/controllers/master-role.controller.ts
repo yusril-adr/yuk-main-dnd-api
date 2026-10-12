@@ -9,11 +9,13 @@ import {
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
 import { Permissions } from '@shared/decorators/permissions.decorator';
 import { PermissionEnum } from '@shared/enums/permission.enum';
+import type { TRequestUser } from '@shared/types/request.type';
 import { CreateRoleCommand } from '../commands/master/create-role/create-role.command';
 import { CreateRoleInput } from '../commands/master/create-role/create-role.input';
 import { UpdateRoleCommand } from '../commands/master/update-role/update-role.command';
@@ -46,8 +48,13 @@ export class MasterRoleController {
   }
 
   @Get()
-  async paginate(@Query() query: PaginateRolesInput) {
-    const output = await this.queryBus.execute(new PaginateRolesQuery(query));
+  async paginate(
+    @Request() request: TRequestUser,
+    @Query() query: PaginateRolesInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateRolesQuery(query, request.user),
+    );
     return wrapper.paginationResponse({
       data: output.data,
       count: output.count,
@@ -57,8 +64,10 @@ export class MasterRoleController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const output = await this.queryBus.execute(new FindOneRoleQuery(id));
+  async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
+    const output = await this.queryBus.execute(
+      new FindOneRoleQuery(id, request.user),
+    );
     return wrapper.response({
       data: output,
       message: 'Role retrieved successfully',

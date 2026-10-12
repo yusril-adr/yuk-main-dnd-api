@@ -1,5 +1,6 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
+import { PermissionEnum } from '@shared/enums/permission.enum';
 import { RoleRepository } from '../../../repositories/role.repository';
 import { FindOneRoleQuery } from './find-one-role.query';
 import { FindOneRoleOutput } from './find-one-role.output';
@@ -22,6 +23,13 @@ export class FindOneRoleHandler implements IQueryHandler<
       throw new NotFoundException(`Role with id ${id} not found`);
     }
 
-    return new FindOneRoleOutput(role);
+    const permissionKeys = new Set(
+      Array.isArray(query.user.permissions) ? query.user.permissions : [],
+    );
+    const actionList = {
+      isCanUpdate: permissionKeys.has(PermissionEnum.ROLES_UPDATE),
+      isCanDelete: permissionKeys.has(PermissionEnum.ROLES_DELETE),
+    };
+    return new FindOneRoleOutput(role, actionList);
   }
 }

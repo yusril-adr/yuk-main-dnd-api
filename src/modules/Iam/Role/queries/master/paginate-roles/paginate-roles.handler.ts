@@ -2,6 +2,7 @@ import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { camelCase } from 'typeorm/util/StringUtils';
 import { Role } from '@entities/main/iam/role.entity';
+import { PermissionEnum } from '@shared/enums/permission.enum';
 import {
   mergeEachWhereConditions,
   mergeWhereConditions,
@@ -39,7 +40,14 @@ export class PaginateRolesHandler implements IQueryHandler<
       this.roleRepository.count(findOptions),
     ]);
 
-    return new PaginateRolesOutput(roles, count);
+    const permissionKeys = new Set(
+      Array.isArray(query.user.permissions) ? query.user.permissions : [],
+    );
+    const actionList = {
+      isCanUpdate: permissionKeys.has(PermissionEnum.ROLES_UPDATE),
+      isCanDelete: permissionKeys.has(PermissionEnum.ROLES_DELETE),
+    };
+    return new PaginateRolesOutput(roles, actionList, count);
   }
 
   private searchQuery(
