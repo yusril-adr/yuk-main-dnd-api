@@ -27,6 +27,8 @@ import { AddUserPointsCommand } from '../commands/master/add-user-points/add-use
 import { AddUserPointsInput } from '../commands/master/add-user-points/add-user-points.input';
 import { PaginateUsersQuery } from '../queries/master/paginate-users/paginate-users.query';
 import { PaginateUsersInput } from '../queries/master/paginate-users/paginate-users.input';
+import { PaginateUserOptionsQuery } from '../queries/master/paginate-user-options/paginate-user-options.query';
+import { PaginateUserOptionsInput } from '../queries/master/paginate-user-options/paginate-user-options.input';
 import { FindOneUserQuery } from '../queries/master/find-one-user/find-one-user.query';
 import { PaginateUserExperiencePointsQuery } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.query';
 import { PaginateUserExperiencePointsInput } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.input';
@@ -68,6 +70,19 @@ export class MasterUserController {
       count: output.count,
       query,
       message: 'Users retrieved successfully',
+    });
+  }
+
+  @Get('options')
+  async paginateOptions(@Query() query: PaginateUserOptionsInput) {
+    const output = await this.queryBus.execute(
+      new PaginateUserOptionsQuery(query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'User options retrieved successfully',
     });
   }
 

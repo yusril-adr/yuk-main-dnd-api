@@ -17,6 +17,7 @@ import { RemoveUserHandler } from './commands/master/remove-user/remove-user.han
 import { AddUserExperiencePointsHandler } from './commands/master/add-user-experience-points/add-user-experience-points.handler';
 import { AddUserPointsHandler } from './commands/master/add-user-points/add-user-points.handler';
 import { PaginateUsersHandler } from './queries/master/paginate-users/paginate-users.handler';
+import { PaginateUserOptionsHandler } from './queries/master/paginate-user-options/paginate-user-options.handler';
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
 import { PaginateUserExperiencePointsHandler } from './queries/master/paginate-user-experience-points/paginate-user-experience-points.handler';
 import { PaginateUserPointsHandler } from './queries/master/paginate-user-points/paginate-user-points.handler';
@@ -32,6 +33,7 @@ const commandHandlers = [
 ];
 const queryHandlers = [
   PaginateUsersHandler,
+  PaginateUserOptionsHandler,
   FindOneUserHandler,
   PaginateUserExperiencePointsHandler,
   PaginateUserPointsHandler,
