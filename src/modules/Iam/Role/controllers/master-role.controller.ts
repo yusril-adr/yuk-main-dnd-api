@@ -23,6 +23,8 @@ import { UpdateRoleInput } from '../commands/master/update-role/update-role.inpu
 import { RemoveRoleCommand } from '../commands/master/remove-role/remove-role.command';
 import { PaginateRolesQuery } from '../queries/master/paginate-roles/paginate-roles.query';
 import { PaginateRolesInput } from '../queries/master/paginate-roles/paginate-roles.input';
+import { PaginateRoleOptionsQuery } from '../queries/master/paginate-role-options/paginate-role-options.query';
+import { PaginateRoleOptionsInput } from '../queries/master/paginate-role-options/paginate-role-options.input';
 import { FindOneRoleQuery } from '../queries/master/find-one-role/find-one-role.query';
 
 @Controller({
@@ -60,6 +62,19 @@ export class MasterRoleController {
       count: output.count,
       query,
       message: 'Roles retrieved successfully',
+    });
+  }
+
+  @Get('options')
+  async paginateOptions(@Query() query: PaginateRoleOptionsInput) {
+    const output = await this.queryBus.execute(
+      new PaginateRoleOptionsQuery(query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Role options retrieved successfully',
     });
   }
 

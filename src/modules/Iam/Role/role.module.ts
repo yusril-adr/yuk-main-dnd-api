@@ -12,6 +12,7 @@ import { CreateRoleHandler } from './commands/master/create-role/create-role.han
 import { UpdateRoleHandler } from './commands/master/update-role/update-role.handler';
 import { RemoveRoleHandler } from './commands/master/remove-role/remove-role.handler';
 import { PaginateRolesHandler } from './queries/master/paginate-roles/paginate-roles.handler';
+import { PaginateRoleOptionsHandler } from './queries/master/paginate-role-options/paginate-role-options.handler';
 import { FindOneRoleHandler } from './queries/master/find-one-role/find-one-role.handler';
 
 const commandHandlers = [
@@ -19,7 +20,11 @@ const commandHandlers = [
   UpdateRoleHandler,
   RemoveRoleHandler,
 ];
-const queryHandlers = [PaginateRolesHandler, FindOneRoleHandler];
+const queryHandlers = [
+  PaginateRolesHandler,
+  PaginateRoleOptionsHandler,
+  FindOneRoleHandler,
+];
 
 @Module({
   imports: [
