@@ -54,21 +54,12 @@ export class PaginateStoriesHandler implements IQueryHandler<
     );
 
     const actionLists: TStoryMasterActionList[] = stories.map((story) => ({
-      isCanCreate: this.storyMasterActionService.isCanCreate(user),
       isCanUpdate: this.storyMasterActionService.isCanUpdate(story, user),
       isCanPublish: this.storyMasterActionService.isCanPublish(story, user),
       isCanCancel: this.storyMasterActionService.isCanCancel(story, user),
       isCanArchive: this.storyMasterActionService.isCanArchive(story, user),
       isCanUnarchive: this.storyMasterActionService.isCanUnarchive(story, user),
       isCanDelete: this.storyMasterActionService.isCanDelete(story, user),
-      isCanAddMembers: this.storyMasterActionService.isCanAddMembers(
-        story,
-        user,
-      ),
-      isCanRemoveMembers: this.storyMasterActionService.isCanRemoveMembers(
-        story,
-        user,
-      ),
     }));
 
     return new PaginateStoriesOutput(

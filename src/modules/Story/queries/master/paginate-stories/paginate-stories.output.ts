@@ -2,15 +2,12 @@ import type { TStory } from '@entities/main/story/story.entity';
 import { StoryEntityDto } from '@shared/dtos/entities/story/story.entity.dto';
 
 export type TStoryMasterActionList = {
-  isCanCreate: boolean;
   isCanUpdate: boolean;
   isCanPublish: boolean;
   isCanCancel: boolean;
   isCanArchive: boolean;
   isCanUnarchive: boolean;
   isCanDelete: boolean;
-  isCanAddMembers: boolean;
-  isCanRemoveMembers: boolean;
 };
 
 export class PaginateStoriesItemOutput extends StoryEntityDto {
