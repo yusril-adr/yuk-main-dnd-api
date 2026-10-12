@@ -1,7 +1,7 @@
 # workflow
 - Plan before implementing code changes — write a plan first, get approval, then implement. User corrected the assistant for jumping straight into execution without a plan. Confidence: 0.85
 - Keep the plan file up-to-date throughout implementation — update it proactively (not just on request) as steps are completed or when scope changes. User called the assistant "lazy" for not updating the plan before proceeding with work. Confidence: 0.85
-- When refactoring (e.g., to CQRS), preserve existing API behavior exactly — same return values, same HTTP status codes, same response shapes. Flag and fix any behavioral drift immediately. Confidence: 0.85
+- When refactoring (e.g., to CQRS), preserve existing API behavior exactly — same return values, same HTTP status codes, same response shapes. Flag and fix any behavioral drift immediately. Exception: when a design trade-off is surfaced, the user may deliberately accept changed error responses (dropping the 403/400 split and granular messages) in exchange for simpler validation design — flag the drift and let them choose. Confidence: 0.85
 - When asked to see the plan again (e.g., after a missclick), re-present the full plan in detail rather than just a one-line summary. Confidence: 0.55
 - Treats `docs/db.dbml` and TypeORM entities as kept in sync bidirectionally — when changing a column property (e.g., nullability), update both the DBML and entity together, not just one side. Confidence: 0.75
 - New non-relational columns (integers, strings) should default to `not null` in both DBML and TypeORM entity, unless the user explicitly says otherwise. Confidence: 0.65
@@ -16,3 +16,5 @@
 - Enforces cross-module consistency — when one module (e.g., Role) establishes a pattern, all sibling modules (e.g., Permission) should be standardized to match. When asked to standardize, identify the reference module and replicate its exact pattern. Confidence: 0.85
 - When asked to standardize a module to match a reference module, analyze ALL layers (controller, handler, output, decorators, bus types) — not just outputs and handlers. User had to redirect the assistant to also check the controller layer when the initial plan missed it. Confidence: 0.75
 - Automate pre-commit quality gates with Husky — set up a `.husky/pre-commit` hook that runs `npm run build && npm run lint` so validation happens on every commit, not just manual checks. Confidence: 0.85
+- Exclude the auto-managed `.commandcode/taste/` directory from commits — stage and commit only the feature/source files, leaving taste files uncommitted. Confidence: 0.60
+- Terse commit commands ("commit", "commit again") mean: inspect the working tree/diff first, figure out what changed (often the user's own IDE edits), write a commit message that accurately describes those changes, and commit scoped to the relevant files — no follow-up questions needed. Confidence: 0.75
