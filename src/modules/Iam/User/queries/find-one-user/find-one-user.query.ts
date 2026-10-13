@@ -1,3 +1,3 @@
-export class FindOnePublicUserQuery {
+export class FindOneUserQuery {
   constructor(public readonly identifier: string) {}
 }

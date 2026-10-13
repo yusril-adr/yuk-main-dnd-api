@@ -7,7 +7,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { isUUID } from 'class-validator';
+import {
+  And,
+  EntityManager,
+  Equal,
+  FindOneOptions,
+  FindOperator,
+  Raw,
+  Repository,
+} from 'typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '@entities/main/iam/user.entity';
 import { Role } from '@entities/main/iam/role.entity';
@@ -175,7 +184,48 @@ export class UserService {
     return undefined;
   }
 
+  async findPublicByIdentifier(
+    identifier: string,
+    options?: Pick<FindOneOptions<User>, 'relations'>,
+  ): Promise<User> {
+    if (isUUID(identifier)) {
+      const userById = await this.userRepository.findOne({
+        where: { id: And(Equal(identifier), visiblePublicUser()) },
+        relations: options?.relations,
+      });
+      if (userById) {
+        return userById;
+      }
+    }
+
+    const userByUsername = await this.userRepository.findOne({
+      where: {
+        id: visiblePublicUser(),
+        username: Raw((alias) => `LOWER(${alias}) = LOWER(:username)`, {
+          username: identifier.trim(),
+        }),
+      },
+      relations: options?.relations,
+    });
+    if (!userByUsername) {
+      throw new NotFoundException(
+        `User with identifier ${identifier} not found`,
+      );
+    }
+
+    return userByUsername;
+  }
+
   generateUserId(): string {
     return randomUUID();
   }
+}
+
+// A userRoles where joins roles into the page query. take, skip, and count
+// then count join rows, so two public roles become two slots.
+export function visiblePublicUser(): FindOperator<string> {
+  return Raw(
+    (alias) =>
+      `EXISTS (SELECT 1 FROM user_roles ur INNER JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = ${alias} AND r.is_show_in_public = true AND ur.deleted_at IS NULL AND r.deleted_at IS NULL)`,
+  );
 }

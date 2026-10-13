@@ -1,17 +1,9 @@
 import { Type } from 'class-transformer';
-import {
-  IsInt,
-  IsOptional,
-  IsString,
-  Max,
-  MaxLength,
-  Min,
-} from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
-export class PaginatePublicUsersInput {
+export class PaginateUsersInput {
   @IsOptional()
   @IsString()
-  @MaxLength(100)
   search?: string;
 
   @IsOptional()

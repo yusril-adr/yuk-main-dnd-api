@@ -2,9 +2,9 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Public } from '@shared/decorators/public.decorator';
 import * as wrapper from '@shared/utils/wrapper';
-import { PaginatePublicUsersInput } from '../queries/paginate-public-users/paginate-public-users.input';
-import { PaginatePublicUsersQuery } from '../queries/paginate-public-users/paginate-public-users.query';
-import { FindOnePublicUserQuery } from '../queries/find-one-public-user/find-one-public-user.query';
+import { PaginateUsersQuery } from '../queries/paginate-users/paginate-users.query';
+import { PaginateUsersInput } from '../queries/paginate-users/paginate-users.input';
+import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
 
 @Controller({
   path: 'users',
@@ -15,14 +15,12 @@ export class UserController {
 
   @Get()
   @Public()
-  async paginate(@Query() query: PaginatePublicUsersInput) {
-    const output = await this.queryBus.execute(
-      new PaginatePublicUsersQuery(query),
-    );
+  async paginate(@Query() query: PaginateUsersInput) {
+    const output = await this.queryBus.execute(new PaginateUsersQuery(query));
     return wrapper.paginationResponse({
       data: output.data,
       count: output.count,
-      query: { page: query.page, perPage: query.perPage },
+      query,
       message: 'Users retrieved successfully',
     });
   }
@@ -31,7 +29,7 @@ export class UserController {
   @Public()
   async findOne(@Param('identifier') identifier: string) {
     const output = await this.queryBus.execute(
-      new FindOnePublicUserQuery(identifier),
+      new FindOneUserQuery(identifier),
     );
     return wrapper.response({
       data: output,
