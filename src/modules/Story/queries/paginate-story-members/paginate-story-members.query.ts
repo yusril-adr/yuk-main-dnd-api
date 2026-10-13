@@ -2,7 +2,7 @@ import { PaginateStoryMembersInput } from './paginate-story-members.input';
 
 export class PaginateStoryMembersQuery {
   constructor(
-    public readonly id: string,
+    public readonly identifier: string,
     public readonly params: PaginateStoryMembersInput,
   ) {}
 }

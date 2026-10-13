@@ -6,15 +6,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isUUID } from 'class-validator';
 import { randomBytes, randomUUID } from 'crypto';
-import { Repository } from 'typeorm';
+import { FindOneOptions, In, Repository } from 'typeorm';
 import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { StoryBannerPathService } from '@modules/Global/services/story-banner-path.service';
 import { StoryRepository } from '../repositories/story.repository';
-import { StoryStatusEnum } from '../enums/story-status.enum';
+import {
+  PUBLIC_STORY_STATUSES,
+  StoryStatusEnum,
+} from '../enums/story-status.enum';
 
 const STORY_SLUG_MAX_LENGTH = 180;
 const STORY_SLUG_SUFFIX_LENGTH = 6;
@@ -46,6 +50,35 @@ export class StoryService {
       (story.status === StoryStatusEnum.ARCHIVED &&
         story.statusBefore === StoryStatusEnum.CANCELLED)
     );
+  }
+
+  async findPublicByIdentifier(
+    identifier: string,
+    options?: Pick<FindOneOptions<Story>, 'relations'>,
+  ): Promise<Story> {
+    const publicStatus = In(PUBLIC_STORY_STATUSES);
+
+    if (isUUID(identifier)) {
+      const storyById = await this.storyRepository.findOne({
+        where: { id: identifier, status: publicStatus },
+        relations: options?.relations,
+      });
+      if (storyById) {
+        return storyById;
+      }
+    }
+
+    const storyBySlug = await this.storyRepository.findOne({
+      where: { slug: identifier.toLowerCase(), status: publicStatus },
+      relations: options?.relations,
+    });
+    if (!storyBySlug) {
+      throw new NotFoundException(
+        `Story with identifier ${identifier} not found`,
+      );
+    }
+
+    return storyBySlug;
   }
 
   async resolveBannerFile(

@@ -1,6 +1,6 @@
 export class FindOneStoryQuery {
   constructor(
-    public readonly id: string,
+    public readonly identifier: string,
     public readonly userId: string | null,
   ) {}
 }
