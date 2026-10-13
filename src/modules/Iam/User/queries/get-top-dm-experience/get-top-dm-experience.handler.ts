@@ -7,7 +7,7 @@ import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserRepository } from '../../repositories/user.repository';
 import { UserService, visiblePublicUserSql } from '../../services/user.service';
-import { parseUtcDate } from './get-top-dm-experience.input';
+import { parseUtcDate } from '../../utils/top-experience-range';
 import { GetTopDmExperienceOutput } from './get-top-dm-experience.output';
 import { GetTopDmExperienceQuery } from './get-top-dm-experience.query';
 

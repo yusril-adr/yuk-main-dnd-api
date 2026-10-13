@@ -23,6 +23,7 @@ import { PaginateUserOptionsHandler } from './queries/master/paginate-user-optio
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
 import { FindOneUserHandler as PublicFindOneUserHandler } from './queries/find-one-user/find-one-user.handler';
 import { GetTopDmExperienceHandler } from './queries/get-top-dm-experience/get-top-dm-experience.handler';
+import { GetTopPlayerExperienceHandler } from './queries/get-top-player-experience/get-top-player-experience.handler';
 import { PaginateUserExperiencePointsHandler } from './queries/master/paginate-user-experience-points/paginate-user-experience-points.handler';
 import { PaginateUserPointsHandler } from './queries/master/paginate-user-points/paginate-user-points.handler';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
@@ -44,6 +45,7 @@ const queryHandlers = [
   PublicPaginateUsersHandler,
   PublicFindOneUserHandler,
   GetTopDmExperienceHandler,
+  GetTopPlayerExperienceHandler,
 ];
 
 @Module({

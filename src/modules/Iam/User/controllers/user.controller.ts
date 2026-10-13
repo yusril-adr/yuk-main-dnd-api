@@ -6,6 +6,8 @@ import { PaginateUsersQuery } from '../queries/paginate-users/paginate-users.que
 import { PaginateUsersInput } from '../queries/paginate-users/paginate-users.input';
 import { GetTopDmExperienceQuery } from '../queries/get-top-dm-experience/get-top-dm-experience.query';
 import { GetTopDmExperienceInput } from '../queries/get-top-dm-experience/get-top-dm-experience.input';
+import { GetTopPlayerExperienceQuery } from '../queries/get-top-player-experience/get-top-player-experience.query';
+import { GetTopPlayerExperienceInput } from '../queries/get-top-player-experience/get-top-player-experience.input';
 import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
 
 @Controller({
@@ -36,6 +38,18 @@ export class UserController {
     return wrapper.response({
       data: output.data,
       message: 'Top dungeon masters retrieved successfully',
+    });
+  }
+
+  @Get('top-player-experience')
+  @Public()
+  async getTopPlayerExperience(@Query() query: GetTopPlayerExperienceInput) {
+    const output = await this.queryBus.execute(
+      new GetTopPlayerExperienceQuery(query),
+    );
+    return wrapper.response({
+      data: output.data,
+      message: 'Top players retrieved successfully',
     });
   }
 
