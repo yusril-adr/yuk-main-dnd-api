@@ -54,6 +54,27 @@ export class UserService {
     }
   }
 
+  async checkUsernameUniqueness(
+    username: string | null | undefined,
+    excludeUserId?: string,
+  ): Promise<void> {
+    const normalizedUsername = username?.trim();
+    if (!normalizedUsername) {
+      return;
+    }
+
+    const existing = await this.userRepository.findOne({
+      where: {
+        username: Raw((alias) => `LOWER(${alias}) = LOWER(:username)`, {
+          username: normalizedUsername,
+        }),
+      },
+    });
+    if (existing && existing.id !== excludeUserId) {
+      throw new ConflictException('A user with this username already exists');
+    }
+  }
+
   async assignRoles(
     manager: EntityManager,
     user: User,

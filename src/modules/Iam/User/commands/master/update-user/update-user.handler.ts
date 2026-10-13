@@ -32,6 +32,10 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
       await this.userService.checkEmailUniqueness(params.email, id);
     }
 
+    if (params.username) {
+      await this.userService.checkUsernameUniqueness(params.username, id);
+    }
+
     if (params.password) {
       params.password = await this.userService.hashPassword(params.password);
     }
