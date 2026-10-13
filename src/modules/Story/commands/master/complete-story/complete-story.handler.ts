@@ -46,9 +46,9 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
     if (uniqueUserIds.length > 0) {
       await this.userRepository.findAndValidateUserByIds(uniqueUserIds);
     }
-    if (story.maxMembers != null && uniqueUserIds.length > story.maxMembers) {
+    if (story.maxMembers != null && uniqueUserIds.length !== story.maxMembers) {
       throw new BadRequestException(
-        `Attended members cannot exceed max members of ${story.maxMembers}`,
+        `Attended members must equal max members of ${story.maxMembers}`,
       );
     }
     if (story.expAwarded < 0) {
