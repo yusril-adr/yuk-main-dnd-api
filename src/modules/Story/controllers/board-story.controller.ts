@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Request } from '@nestjs/common';
+import { Controller, Get, Param, Query, Request } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
 import { Permissions } from '@shared/decorators/permissions.decorator';
@@ -6,6 +6,7 @@ import { PermissionEnum } from '@shared/enums/permission.enum';
 import type { TRequestUser } from '@shared/types/request.type';
 import { PaginateStoriesQuery } from '../queries/board/paginate-stories/paginate-stories.query';
 import { PaginateStoriesInput } from '../queries/board/paginate-stories/paginate-stories.input';
+import { FindOneStoryQuery } from '../queries/board/find-one-story/find-one-story.query';
 
 @Controller({
   path: 'board/stories',
@@ -28,6 +29,18 @@ export class BoardStoryController {
       count: output.count,
       query,
       message: 'Stories retrieved successfully',
+    });
+  }
+
+  @Get(':id')
+  @Permissions([PermissionEnum.PLAYER_BOARD_VIEW])
+  async findOne(@Request() request: TRequestUser, @Param('id') id: string) {
+    const output = await this.queryBus.execute(
+      new FindOneStoryQuery(id, request.user),
+    );
+    return wrapper.response({
+      data: output,
+      message: 'Story retrieved successfully',
     });
   }
 }
