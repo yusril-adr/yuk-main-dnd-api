@@ -1,10 +1,16 @@
 import type { TUser } from '@entities/main/iam/user.entity';
 import {
   publicRoles,
+  type TPaginateUsersItemOutput,
   type TPublicUserRole,
 } from '../paginate-users/paginate-users.output';
 
-export class FindOneUserOutput {
+type TFindOneUserOutput = TPaginateUsersItemOutput & {
+  bio: string | null;
+  createdAt: string;
+};
+
+export class FindOneUserOutput implements TFindOneUserOutput {
   id: string;
   username: string | null;
   displayName: string;
@@ -17,22 +23,7 @@ export class FindOneUserOutput {
   roles: TPublicUserRole[];
   createdAt: string;
 
-  constructor(
-    payload: Pick<
-      TUser,
-      | 'id'
-      | 'username'
-      | 'displayName'
-      | 'bio'
-      | 'dmExp'
-      | 'dmLevel'
-      | 'playerExp'
-      | 'playerLevel'
-      | 'userRoles'
-      | 'createdAt'
-    >,
-    avatarUrl: string | null,
-  ) {
+  constructor(payload: TUser, avatarUrl: string | null) {
     this.id = payload.id;
     this.username = payload.username ?? null;
     this.displayName = payload.displayName;

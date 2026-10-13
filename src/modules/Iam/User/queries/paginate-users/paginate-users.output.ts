@@ -6,7 +6,16 @@ export type TPublicUserRole = {
   name: string;
 };
 
-export class PaginateUsersItemOutput {
+export type TPaginateUsersItemOutput = Pick<
+  TUser,
+  'id' | 'displayName' | 'dmExp' | 'dmLevel' | 'playerExp' | 'playerLevel'
+> & {
+  username: string | null;
+  avatarUrl: string | null;
+  roles: TPublicUserRole[];
+};
+
+export class PaginateUsersItemOutput implements TPaginateUsersItemOutput {
   id: string;
   username: string | null;
   displayName: string;
@@ -17,20 +26,7 @@ export class PaginateUsersItemOutput {
   playerLevel: number;
   roles: TPublicUserRole[];
 
-  constructor(
-    payload: Pick<
-      TUser,
-      | 'id'
-      | 'username'
-      | 'displayName'
-      | 'dmExp'
-      | 'dmLevel'
-      | 'playerExp'
-      | 'playerLevel'
-      | 'userRoles'
-    >,
-    avatarUrl: string | null,
-  ) {
+  constructor(payload: TUser, avatarUrl: string | null) {
     this.id = payload.id;
     this.username = payload.username ?? null;
     this.displayName = payload.displayName;
@@ -47,21 +43,7 @@ export class PaginateUsersOutput {
   public readonly data: PaginateUsersItemOutput[];
   public readonly count: number;
 
-  constructor(
-    users: Pick<
-      TUser,
-      | 'id'
-      | 'username'
-      | 'displayName'
-      | 'dmExp'
-      | 'dmLevel'
-      | 'playerExp'
-      | 'playerLevel'
-      | 'userRoles'
-    >[],
-    avatarUrls: (string | null)[],
-    count: number,
-  ) {
+  constructor(users: TUser[], avatarUrls: (string | null)[], count: number) {
     this.data = users.map(
       (user, i) => new PaginateUsersItemOutput(user, avatarUrls[i]),
     );
@@ -69,7 +51,7 @@ export class PaginateUsersOutput {
   }
 }
 
-export function publicRoles(user: Pick<TUser, 'userRoles'>): TPublicUserRole[] {
+export function publicRoles(user: TUser): TPublicUserRole[] {
   const roles: TPublicUserRole[] = [];
   for (const userRole of user.userRoles ?? []) {
     const role = userRole.role;
