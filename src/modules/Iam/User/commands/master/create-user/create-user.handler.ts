@@ -18,6 +18,9 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     const { params } = command;
 
     await this.userService.checkEmailUniqueness(params.email);
+    if (params.username) {
+      await this.userService.checkUsernameUniqueness(params.username);
+    }
     const hashedPassword = await this.userService.hashPassword(params.password);
 
     const { roleIds, avatarFileId, ...userPayload } = params;
