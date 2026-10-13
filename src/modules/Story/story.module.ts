@@ -5,6 +5,7 @@ import { Story } from '@entities/main/story/story.entity';
 import { File } from '@entities/main/file.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserModule } from '@modules/Iam/User/user.module';
+import { BoardStoryController } from './controllers/board-story.controller';
 import { MasterStoryController } from './controllers/master-story.controller';
 import { StoryController } from './controllers/story.controller';
 import { StoryRepository } from './repositories/story.repository';
@@ -25,6 +26,7 @@ import { JoinStoryHandler } from './commands/join-story/join-story.handler';
 import { CancelJoinStoryHandler } from './commands/cancel-join-story/cancel-join-story.handler';
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
 import { PaginateStoriesHandler as PublicPaginateStoriesHandler } from './queries/paginate-stories/paginate-stories.handler';
+import { PaginateStoriesHandler as BoardPaginateStoriesHandler } from './queries/board/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
 import { FindOneStoryHandler as PublicFindOneStoryHandler } from './queries/find-one-story/find-one-story.handler';
 import { PaginateStoryMembersHandler } from './queries/master/paginate-story-members/paginate-story-members.handler';
@@ -53,6 +55,7 @@ const queryHandlers = [
   PublicPaginateStoriesHandler,
   PublicFindOneStoryHandler,
   PublicPaginateStoryMembersHandler,
+  BoardPaginateStoriesHandler,
 ];
 
 @Module({
@@ -61,7 +64,7 @@ const queryHandlers = [
     UserModule,
     CqrsModule,
   ],
-  controllers: [MasterStoryController, StoryController],
+  controllers: [MasterStoryController, StoryController, BoardStoryController],
   providers: [
     StoryRepository,
     StoryService,
