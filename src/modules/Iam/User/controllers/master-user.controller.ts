@@ -75,7 +75,6 @@ export class MasterUserController {
   }
 
   @Get('options')
-  @Permissions([PermissionEnum.USERS_VIEW])
   async paginateOptions(@Query() query: PaginateUserOptionsInput) {
     const output = await this.queryBus.execute(
       new PaginateUserOptionsQuery(query),

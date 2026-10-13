@@ -67,7 +67,6 @@ export class MasterRoleController {
   }
 
   @Get('options')
-  @Permissions([PermissionEnum.ROLES_VIEW])
   async paginateOptions(@Query() query: PaginateRoleOptionsInput) {
     const output = await this.queryBus.execute(
       new PaginateRoleOptionsQuery(query),
