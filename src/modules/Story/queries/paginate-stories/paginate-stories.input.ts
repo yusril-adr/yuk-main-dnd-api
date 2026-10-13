@@ -1,9 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
-import { snakeCase } from 'typeorm/util/StringUtils';
-import { Story } from '@entities/main/story/story.entity';
-import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
-import { getAllEntityProperties } from '@shared/utils/common';
+import {
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import {
   PUBLIC_STORY_STATUSES,
   StoryStatusEnum,
@@ -11,11 +16,23 @@ import {
 import { StoryTypeEnum } from '../../enums/story-type.enum';
 import { StoryLocationTypeEnum } from '../../enums/story-location-type.enum';
 
-export class PaginateStoriesInput extends PaginateParamDto {
+export class PaginateStoriesInput {
   @IsOptional()
   @IsString()
-  @IsIn(getAllEntityProperties(Story).map((prop) => snakeCase(prop)))
-  sortBy: string = 'updated_at';
+  search?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page: number = 1;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  perPage: number = 10;
 
   @IsOptional()
   @Type(() => Number)

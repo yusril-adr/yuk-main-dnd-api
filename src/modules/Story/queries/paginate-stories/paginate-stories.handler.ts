@@ -7,9 +7,9 @@ import {
   In,
   Repository,
 } from 'typeorm';
-import { camelCase } from 'typeorm/util/StringUtils';
 import { Story } from '@entities/main/story/story.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
+import { OrderKeyEnum } from '@shared/enums/order.enum';
 import {
   mergeEachWhereConditions,
   mergeWhereConditions,
@@ -38,7 +38,8 @@ export class PaginateStoriesHandler implements IQueryHandler<
 
     let findOptions: FindManyOptions<Story> = {
       order: {
-        [camelCase(params.sortBy)]: params.order,
+        createdAt: OrderKeyEnum.DESC,
+        id: OrderKeyEnum.ASC,
       },
     };
 
