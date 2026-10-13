@@ -8,6 +8,7 @@ import { RolePermission } from '@entities/main/iam/role-permission.entity';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { File } from '@entities/main/file.entity';
 import { MasterUserController } from './controllers/master-user.controller';
+import { UserController } from './controllers/user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
 import { UserBalanceService } from './services/user-balance.service';
@@ -21,6 +22,8 @@ import { PaginateUserOptionsHandler } from './queries/master/paginate-user-optio
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
 import { PaginateUserExperiencePointsHandler } from './queries/master/paginate-user-experience-points/paginate-user-experience-points.handler';
 import { PaginateUserPointsHandler } from './queries/master/paginate-user-points/paginate-user-points.handler';
+import { PaginatePublicUsersHandler } from './queries/paginate-public-users/paginate-public-users.handler';
+import { FindOnePublicUserHandler } from './queries/find-one-public-user/find-one-public-user.handler';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
 import { UserPointLog } from '@entities/main/iam/user-point-log.entity';
 
@@ -37,6 +40,8 @@ const queryHandlers = [
   FindOneUserHandler,
   PaginateUserExperiencePointsHandler,
   PaginateUserPointsHandler,
+  PaginatePublicUsersHandler,
+  FindOnePublicUserHandler,
 ];
 
 @Module({
@@ -53,7 +58,7 @@ const queryHandlers = [
     ]),
     CqrsModule,
   ],
-  controllers: [MasterUserController],
+  controllers: [MasterUserController, UserController],
   providers: [
     UserRepository,
     UserService,
