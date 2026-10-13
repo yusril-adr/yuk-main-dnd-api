@@ -6,7 +6,7 @@ import { User } from '@entities/main/iam/user.entity';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserRepository } from '../../repositories/user.repository';
-import { UserService, visiblePublicUserSql } from '../../services/user.service';
+import { UserService } from '../../services/user.service';
 import { parseUtcDate } from '../../utils/top-experience-range';
 import { GetTopDmExperienceOutput } from './get-top-dm-experience.output';
 import { GetTopDmExperienceQuery } from './get-top-dm-experience.query';
@@ -40,7 +40,6 @@ export class GetTopDmExperienceHandler implements IQueryHandler<
       .where('log.type = :type', { type: UserExpLogTypeEnum.DM })
       .andWhere('log.createdAt >= :startAt', { startAt: range.start })
       .andWhere('log.createdAt < :endAt', { endAt: range.endExclusive })
-      .andWhere(visiblePublicUserSql('"owner"."id"'))
       .groupBy('owner.id')
       .orderBy('SUM(log.amount)', 'DESC')
       .addOrderBy('owner.id', 'ASC')

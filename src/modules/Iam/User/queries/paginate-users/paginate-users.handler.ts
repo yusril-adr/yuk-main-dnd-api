@@ -2,12 +2,9 @@ import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
-import {
-  mergeEachWhereConditions,
-  mergeWhereConditions,
-} from '@shared/utils/common';
+import { mergeWhereConditions } from '@shared/utils/common';
 import { UserRepository } from '../../repositories/user.repository';
-import { UserService, visiblePublicUser } from '../../services/user.service';
+import { UserService } from '../../services/user.service';
 import { PaginateUsersQuery } from './paginate-users.query';
 import { PaginateUsersOutput } from './paginate-users.output';
 import { PaginateUsersInput } from './paginate-users.input';
@@ -34,7 +31,6 @@ export class PaginateUsersHandler implements IQueryHandler<
     };
 
     findOptions = this.searchQuery(findOptions, params);
-    findOptions = this.filterQuery(findOptions);
 
     const [users, count] = await this.userRepository.findAndCount({
       ...findOptions,
@@ -71,13 +67,6 @@ export class PaginateUsersHandler implements IQueryHandler<
       ];
       query.where = mergeWhereConditions(query.where, ...searchCondition);
     }
-    return query;
-  }
-
-  private filterQuery(query: FindManyOptions<User>): FindManyOptions<User> {
-    query.where = mergeEachWhereConditions(query.where, {
-      id: visiblePublicUser(),
-    });
     return query;
   }
 }
