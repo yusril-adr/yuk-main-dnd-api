@@ -1,0 +1,81 @@
+import { TStory } from '@entities/main/story/story.entity';
+import type {
+  TStoryCreatorDto,
+  TStoryEntityDto,
+} from '@shared/dtos/entities/story/story.entity.dto';
+
+type TPaginateUserStoriesItemOutput = Omit<
+  TStoryEntityDto,
+  'expAwarded' | 'pointAwarded' | 'locationDetail' | 'updatedAt'
+> & {
+  joinedMembers: number;
+};
+
+export class PaginateUserStoriesItemOutput implements TPaginateUserStoriesItemOutput {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  status: number;
+  type: number;
+  gameSystem?: string;
+  maxMembers?: number;
+  joinedMembers: number;
+  startAt: string | null;
+  locationType: number;
+  bannerUrl: string | null;
+  createdBy?: TStoryCreatorDto;
+  createdAt: string;
+
+  constructor(
+    payload: TStory,
+    bannerUrl: string | null,
+    avatarCreatorUrl: string | null,
+    joinedMembers: number,
+  ) {
+    this.id = payload.id;
+    this.title = payload.title;
+    this.slug = payload.slug;
+    this.description = payload.description;
+    this.status = payload.status;
+    this.type = payload.type;
+    this.gameSystem = payload.gameSystem;
+    this.maxMembers = payload.maxMembers;
+    this.joinedMembers = joinedMembers;
+    this.startAt = payload.startAt ? payload.startAt.toISOString() : null;
+    this.locationType = payload.locationType;
+    this.bannerUrl = bannerUrl ?? null;
+    if (payload.createdBy) {
+      this.createdBy = {
+        id: payload.createdBy.id,
+        displayName: payload.createdBy.displayName,
+        avatarUrl: avatarCreatorUrl,
+      };
+    }
+    this.createdAt = payload.createdAt.toISOString();
+  }
+}
+
+export class PaginateUserStoriesOutput {
+  public readonly data: PaginateUserStoriesItemOutput[];
+  public readonly count: number;
+
+  constructor(
+    stories: TStory[],
+    bannerUrls: (string | null)[],
+    avatarCreatorUrls: (string | null)[],
+    currentMemberCounts: number[],
+    count: number,
+  ) {
+    this.data = stories.map(
+      (story, i) =>
+        new PaginateUserStoriesItemOutput(
+          story,
+          bannerUrls[i],
+          avatarCreatorUrls[i],
+          currentMemberCounts[i],
+        ),
+    );
+    this.count = count;
+  }
+}

@@ -9,6 +9,8 @@ import { GetTopDmExperienceInput } from '../queries/get-top-dm-experience/get-to
 import { GetTopPlayerExperienceQuery } from '../queries/get-top-player-experience/get-top-player-experience.query';
 import { GetTopPlayerExperienceInput } from '../queries/get-top-player-experience/get-top-player-experience.input';
 import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
+import { PaginateUserStoriesQuery } from '@modules/Story/queries/paginate-user-stories/paginate-user-stories.query';
+import { PaginateUserStoriesInput } from '@modules/Story/queries/paginate-user-stories/paginate-user-stories.input';
 
 @Controller({
   path: 'users',
@@ -50,6 +52,23 @@ export class UserController {
     return wrapper.response({
       data: output.data,
       message: 'Top players retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/created-stories')
+  @Public()
+  async paginateStories(
+    @Param('identifier') identifier: string,
+    @Query() query: PaginateUserStoriesInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateUserStoriesQuery(identifier, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Stories retrieved successfully',
     });
   }
 
