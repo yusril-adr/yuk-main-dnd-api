@@ -1,0 +1,122 @@
+import { NotFoundException } from '@nestjs/common';
+import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  FindManyOptions,
+  FindOptionsWhere,
+  ILike,
+  IsNull,
+  Repository,
+} from 'typeorm';
+import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
+import { StoryMember } from '@entities/main/story/story-member.entity';
+import { StorageService } from '@modules/Global/services/storage.service';
+import {
+  getAllEntityProperties,
+  mergeEachWhereConditions,
+  mergeWhereConditions,
+} from '@shared/utils/common';
+import { OrderKeyEnum } from '@shared/enums/order.enum';
+import { PaginateStoryMembersQuery } from './paginate-story-members.query';
+import { PaginateStoryMembersOutput } from './paginate-story-members.output';
+import { PaginateStoryMembersInput } from './paginate-story-members.input';
+
+@QueryHandler(PaginateStoryMembersQuery)
+export class PaginateStoryMembersHandler implements IQueryHandler<
+  PaginateStoryMembersQuery,
+  PaginateStoryMembersOutput
+> {
+  constructor(
+    @InjectRepository(StoryMember)
+    private readonly storyMemberRepository: Repository<StoryMember>,
+    private readonly storageService: StorageService,
+  ) {}
+
+  async execute(
+    query: PaginateStoryMembersQuery,
+  ): Promise<PaginateStoryMembersOutput> {
+    const { id, params, user } = query;
+
+    const membership = await this.storyMemberRepository.findOne({
+      where: {
+        user: { id: user.id },
+        story: { id },
+      },
+    });
+    if (!membership) {
+      throw new NotFoundException(`Story with id ${id} not found`);
+    }
+
+    // withDeleted keeps a soft-deleted user on the row.
+    // find() without it left-joins user and omits that user.
+    let findOptions: FindManyOptions<StoryMember> = {
+      relations: { user: { avatarFile: true } },
+      withDeleted: true,
+    };
+    findOptions = this.sortQuery(findOptions, params);
+    findOptions = this.searchQuery(findOptions, params);
+    findOptions.where = mergeEachWhereConditions(findOptions.where, {
+      story: { id },
+      deletedAt: IsNull(),
+    });
+
+    const [members, count] = await this.storyMemberRepository.findAndCount({
+      ...findOptions,
+      take: params.perPage,
+      skip: params.perPage * (params.page - 1),
+    });
+
+    const visibleMembers: StoryMember[] = [];
+    const avatarUrls: (string | null)[] = [];
+    for (const member of members) {
+      if (member.deletedAt != null || !member.user) {
+        continue;
+      }
+      visibleMembers.push(member);
+      avatarUrls.push(
+        member.user.avatarFile
+          ? this.storageService.getPublicUrlSync(member.user.avatarFile)
+          : null,
+      );
+    }
+
+    return new PaginateStoryMembersOutput(visibleMembers, avatarUrls, count);
+  }
+
+  private sortQuery(
+    query: FindManyOptions<StoryMember>,
+    params: PaginateStoryMembersInput,
+  ): FindManyOptions<StoryMember> {
+    const sortable = new Set(
+      getAllEntityProperties(StoryMember)
+        .map((prop) => snakeCase(prop))
+        .filter(
+          (column) =>
+            column !== 'story' && column !== 'user' && column !== 'status',
+        ),
+    );
+    const sortBy = sortable.has(params.sortBy) ? params.sortBy : 'updated_at';
+    const direction = params.order ?? OrderKeyEnum.ASC;
+
+    query.order = {
+      status: OrderKeyEnum.DESC,
+      [camelCase(sortBy)]: direction,
+    };
+    return query;
+  }
+
+  private searchQuery(
+    query: FindManyOptions<StoryMember>,
+    params: PaginateStoryMembersInput,
+  ): FindManyOptions<StoryMember> {
+    if (params.search) {
+      const searchCondition: FindOptionsWhere<StoryMember>[] = [
+        { user: { username: ILike(`%${params.search}%`) } },
+        { user: { displayName: ILike(`%${params.search}%`) } },
+        { user: { email: ILike(`%${params.search}%`) } },
+      ];
+      query.where = mergeWhereConditions(query.where, ...searchCondition);
+    }
+    return query;
+  }
+}
