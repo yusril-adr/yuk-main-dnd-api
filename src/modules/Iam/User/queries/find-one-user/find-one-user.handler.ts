@@ -14,9 +14,10 @@ export class FindOneUserHandler implements IQueryHandler<
     const user = await this.userService.findPublicByIdentifier(
       query.identifier,
       {
-        relations: { avatarFile: true, userRoles: { role: true } },
+        relations: { avatarFile: true },
       },
     );
+    await this.userService.attachPublicRoles([user]);
     const avatarUrl = await this.userService.resolveAvatarUrl(user);
     return new FindOneUserOutput(user, avatarUrl ?? null);
   }

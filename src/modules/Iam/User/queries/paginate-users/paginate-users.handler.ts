@@ -38,11 +38,12 @@ export class PaginateUsersHandler implements IQueryHandler<
 
     const [users, count] = await this.userRepository.findAndCount({
       ...findOptions,
-      relations: { avatarFile: true, userRoles: { role: true } },
+      relations: { avatarFile: true },
       relationLoadStrategy: 'query',
       take: params.perPage,
       skip: params.perPage * (params.page - 1),
     });
+    await this.userService.attachPublicRoles(users);
 
     const avatarUrls = await Promise.all(
       users.map((user) => this.userService.resolveAvatarUrl(user)),

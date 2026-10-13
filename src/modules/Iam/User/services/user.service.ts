@@ -205,6 +205,48 @@ export class UserService {
     return undefined;
   }
 
+  // Loads userRoles for public reads. A where on the user query would join
+  // user_roles into findAndCount and count role rows instead of users.
+  async attachPublicRoles(users: User[]): Promise<void> {
+    if (users.length === 0) {
+      return;
+    }
+
+    const userRoles = await this.userRepository.manager
+      .getRepository(UserRole)
+      .createQueryBuilder('userRole')
+      .innerJoinAndSelect(
+        'userRole.role',
+        'role',
+        'role.isShowInPublic = :isShowInPublic',
+        { isShowInPublic: true },
+      )
+      .innerJoin('userRole.user', 'owner')
+      .addSelect('owner.id')
+      .where('owner.id IN (:...userIds)', {
+        userIds: users.map((user) => user.id),
+      })
+      .getMany();
+
+    const rolesByUserId = new Map<string, UserRole[]>();
+    for (const userRole of userRoles) {
+      const userId = userRole.user?.id;
+      if (!userId) {
+        continue;
+      }
+      const roles = rolesByUserId.get(userId);
+      if (roles) {
+        roles.push(userRole);
+      } else {
+        rolesByUserId.set(userId, [userRole]);
+      }
+    }
+
+    for (const user of users) {
+      user.userRoles = rolesByUserId.get(user.id) ?? [];
+    }
+  }
+
   async findPublicByIdentifier(
     identifier: string,
     options?: Pick<FindOneOptions<User>, 'relations'>,
