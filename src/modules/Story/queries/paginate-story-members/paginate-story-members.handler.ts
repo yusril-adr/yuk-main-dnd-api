@@ -1,11 +1,9 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
-import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FindManyOptions,
   FindOptionsWhere,
   ILike,
-  In,
   IsNull,
   Repository,
 } from 'typeorm';
@@ -18,8 +16,7 @@ import {
   mergeWhereConditions,
 } from '@shared/utils/common';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
-import { PUBLIC_STORY_STATUSES } from '../../enums/story-status.enum';
-import { StoryRepository } from '../../repositories/story.repository';
+import { StoryService } from '../../services/story.service';
 import { PaginateStoryMembersQuery } from './paginate-story-members.query';
 import { PaginateStoryMembersOutput } from './paginate-story-members.output';
 import { PaginateStoryMembersInput } from './paginate-story-members.input';
@@ -30,7 +27,7 @@ export class PaginateStoryMembersHandler implements IQueryHandler<
   PaginateStoryMembersOutput
 > {
   constructor(
-    private readonly storyRepository: StoryRepository,
+    private readonly storyService: StoryService,
     @InjectRepository(StoryMember)
     private readonly storyMemberRepository: Repository<StoryMember>,
     private readonly storageService: StorageService,
@@ -39,14 +36,9 @@ export class PaginateStoryMembersHandler implements IQueryHandler<
   async execute(
     query: PaginateStoryMembersQuery,
   ): Promise<PaginateStoryMembersOutput> {
-    const { id, params } = query;
+    const { identifier, params } = query;
 
-    const story = await this.storyRepository.findOne({
-      where: { id, status: In(PUBLIC_STORY_STATUSES) },
-    });
-    if (!story) {
-      throw new NotFoundException(`Story with id ${id} not found`);
-    }
+    const story = await this.storyService.findPublicByIdentifier(identifier);
 
     // withDeleted keeps a soft-deleted user on the row.
     // find() without it left-joins user and omits that user.
@@ -58,7 +50,7 @@ export class PaginateStoryMembersHandler implements IQueryHandler<
     findOptions = this.searchQuery(findOptions, params);
     findOptions = this.filterQuery(findOptions, params);
     findOptions.where = mergeEachWhereConditions(findOptions.where, {
-      story: { id },
+      story: { id: story.id },
       deletedAt: IsNull(),
     });
 

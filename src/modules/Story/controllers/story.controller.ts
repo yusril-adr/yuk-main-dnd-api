@@ -42,14 +42,14 @@ export class StoryController {
     });
   }
 
-  @Get(':id')
+  @Get(':identifier')
   @Public()
   async findOne(
-    @Param('id') id: string,
+    @Param('identifier') identifier: string,
     @Request() request: Partial<TRequestUser>,
   ) {
     const output = await this.queryBus.execute(
-      new FindOneStoryQuery(id, request.user?.id ?? null),
+      new FindOneStoryQuery(identifier, request.user?.id ?? null),
     );
     return wrapper.response({
       data: output,
@@ -57,14 +57,14 @@ export class StoryController {
     });
   }
 
-  @Get(':id/members')
+  @Get(':identifier/members')
   @Public()
   async paginateMembers(
-    @Param('id') id: string,
+    @Param('identifier') identifier: string,
     @Query() query: PaginateStoryMembersInput,
   ) {
     const output = await this.queryBus.execute(
-      new PaginateStoryMembersQuery(id, query),
+      new PaginateStoryMembersQuery(identifier, query),
     );
     return wrapper.paginationResponse({
       data: output.data,
