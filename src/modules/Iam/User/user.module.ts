@@ -8,6 +8,7 @@ import { RolePermission } from '@entities/main/iam/role-permission.entity';
 import { Permission } from '@entities/main/iam/permission.entity';
 import { File } from '@entities/main/file.entity';
 import { MasterUserController } from './controllers/master-user.controller';
+import { UserController } from './controllers/user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
 import { UserBalanceService } from './services/user-balance.service';
@@ -17,8 +18,10 @@ import { RemoveUserHandler } from './commands/master/remove-user/remove-user.han
 import { AddUserExperiencePointsHandler } from './commands/master/add-user-experience-points/add-user-experience-points.handler';
 import { AddUserPointsHandler } from './commands/master/add-user-points/add-user-points.handler';
 import { PaginateUsersHandler } from './queries/master/paginate-users/paginate-users.handler';
+import { PaginateUsersHandler as PublicPaginateUsersHandler } from './queries/paginate-users/paginate-users.handler';
 import { PaginateUserOptionsHandler } from './queries/master/paginate-user-options/paginate-user-options.handler';
 import { FindOneUserHandler } from './queries/master/find-one-user/find-one-user.handler';
+import { FindOneUserHandler as PublicFindOneUserHandler } from './queries/find-one-user/find-one-user.handler';
 import { PaginateUserExperiencePointsHandler } from './queries/master/paginate-user-experience-points/paginate-user-experience-points.handler';
 import { PaginateUserPointsHandler } from './queries/master/paginate-user-points/paginate-user-points.handler';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
@@ -37,6 +40,8 @@ const queryHandlers = [
   FindOneUserHandler,
   PaginateUserExperiencePointsHandler,
   PaginateUserPointsHandler,
+  PublicPaginateUsersHandler,
+  PublicFindOneUserHandler,
 ];
 
 @Module({
@@ -53,7 +58,7 @@ const queryHandlers = [
     ]),
     CqrsModule,
   ],
-  controllers: [MasterUserController],
+  controllers: [MasterUserController, UserController],
   providers: [
     UserRepository,
     UserService,
