@@ -79,7 +79,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
       for (const member of members) {
         member.status = attendedUserIds.has(member.user.id)
           ? StoryMemberStatusEnum.ATTENDED
-          : StoryMemberStatusEnum.ABSENT;
+          : StoryMemberStatusEnum.VIEWER;
       }
       if (members.length) {
         await storyMemberRepo.save(members);
