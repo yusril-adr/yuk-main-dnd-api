@@ -107,9 +107,23 @@ export function publicUserListOptions(
   };
 }
 
-export function publicUserDetailOptions(id: string): FindOneOptions<User> {
+export function publicUserDetailById(id: string): FindOneOptions<User> {
   return {
     where: { id: And(Equal(id), publicUserVisible()) },
+    relations: PUBLIC_USER_RELATIONS,
+  };
+}
+
+export function publicUserDetailByUsername(
+  username: string,
+): FindOneOptions<User> {
+  return {
+    where: {
+      id: publicUserVisible(),
+      username: Raw((alias) => `LOWER(${alias}) = LOWER(:username)`, {
+        username,
+      }),
+    },
     relations: PUBLIC_USER_RELATIONS,
   };
 }

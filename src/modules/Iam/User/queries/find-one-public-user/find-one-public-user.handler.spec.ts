@@ -116,6 +116,58 @@ describe('FindOnePublicUserHandler', () => {
 
     await expect(
       handler.execute(new FindOnePublicUserQuery(DM_ID)),
-    ).rejects.toThrow(new NotFoundException(`User with id ${DM_ID} not found`));
+    ).rejects.toThrow(
+      new NotFoundException(`User with identifier ${DM_ID} not found`),
+    );
+    expect(rows.findOneCalls).toHaveLength(2);
+    expect(rows.findOneCalls[0].where.id.type).toBe('and');
+    expect(rows.findOneCalls[1].where.username.getSql('users.username')).toBe(
+      'LOWER(users.username) = LOWER(:username)',
+    );
+    expect(rows.findOneCalls[1].where.username.objectLiteralParameters).toEqual(
+      { username: DM_ID },
+    );
+  });
+
+  it('finds a public profile by username without matching case', async () => {
+    const rows = new UserRows();
+    rows.script(user());
+    const handler = new FindOnePublicUserHandler(
+      rows as unknown as UserRepository,
+      new PublicUrls() as never,
+    );
+
+    const output = await handler.execute(new FindOnePublicUserQuery('  Nyx  '));
+
+    expect(output.id).toBe(DM_ID);
+    expect(output.username).toBe('nyx');
+    expect(rows.findOneCalls).toHaveLength(1);
+    expect(rows.findOneCalls[0].where.id.getSql('users.id')).toBe(VISIBLE_SQL);
+    expect(rows.findOneCalls[0].where.username.getSql('users.username')).toBe(
+      'LOWER(users.username) = LOWER(:username)',
+    );
+    expect(rows.findOneCalls[0].where.username.objectLiteralParameters).toEqual(
+      { username: 'Nyx' },
+    );
+    expect(rows.findOneCalls[0].relations).toEqual({
+      avatarFile: true,
+      userRoles: { role: true },
+    });
+  });
+
+  it('throws not found for a blank identifier without querying', async () => {
+    const rows = new UserRows();
+    const handler = new FindOnePublicUserHandler(
+      rows as unknown as UserRepository,
+      new PublicUrls() as never,
+    );
+
+    const identifier = '   ';
+    await expect(
+      handler.execute(new FindOnePublicUserQuery(identifier)),
+    ).rejects.toThrow(
+      new NotFoundException(`User with identifier ${identifier} not found`),
+    );
+    expect(rows.findOneCalls).toHaveLength(0);
   });
 });

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Public } from '@shared/decorators/public.decorator';
 import * as wrapper from '@shared/utils/wrapper';
@@ -27,10 +27,12 @@ export class UserController {
     });
   }
 
-  @Get(':id')
+  @Get(':identifier')
   @Public()
-  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const output = await this.queryBus.execute(new FindOnePublicUserQuery(id));
+  async findOne(@Param('identifier') identifier: string) {
+    const output = await this.queryBus.execute(
+      new FindOnePublicUserQuery(identifier),
+    );
     return wrapper.response({
       data: output,
       message: 'User retrieved successfully',
