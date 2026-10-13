@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Patch,
   Post,
+  Query,
   Request,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -21,6 +22,10 @@ import { UpdateProfileInput } from '../commands/update-profile/update-profile.in
 import { UpdatePasswordCommand } from '../commands/update-password/update-password.command';
 import { UpdatePasswordInput } from '../commands/update-password/update-password.input';
 import { GetMeQuery } from '../queries/get-me/get-me.query';
+import { PaginateMyExperiencePointsQuery } from '../queries/paginate-my-experience-points/paginate-my-experience-points.query';
+import { PaginateMyExperiencePointsInput } from '../queries/paginate-my-experience-points/paginate-my-experience-points.input';
+import { PaginateMyPointsQuery } from '../queries/paginate-my-points/paginate-my-points.query';
+import { PaginateMyPointsInput } from '../queries/paginate-my-points/paginate-my-points.input';
 
 @Controller({
   path: 'auth',
@@ -64,6 +69,38 @@ export class AuthController {
     return wrapper.response({
       data: output,
       message: 'Login By Token successfully',
+    });
+  }
+
+  @Get('me/experience-points')
+  async paginateExperiencePoints(
+    @Request() request: TRequestUser,
+    @Query() query: PaginateMyExperiencePointsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateMyExperiencePointsQuery(request.user.id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Experience points retrieved successfully',
+    });
+  }
+
+  @Get('me/points')
+  async paginatePoints(
+    @Request() request: TRequestUser,
+    @Query() query: PaginateMyPointsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateMyPointsQuery(request.user.id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Points retrieved successfully',
     });
   }
 
