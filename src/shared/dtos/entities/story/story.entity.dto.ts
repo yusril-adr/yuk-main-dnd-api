@@ -4,6 +4,7 @@ import dayjs from '@shared/utils/dayjs';
 export type TStoryCreatorDto = {
   id: string;
   displayName: string;
+  username?: string | null;
   avatarUrl?: string | null;
 };
 
@@ -67,6 +68,7 @@ export class StoryEntityDto implements TStoryEntityDto {
       this.createdBy = {
         id: story.createdBy.id,
         displayName: story.createdBy.displayName,
+        username: story.createdBy.username ?? null,
         avatarUrl: avatarCreatorUrl,
       };
     }

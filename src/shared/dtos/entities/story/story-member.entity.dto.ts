@@ -3,7 +3,7 @@ import { TStoryMember } from '@entities/main/story/story-member.entity';
 export type TStoryMemberUserDto = {
   id: string;
   displayName: string;
-  username: string | null;
+  username?: string | null;
   avatarUrl?: string | null;
 };
 
