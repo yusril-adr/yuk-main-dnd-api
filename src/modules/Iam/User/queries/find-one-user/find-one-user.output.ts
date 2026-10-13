@@ -17,7 +17,22 @@ export class FindOneUserOutput {
   roles: TPublicUserRole[];
   createdAt: string;
 
-  constructor(payload: TUser, avatarUrl: string | null) {
+  constructor(
+    payload: Pick<
+      TUser,
+      | 'id'
+      | 'username'
+      | 'displayName'
+      | 'bio'
+      | 'dmExp'
+      | 'dmLevel'
+      | 'playerExp'
+      | 'playerLevel'
+      | 'userRoles'
+      | 'createdAt'
+    >,
+    avatarUrl: string | null,
+  ) {
     this.id = payload.id;
     this.username = payload.username ?? null;
     this.displayName = payload.displayName;
