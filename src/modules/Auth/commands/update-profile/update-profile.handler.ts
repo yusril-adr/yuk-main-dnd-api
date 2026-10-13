@@ -34,6 +34,13 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
       );
     }
 
+    if (payload.username) {
+      await this.userService.checkUsernameUniqueness(
+        payload.username,
+        currentUser.id,
+      );
+    }
+
     const { avatarFileId, ...userPayload } = payload;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;
