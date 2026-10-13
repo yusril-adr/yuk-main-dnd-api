@@ -27,6 +27,7 @@ import { CancelJoinStoryHandler } from './commands/cancel-join-story/cancel-join
 import { PaginateStoriesHandler } from './queries/master/paginate-stories/paginate-stories.handler';
 import { PaginateStoriesHandler as PublicPaginateStoriesHandler } from './queries/paginate-stories/paginate-stories.handler';
 import { PaginateUserStoriesHandler } from './queries/paginate-user-stories/paginate-user-stories.handler';
+import { PaginateUserJoinedStoriesHandler } from './queries/paginate-user-joined-stories/paginate-user-joined-stories.handler';
 import { PaginateStoriesHandler as BoardPaginateStoriesHandler } from './queries/board/paginate-stories/paginate-stories.handler';
 import { FindOneStoryHandler } from './queries/master/find-one-story/find-one-story.handler';
 import { FindOneStoryHandler as PublicFindOneStoryHandler } from './queries/find-one-story/find-one-story.handler';
@@ -57,6 +58,7 @@ const queryHandlers = [
   PaginateAvailableStoryUsersHandler,
   PublicPaginateStoriesHandler,
   PaginateUserStoriesHandler,
+  PaginateUserJoinedStoriesHandler,
   PublicFindOneStoryHandler,
   PublicPaginateStoryMembersHandler,
   BoardPaginateStoriesHandler,

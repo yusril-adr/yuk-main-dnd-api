@@ -11,6 +11,8 @@ import { GetTopPlayerExperienceInput } from '../queries/get-top-player-experienc
 import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
 import { PaginateUserStoriesQuery } from '@modules/Story/queries/paginate-user-stories/paginate-user-stories.query';
 import { PaginateUserStoriesInput } from '@modules/Story/queries/paginate-user-stories/paginate-user-stories.input';
+import { PaginateUserJoinedStoriesQuery } from '@modules/Story/queries/paginate-user-joined-stories/paginate-user-joined-stories.query';
+import { PaginateUserJoinedStoriesInput } from '@modules/Story/queries/paginate-user-joined-stories/paginate-user-joined-stories.input';
 
 @Controller({
   path: 'users',
@@ -63,6 +65,23 @@ export class UserController {
   ) {
     const output = await this.queryBus.execute(
       new PaginateUserStoriesQuery(identifier, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Stories retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/joined-stories')
+  @Public()
+  async paginateJoinedStories(
+    @Param('identifier') identifier: string,
+    @Query() query: PaginateUserJoinedStoriesInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateUserJoinedStoriesQuery(identifier, query),
     );
     return wrapper.paginationResponse({
       data: output.data,
