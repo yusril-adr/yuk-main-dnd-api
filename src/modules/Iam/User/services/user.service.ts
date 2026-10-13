@@ -284,11 +284,12 @@ export class UserService {
   }
 }
 
+export function visiblePublicUserSql(userIdColumn: string): string {
+  return `EXISTS (SELECT 1 FROM user_roles ur INNER JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = ${userIdColumn} AND r.is_show_in_public = true AND ur.deleted_at IS NULL AND r.deleted_at IS NULL)`;
+}
+
 // A userRoles where joins roles into the page query. take, skip, and count
 // then count join rows, so two public roles become two slots.
 export function visiblePublicUser(): FindOperator<string> {
-  return Raw(
-    (alias) =>
-      `EXISTS (SELECT 1 FROM user_roles ur INNER JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = ${alias} AND r.is_show_in_public = true AND ur.deleted_at IS NULL AND r.deleted_at IS NULL)`,
-  );
+  return Raw((alias) => visiblePublicUserSql(alias));
 }

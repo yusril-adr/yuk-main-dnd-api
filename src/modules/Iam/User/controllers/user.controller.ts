@@ -4,6 +4,8 @@ import { Public } from '@shared/decorators/public.decorator';
 import * as wrapper from '@shared/utils/wrapper';
 import { PaginateUsersQuery } from '../queries/paginate-users/paginate-users.query';
 import { PaginateUsersInput } from '../queries/paginate-users/paginate-users.input';
+import { GetTopDmExperienceQuery } from '../queries/get-top-dm-experience/get-top-dm-experience.query';
+import { GetTopDmExperienceInput } from '../queries/get-top-dm-experience/get-top-dm-experience.input';
 import { FindOneUserQuery } from '../queries/find-one-user/find-one-user.query';
 
 @Controller({
@@ -22,6 +24,18 @@ export class UserController {
       count: output.count,
       query,
       message: 'Users retrieved successfully',
+    });
+  }
+
+  @Get('top-dm-experience')
+  @Public()
+  async getTopDmExperience(@Query() query: GetTopDmExperienceInput) {
+    const output = await this.queryBus.execute(
+      new GetTopDmExperienceQuery(query),
+    );
+    return wrapper.response({
+      data: output.data,
+      message: 'Top dungeon masters retrieved successfully',
     });
   }
 
