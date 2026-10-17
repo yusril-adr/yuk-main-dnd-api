@@ -36,7 +36,7 @@ async function bootstrap() {
 
         const embeds = [
           {
-            title: `🚨 Error occured on ${configService.get('SENTRY_PROJECT_NAME')}`,
+            title: `🚨 Error occured on ${configService.get('APP_NAME')}`,
             description: `
             **${errorStack}**
             \`\`\`${errorName}: ${errorMessage}\`\`\`
