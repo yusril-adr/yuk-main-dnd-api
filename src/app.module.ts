@@ -17,6 +17,7 @@ import { RequestInterceptor } from '@shared/interceptors/request.interceptor';
 import { ResponseInterceptor } from '@shared/interceptors/response.interceptor';
 import { GlobalExceptionFilter } from '@shared/filters/global-exception.filter';
 
+import { AppModule as AppRootModule } from '@modules/App/app.module';
 import { AuthModule } from '@modules/Auth/auth.module';
 import { PermissionModule } from '@modules/Iam/Permission/permission.module';
 import { RoleModule } from '@modules/Iam/Role/role.module';
@@ -48,6 +49,7 @@ import { GlobalModule } from '@modules/Global/global.module';
 
     GlobalModule,
 
+    AppRootModule,
     AuthModule,
     PermissionModule,
     RoleModule,
