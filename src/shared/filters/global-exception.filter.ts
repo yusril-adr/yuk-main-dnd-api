@@ -95,9 +95,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const handleException = handledExceptions[exceptionParentName];
     if (handleException) {
       handleException();
+    } else {
+      this.reportException(exception);
     }
-
-    this.reportException(exception);
 
     // Send the transformed response
     response.status(status).json(
