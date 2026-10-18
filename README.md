@@ -109,13 +109,44 @@ SUPABASE_SIGNED_URL_EXPIRES_IN=900
 
 Upload purpose `1` is a user avatar and purpose `2` is a story banner. Both stay temporary (`status` `1`) until a user or story write promotes the file to active (`status` `2`). Purpose `3` (other) is stored active immediately.
 
-## Project layout
+## Project structure
 
-- `src/modules` — App, Auth, File, Iam, Story, Global
-- `src/entities/main` — TypeORM entities
-- `migrations/main` — schema migrations
-- `seeders/main` — permissions, roles, and users
-- `docs/db.dbml` — database diagram
+Placeholders in `<angle brackets>` stand for real names (e.g. `<Module>` = `Story`, `<action>` = `create-story`, `<scope>` = `master` or `board`). Segments in `[ ]` are optional.
+
+```
+src/
+├── main.ts                      # bootstrap: CORS, versioning, global prefix
+├── app.module.ts                # root module, global guards/interceptors
+├── seed.ts
+├── entities/main/<domain>/      # TypeORM entities (<entity>.entity.ts)
+├── infrastructure/databases/    # data sources (main.ds.ts)
+├── modules/
+│   └── <Module>/                # or <Domain>/<Module>/ for grouped modules
+│       ├── <module>.module.ts
+│       ├── controllers/         # [<scope>-]<module>.controller.ts
+│       ├── commands/[<scope>/]<action>/
+│       │   ├── <action>.command.ts
+│       │   ├── <action>.handler.ts
+│       │   └── <action>.input.ts
+│       ├── queries/[<scope>/]<action>/
+│       │   ├── <action>.query.ts
+│       │   ├── <action>.handler.ts
+│       │   ├── <action>.input.ts
+│       │   └── <action>.output.ts
+│       ├── events/
+│       ├── repositories/        # <entity>.repository.ts
+│       ├── services/            # <module>.service.ts
+│       └── enums/ · types/ · utils/
+└── shared/
+    ├── decorators/ · guards/ · filters/ · interceptors/ · strategies/
+    ├── dtos/entities/<domain>/  # <entity>.entity.dto.ts
+    ├── dtos/params/
+    ├── enums/ · types/ · utils/
+    └── libs/<vendor>/           # third-party integrations
+migrations/<datasource>/         # schema migrations
+seeders/<datasource>/            # <name>.seed.ts + datas/<name>.json
+docs/                            # db.dbml, assets
+```
 
 ## Tech Stack
 
