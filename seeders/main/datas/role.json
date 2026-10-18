@@ -30,6 +30,12 @@
     ]
   },
   {
+    "name": "Dungeon Master",
+    "key": "dungeon-master",
+    "description": "Dungeon Master",
+    "permissions": ["stories:view", "stories:create"]
+  },
+  {
     "name": "Player",
     "key": "player",
     "description": "Player",
