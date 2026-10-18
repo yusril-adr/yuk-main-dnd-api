@@ -3,6 +3,7 @@ import { QueryBus } from '@nestjs/cqrs';
 import type { TResponse } from '@shared/types/response.type';
 import * as wrapper from '@shared/utils/wrapper';
 import { Public } from '@shared/decorators/public.decorator';
+import { Deprecated } from '@shared/decorators/deprecated.decorator';
 import { CheckStatusQuery } from '@modules/App/queries/check-status/check-status.query';
 import type { CheckStatusOutput } from '@modules/App/queries/check-status/check-status.output';
 import { DebugSentryQuery } from '@modules/App/queries/debug-sentry/debug-sentry.query';
@@ -26,6 +27,7 @@ export class AppController {
 
   @Get('/debug-sentry')
   @Public()
+  @Deprecated()
   async getError(): Promise<void> {
     await this.queryBus.execute<DebugSentryQuery, never>(
       new DebugSentryQuery(),
