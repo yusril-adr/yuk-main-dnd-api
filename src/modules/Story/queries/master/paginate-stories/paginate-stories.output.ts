@@ -8,6 +8,7 @@ export type TStoryMasterActionList = {
   isCanArchive: boolean;
   isCanUnarchive: boolean;
   isCanDelete: boolean;
+  isCanViewPublic: boolean;
 };
 
 export class PaginateStoriesItemOutput extends StoryEntityDto {

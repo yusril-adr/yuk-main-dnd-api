@@ -13,6 +13,10 @@ export class StoryMasterActionService {
     private readonly storyService: StoryService,
   ) {}
 
+  isCanViewPublic(story: Story): boolean {
+    return this.storyService.isCanViewPublic(story);
+  }
+
   isCanCreate(user: TJWTPayload): boolean {
     return user.permissions?.includes(PermissionEnum.STORIES_CREATE) ?? false;
   }
