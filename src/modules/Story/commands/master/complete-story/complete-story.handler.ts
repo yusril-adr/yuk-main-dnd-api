@@ -43,12 +43,13 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
     }
 
     const uniqueUserIds = [...new Set(params.userIds)];
-    if (uniqueUserIds.length > 0) {
-      await this.userRepository.findAndValidateUserByIds(uniqueUserIds);
+    if (uniqueUserIds.length === 0) {
+      throw new BadRequestException('At least one attended member is required');
     }
-    if (story.maxMembers != null && uniqueUserIds.length !== story.maxMembers) {
+    await this.userRepository.findAndValidateUserByIds(uniqueUserIds);
+    if (story.maxMembers != null && uniqueUserIds.length > story.maxMembers) {
       throw new BadRequestException(
-        `Attended members must equal max members of ${story.maxMembers}`,
+        `Attended members must not exceed max members of ${story.maxMembers}`,
       );
     }
     if (story.expAwarded < 0) {
@@ -86,7 +87,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
       }
 
       const rewardDescription = `Player reward for story ${story.title}`;
-      if (uniqueUserIds.length > 0 && story.expAwarded > 0) {
+      if (story.expAwarded > 0) {
         await this.userBalanceService.addExperiencePointsToMany(
           {
             userIds: uniqueUserIds,
@@ -97,7 +98,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
           manager,
         );
       }
-      if (uniqueUserIds.length > 0 && story.pointAwarded > 0) {
+      if (story.pointAwarded > 0) {
         await this.userBalanceService.addPointsToMany(
           {
             userIds: uniqueUserIds,
