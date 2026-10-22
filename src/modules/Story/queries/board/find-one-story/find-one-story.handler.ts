@@ -5,7 +5,10 @@ import { Repository } from 'typeorm';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { StoryService } from '../../../services/story.service';
 import { FindOneStoryQuery } from './find-one-story.query';
-import { FindOneStoryOutput } from './find-one-story.output';
+import {
+  FindOneStoryOutput,
+  TStoryBoardDetailActionList,
+} from './find-one-story.output';
 
 @QueryHandler(FindOneStoryQuery)
 export class FindOneStoryHandler implements IQueryHandler<
@@ -35,8 +38,13 @@ export class FindOneStoryHandler implements IQueryHandler<
     }
 
     const story = membership.story;
+    const actionList: TStoryBoardDetailActionList = {
+      isCanViewPublic: this.storyService.isCanViewPublic(story),
+    };
+
     return new FindOneStoryOutput(
       story,
+      actionList,
       this.storyService.resolveBannerUrl(story),
       this.storyService.resolveAvatarCreatorUrl(story),
     );

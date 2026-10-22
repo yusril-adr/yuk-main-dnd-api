@@ -11,6 +11,7 @@ export type TStoryMasterDetailActionList = {
   isCanDelete: boolean;
   isCanAddMembers: boolean;
   isCanRemoveMembers: boolean;
+  isCanViewPublic: boolean;
 };
 
 export class FindOneStoryOutput extends StoryEntityDto {

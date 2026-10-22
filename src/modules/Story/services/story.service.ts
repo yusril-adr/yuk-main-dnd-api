@@ -52,6 +52,10 @@ export class StoryService {
     );
   }
 
+  isCanViewPublic(story: { status: number }): boolean {
+    return PUBLIC_STORY_STATUSES.includes(story.status);
+  }
+
   async findPublicByIdentifier(
     identifier: string,
     options?: Pick<FindOneOptions<Story>, 'relations'>,
