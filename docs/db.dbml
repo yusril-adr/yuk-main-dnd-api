@@ -190,6 +190,7 @@ Table stories {
   status_before varchar(30) [note: "previous status before archive/unarchive"]
   type varchar(30) [not null, note: "oneshot | campaign"]
   game_system varchar(100) [note: "free text, e.g. DnD 5e 2014, Werewolf, Ten Candles"]
+  discord_channel_link varchar(255) [note: "optional Discord https link (discord.com, discord.gg, discordapp.com)"]
 
   exp_awarded integer [not null, note: "experience awarded for completing the campaign"]
   point_awarded integer [not null, note: "point awarded for completing the campaign"]
@@ -200,6 +201,7 @@ Table stories {
 
   location_type varchar(20) [not null, note: "online | offline"]
   location_detail text [not null, note: "online: platform/link (e.g. Discord, Roll20), offline: place name/address"]
+  location_link varchar(255) [note: "optional https link to the location, e.g. Google Maps; independent of location_type"]
 
   banner_file_id uuid [unique]
 

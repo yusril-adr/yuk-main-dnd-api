@@ -43,6 +43,12 @@ export class Story extends BaseEntity {
   @Column({ length: 100, nullable: true })
   gameSystem?: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  discordChannelLink?: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  locationLink?: string | null;
+
   @Column({ type: 'integer', default: 0 })
   expAwarded: number = 0;
 

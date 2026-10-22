@@ -34,6 +34,8 @@ export class StoryEntityDto implements TStoryEntityDto {
   status: number;
   type: number;
   gameSystem?: string;
+  discordChannelLink: string | null;
+  locationLink: string | null;
   expAwarded: number;
   pointAwarded: number;
   maxMembers?: number;
@@ -57,6 +59,8 @@ export class StoryEntityDto implements TStoryEntityDto {
     this.status = story.status;
     this.type = story.type;
     this.gameSystem = story.gameSystem;
+    this.discordChannelLink = story.discordChannelLink ?? null;
+    this.locationLink = story.locationLink ?? null;
     this.expAwarded = story.expAwarded;
     this.pointAwarded = story.pointAwarded;
     this.maxMembers = story.maxMembers;
