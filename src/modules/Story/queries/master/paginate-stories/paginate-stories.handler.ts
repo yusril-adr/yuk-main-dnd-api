@@ -60,6 +60,7 @@ export class PaginateStoriesHandler implements IQueryHandler<
       isCanArchive: this.storyMasterActionService.isCanArchive(story, user),
       isCanUnarchive: this.storyMasterActionService.isCanUnarchive(story, user),
       isCanDelete: this.storyMasterActionService.isCanDelete(story, user),
+      isCanViewPublic: this.storyMasterActionService.isCanViewPublic(story),
     }));
 
     return new PaginateStoriesOutput(
