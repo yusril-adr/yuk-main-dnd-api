@@ -7,10 +7,12 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   IsUUID,
   Matches,
   MaxLength,
   Min,
+  ValidateIf,
 } from 'class-validator';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryTypeEnum } from '../../../enums/story-type.enum';
@@ -41,6 +43,26 @@ export class CreateStoryInput {
   @MaxLength(100)
   gameSystem?: string;
 
+  // Optional; sending null on update clears the link.
+  @ValidateIf((_, value) => value !== undefined && value !== null)
+  @IsString()
+  @MaxLength(255)
+  @IsUrl(
+    {
+      protocols: ['https'],
+      require_protocol: true,
+      host_whitelist: [
+        'discord.com',
+        'www.discord.com',
+        'discord.gg',
+        'discordapp.com',
+        'www.discordapp.com',
+      ],
+    },
+    { message: 'discord_channel_link must be a Discord https link' },
+  )
+  discordChannelLink?: string | null;
+
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -69,6 +91,17 @@ export class CreateStoryInput {
   @IsString()
   @IsNotEmpty()
   locationDetail: string;
+
+  // Any https link (Google Maps, Apple Maps, Waze, ...); independent of
+  // locationType. Sending null on update clears the link.
+  @ValidateIf((_, value) => value !== undefined && value !== null)
+  @IsString()
+  @MaxLength(255)
+  @IsUrl(
+    { protocols: ['https'], require_protocol: true },
+    { message: 'location_link must be an https link' },
+  )
+  locationLink?: string | null;
 
   @IsOptional()
   @IsUUID('4')

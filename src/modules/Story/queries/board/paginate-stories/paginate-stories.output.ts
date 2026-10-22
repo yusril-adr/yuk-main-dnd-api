@@ -20,6 +20,8 @@ export class PaginateStoriesItemOutput implements TPaginateStoriesItemOutput {
   status: number;
   type: number;
   gameSystem?: string;
+  discordChannelLink: string | null;
+  locationLink: string | null;
   maxMembers?: number;
   joinedMembers: number;
   memberStatus: number;
@@ -43,6 +45,8 @@ export class PaginateStoriesItemOutput implements TPaginateStoriesItemOutput {
     this.status = payload.status;
     this.type = payload.type;
     this.gameSystem = payload.gameSystem;
+    this.discordChannelLink = payload.discordChannelLink ?? null;
+    this.locationLink = payload.locationLink ?? null;
     this.maxMembers = payload.maxMembers;
     this.joinedMembers = joinedMembers;
     this.memberStatus = memberStatus;
