@@ -77,6 +77,11 @@ export class PaginateUserExperiencePointsHandler implements IQueryHandler<
         type: params.type,
       });
     }
+    if (params.direction !== undefined) {
+      query.where = mergeEachWhereConditions(query.where, {
+        direction: params.direction,
+      });
+    }
     return query;
   }
 }

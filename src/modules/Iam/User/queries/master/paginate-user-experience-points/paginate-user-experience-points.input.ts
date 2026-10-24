@@ -3,6 +3,7 @@ import { IsEnum, IsIn, IsOptional, IsString } from 'class-validator';
 import { snakeCase } from 'typeorm/util/StringUtils';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
 import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
+import { UserExpLogDirectionEnum } from '@shared/enums/user-exp-log-direction.enum';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { getAllEntityProperties } from '@shared/utils/common';
 
@@ -16,4 +17,9 @@ export class PaginateUserExperiencePointsInput extends PaginateParamDto {
   @Type(() => Number)
   @IsEnum(UserExpLogTypeEnum)
   type?: UserExpLogTypeEnum;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsEnum(UserExpLogDirectionEnum)
+  direction?: UserExpLogDirectionEnum;
 }

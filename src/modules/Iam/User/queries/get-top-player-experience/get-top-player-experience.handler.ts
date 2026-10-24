@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
+import { UserExpLogDirectionEnum } from '@shared/enums/user-exp-log-direction.enum';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserRepository } from '../../repositories/user.repository';
 import { UserService } from '../../services/user.service';
@@ -32,17 +33,22 @@ export class GetTopPlayerExperienceHandler implements IQueryHandler<
     query: GetTopPlayerExperienceQuery,
   ): Promise<GetTopPlayerExperienceOutput> {
     const range = this.dateRange(query.params.startDate, query.params.endDate);
+    const netExp =
+      'SUM(CASE WHEN log.direction = :income THEN log.amount ELSE -log.amount END)';
     const rows = await this.userExpLogRepository
       .createQueryBuilder('log')
       .innerJoin('log.user', 'owner')
       .select('owner.id', 'userId')
-      .addSelect('SUM(log.amount)', 'gainedPlayerExp')
+      .addSelect(netExp, 'gainedPlayerExp')
       .where('log.type = :type', { type: UserExpLogTypeEnum.PLAYER })
       .andWhere('log.createdAt >= :startAt', { startAt: range.start })
       .andWhere('log.createdAt < :endAt', { endAt: range.endExclusive })
       .groupBy('owner.id')
-      .orderBy('SUM(log.amount)', 'DESC')
+      // Net EXP can drop to zero or below; such users are left off the board.
+      .having(`${netExp} > 0`)
+      .orderBy(netExp, 'DESC')
       .addOrderBy('owner.id', 'ASC')
+      .setParameter('income', UserExpLogDirectionEnum.INCOME)
       .limit(3)
       .getRawMany<TRankedPlayerExpRow>();
 

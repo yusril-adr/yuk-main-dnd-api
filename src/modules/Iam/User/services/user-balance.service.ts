@@ -13,12 +13,14 @@ import {
 import { User } from '@entities/main/iam/user.entity';
 import { UserExpLog } from '@entities/main/iam/user-exp-log.entity';
 import { UserPointLog } from '@entities/main/iam/user-point-log.entity';
+import { UserExpLogDirectionEnum } from '@shared/enums/user-exp-log-direction.enum';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserPointLogTypeEnum } from '@shared/enums/user-point-log-type.enum';
 
 export type AddUserExperiencePointsParams = {
   userId: string;
   type: UserExpLogTypeEnum;
+  direction?: UserExpLogDirectionEnum;
   amount: number;
   description?: string;
 };
@@ -33,6 +35,7 @@ export type AddUserPointsParams = {
 export type AddManyUserExperiencePointsParams = {
   userIds: string[];
   type: UserExpLogTypeEnum;
+  direction?: UserExpLogDirectionEnum;
   amount: number;
   description?: string;
 };
@@ -59,11 +62,14 @@ export class UserBalanceService {
       throw new BadRequestException('Experience type is invalid');
     }
 
+    const direction = this.resolveExperienceDirection(params.direction);
+
     try {
       await this.run(manager, (txManager) =>
         this.applyExperiencePoints(txManager, {
           userIds: [params.userId],
           type: params.type,
+          direction,
           amount: params.amount,
           description: params.description,
         }),
@@ -125,6 +131,8 @@ export class UserBalanceService {
       throw new BadRequestException('Experience amount is invalid');
     }
 
+    const direction = this.resolveExperienceDirection(params.direction);
+
     const userIds = [...new Set(params.userIds)];
     if (userIds.length === 0) {
       return;
@@ -134,6 +142,7 @@ export class UserBalanceService {
       await this.run(manager, (txManager) =>
         this.applyExperiencePoints(txManager, {
           ...params,
+          direction,
           userIds,
         }),
       );
@@ -186,6 +195,23 @@ export class UserBalanceService {
     }
   }
 
+  private resolveExperienceDirection(
+    direction: UserExpLogDirectionEnum | undefined,
+  ): UserExpLogDirectionEnum {
+    if (direction === undefined) {
+      return UserExpLogDirectionEnum.INCOME;
+    }
+
+    if (
+      direction !== UserExpLogDirectionEnum.INCOME &&
+      direction !== UserExpLogDirectionEnum.EXPENSE
+    ) {
+      throw new BadRequestException('Experience direction is invalid');
+    }
+
+    return direction;
+  }
+
   private run(
     manager: EntityManager | undefined,
     work: (manager: EntityManager) => Promise<void>,
@@ -223,6 +249,12 @@ export class UserBalanceService {
       expColumn = 'dm_exp';
     }
 
+    const direction = params.direction ?? UserExpLogDirectionEnum.INCOME;
+    const isExpense = direction === UserExpLogDirectionEnum.EXPENSE;
+    const delta = isExpense
+      ? `"${expColumn}" - :amount`
+      : `"${expColumn}" + :amount`;
+
     const userRepo = manager.getRepository(User);
     const logRepo = manager.getRepository(UserExpLog);
     const { userIds } = params;
@@ -234,19 +266,41 @@ export class UserBalanceService {
       throw new NotFoundException(`User with id ${missing} not found`);
     }
 
+    if (isExpense) {
+      const expById = new Map(
+        users.map((user) => [user.id, user[expProperty]]),
+      );
+      const shortIds = userIds.filter(
+        (userId) => expById.get(userId)! < params.amount,
+      );
+      if (shortIds.length === 1) {
+        throw new BadRequestException('User does not have enough experience');
+      }
+      if (shortIds.length > 1) {
+        throw new BadRequestException(
+          `Users with ids ${shortIds} do not have enough experience`,
+        );
+      }
+    }
+
     // increment() does not set updatedAt, and TypeORM adds deleted_at IS NULL only on selects.
-    // One UPDATE keeps the add atomic and skips soft-deleted users.
-    const result = await userRepo
+    // One UPDATE keeps the change atomic and skips soft-deleted users.
+    const update = userRepo
       .createQueryBuilder()
       .update(User)
       .set({
-        [expProperty]: () => `"${expColumn}" + :amount`,
+        [expProperty]: () => delta,
         updatedAt: () => 'now()',
       })
       .where('id IN (:...ids)', { ids: userIds })
       .andWhere('deleted_at IS NULL')
-      .setParameter('amount', params.amount)
-      .execute();
+      .setParameter('amount', params.amount);
+
+    if (isExpense) {
+      update.andWhere(`"${expColumn}" >= :amount`);
+    }
+
+    const result = await update.execute();
 
     if (result.affected !== userIds.length) {
       throw new BadRequestException(
@@ -260,6 +314,7 @@ export class UserBalanceService {
           user: { id: userId },
           amount: params.amount,
           type: params.type,
+          direction,
           description: params.description,
         }),
       ),

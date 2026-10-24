@@ -248,6 +248,7 @@ Table story_members {
 
    amount integer [not null]
    type integer [not null, note: "1 player | 2 dm"]
+   direction integer [not null, default: 1, note: "1 income | 2 expense"]
 
    description text
 
