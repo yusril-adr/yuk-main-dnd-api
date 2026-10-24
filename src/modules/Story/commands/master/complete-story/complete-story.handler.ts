@@ -109,17 +109,20 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         );
       }
 
-      // The story creator is the DM and gets a fixed DM EXP reward. If the
-      // creator also attended, they get the player reward above as well.
-      await this.userBalanceService.addExperiencePoints(
-        {
-          userId: story.createdBy.id,
-          type: UserExpLogTypeEnum.DM,
-          amount: STORY_DM_EXP_REWARD,
-          description: `DM reward for story ${story.title}`,
-        },
-        manager,
-      );
+      // The story creator is the DM and gets a fixed DM EXP reward, unless
+      // they attended as a player, in which case they only get the player
+      // reward above.
+      if (!attendedUserIds.has(story.createdBy.id)) {
+        await this.userBalanceService.addExperiencePoints(
+          {
+            userId: story.createdBy.id,
+            type: UserExpLogTypeEnum.DM,
+            amount: STORY_DM_EXP_REWARD,
+            description: `DM reward for story ${story.title}`,
+          },
+          manager,
+        );
+      }
 
       story.status = StoryStatusEnum.COMPLETED;
       story.statusBefore = null;

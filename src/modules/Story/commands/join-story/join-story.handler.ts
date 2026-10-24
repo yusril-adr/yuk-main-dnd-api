@@ -30,10 +30,7 @@ export class JoinStoryHandler implements ICommandHandler<JoinStoryCommand> {
     await this.dataSource.transaction(async (manager) => {
       const storyRepo = manager.getRepository(Story);
       const storyMemberRepo = manager.getRepository(StoryMember);
-      const story = await storyRepo.findOne({
-        where: { id },
-        relations: { createdBy: true },
-      });
+      const story = await storyRepo.findOne({ where: { id } });
 
       if (!story || !PUBLIC_STORY_STATUSES.includes(story.status)) {
         throw new NotFoundException(`Story with id ${id} not found`);
@@ -41,15 +38,6 @@ export class JoinStoryHandler implements ICommandHandler<JoinStoryCommand> {
 
       if (story.status !== StoryStatusEnum.PUBLISHED) {
         throw new BadRequestException('Only published stories can be joined');
-      }
-
-      if (!story.createdBy?.id) {
-        throw new BadRequestException('Story creator is missing');
-      }
-      if (user.id === story.createdBy.id) {
-        throw new BadRequestException(
-          `User with id ${user.id} is the creator of this story`,
-        );
       }
 
       const existing = await storyMemberRepo.findOne({
