@@ -49,8 +49,9 @@ export class Story extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   locationLink?: string | null;
 
-  @Column({ type: 'integer', default: 0 })
-  expAwarded: number = 0;
+  // Fixed at 1; not settable through the API. See STORY_PLAYER_EXP_REWARD.
+  @Column({ type: 'integer', default: 1 })
+  expAwarded: number = 1;
 
   @Column({ type: 'integer', default: 0 })
   pointAwarded: number = 0;

@@ -11,6 +11,10 @@ import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { UserBalanceService } from '@modules/Iam/User/services/user-balance.service';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserPointLogTypeEnum } from '@shared/enums/user-point-log-type.enum';
+import {
+  STORY_DM_EXP_REWARD,
+  STORY_PLAYER_EXP_REWARD,
+} from '../../../constants/story-reward.constant';
 import { StoryMemberStatusEnum } from '../../../enums/story-member-status.enum';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
@@ -52,9 +56,6 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         `Attended members must not exceed max members of ${story.maxMembers}`,
       );
     }
-    if (story.expAwarded < 0) {
-      throw new BadRequestException('Story experience award is invalid');
-    }
     if (story.pointAwarded < 0) {
       throw new BadRequestException('Story point award is invalid');
     }
@@ -87,17 +88,15 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
       }
 
       const rewardDescription = `Player reward for story ${story.title}`;
-      if (story.expAwarded > 0) {
-        await this.userBalanceService.addExperiencePointsToMany(
-          {
-            userIds: uniqueUserIds,
-            type: UserExpLogTypeEnum.PLAYER,
-            amount: story.expAwarded,
-            description: rewardDescription,
-          },
-          manager,
-        );
-      }
+      await this.userBalanceService.addExperiencePointsToMany(
+        {
+          userIds: uniqueUserIds,
+          type: UserExpLogTypeEnum.PLAYER,
+          amount: STORY_PLAYER_EXP_REWARD,
+          description: rewardDescription,
+        },
+        manager,
+      );
       if (story.pointAwarded > 0) {
         await this.userBalanceService.addPointsToMany(
           {
@@ -110,12 +109,17 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         );
       }
 
-      // TODO: If a DM award is required, update the story creator's DM XP and points
-      // inside this same transaction. The DM is story.createdBy. XP must use
-      // UserExpLogTypeEnum.DM so it updates dmExp, not playerExp. Points use
-      // UserPointLogTypeEnum.INCOME on the shared points balance. There is no
-      // separate DM amount column; do not add one in this change. Skip when no DM
-      // award is required. Not implemented yet.
+      // The story creator is the DM and gets a fixed DM EXP reward. If the
+      // creator also attended, they get the player reward above as well.
+      await this.userBalanceService.addExperiencePoints(
+        {
+          userId: story.createdBy.id,
+          type: UserExpLogTypeEnum.DM,
+          amount: STORY_DM_EXP_REWARD,
+          description: `DM reward for story ${story.title}`,
+        },
+        manager,
+      );
 
       story.status = StoryStatusEnum.COMPLETED;
       story.statusBefore = null;
