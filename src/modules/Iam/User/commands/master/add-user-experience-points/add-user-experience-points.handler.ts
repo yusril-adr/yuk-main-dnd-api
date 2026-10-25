@@ -12,6 +12,7 @@ export class AddUserExperiencePointsHandler implements ICommandHandler<AddUserEx
     await this.userBalanceService.addExperiencePoints({
       userId: id,
       type: params.type,
+      direction: params.direction,
       amount: params.amount,
       description: params.description,
     });

@@ -5,6 +5,7 @@ export type TUserExpLogEntityDto = {
   id: string;
   amount: number;
   type: number;
+  direction: number;
   description: string | null;
   createdAt: string;
   updatedAt: string;
@@ -14,6 +15,7 @@ export class UserExpLogEntityDto implements TUserExpLogEntityDto {
   id: string;
   amount: number;
   type: number;
+  direction: number;
   description: string | null;
   createdAt: string;
   updatedAt: string;
@@ -22,6 +24,7 @@ export class UserExpLogEntityDto implements TUserExpLogEntityDto {
     this.id = log.id;
     this.amount = log.amount;
     this.type = log.type;
+    this.direction = log.direction;
     this.description = log.description ?? null;
     this.createdAt = dayjs(log.createdAt).toISOString();
     this.updatedAt = dayjs(log.updatedAt).toISOString();

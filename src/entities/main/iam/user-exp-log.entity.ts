@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { UserExpLogDirectionEnum } from '@shared/enums/user-exp-log-direction.enum';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { BaseEntity } from '../base.entity';
 import { User } from './user.entity';
@@ -15,6 +16,9 @@ export class UserExpLog extends BaseEntity {
 
   @Column({ type: 'integer' })
   type: UserExpLogTypeEnum;
+
+  @Column({ type: 'integer', default: UserExpLogDirectionEnum.INCREMENT })
+  direction: UserExpLogDirectionEnum;
 
   @Column({ type: 'text', nullable: true })
   description?: string;
