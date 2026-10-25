@@ -40,10 +40,7 @@ export class FindOneStoryHandler implements IQueryHandler<
         where: { story: { id: story.id }, user: { id: userId } },
       });
       actionList = {
-        isCanJoin:
-          Boolean(story.createdBy?.id) &&
-          userId !== story.createdBy?.id &&
-          !member,
+        isCanJoin: !member,
         isCanCancelJoin: Boolean(member),
       };
     }

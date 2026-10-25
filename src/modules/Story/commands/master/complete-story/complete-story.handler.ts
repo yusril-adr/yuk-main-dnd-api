@@ -11,6 +11,7 @@ import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { UserBalanceService } from '@modules/Iam/User/services/user-balance.service';
 import { UserExpLogTypeEnum } from '@shared/enums/user-exp-log-type.enum';
 import { UserPointLogTypeEnum } from '@shared/enums/user-point-log-type.enum';
+import { STORY_DM_EXP_REWARD } from '../../../constants/story-reward.constant';
 import { StoryMemberStatusEnum } from '../../../enums/story-member-status.enum';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryRepository } from '../../../repositories/story.repository';
@@ -110,12 +111,20 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         );
       }
 
-      // TODO: If a DM award is required, update the story creator's DM XP and points
-      // inside this same transaction. The DM is story.createdBy. XP must use
-      // UserExpLogTypeEnum.DM so it updates dmExp, not playerExp. Points use
-      // UserPointLogTypeEnum.INCOME on the shared points balance. There is no
-      // separate DM amount column; do not add one in this change. Skip when no DM
-      // award is required. Not implemented yet.
+      // The story creator is the DM and gets a fixed DM EXP reward, unless
+      // they attended as a player, in which case they only get the player
+      // reward above.
+      if (!attendedUserIds.has(story.createdBy.id)) {
+        await this.userBalanceService.addExperiencePoints(
+          {
+            userId: story.createdBy.id,
+            type: UserExpLogTypeEnum.DM,
+            amount: STORY_DM_EXP_REWARD,
+            description: `DM reward for story ${story.title}`,
+          },
+          manager,
+        );
+      }
 
       story.status = StoryStatusEnum.COMPLETED;
       story.statusBefore = null;

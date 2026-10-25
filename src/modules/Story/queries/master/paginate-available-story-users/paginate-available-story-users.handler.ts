@@ -42,10 +42,7 @@ export class PaginateAvailableStoryUsersHandler implements IQueryHandler<
   ): Promise<PaginateAvailableStoryUsersOutput> {
     const { id, params } = query;
 
-    const story = await this.storyRepository.findOne({
-      where: { id },
-      relations: { createdBy: true },
-    });
+    const story = await this.storyRepository.findOne({ where: { id } });
     if (!story) {
       throw new NotFoundException(`Story with id ${id} not found`);
     }
@@ -57,9 +54,6 @@ export class PaginateAvailableStoryUsersHandler implements IQueryHandler<
     const excludedUserIds = members
       .map((member) => member.user?.id)
       .filter((userId): userId is string => Boolean(userId));
-    if (story.createdBy?.id && !excludedUserIds.includes(story.createdBy.id)) {
-      excludedUserIds.push(story.createdBy.id);
-    }
 
     let findOptions: FindManyOptions<User> = {};
     findOptions = this.sortQuery(findOptions, params);
