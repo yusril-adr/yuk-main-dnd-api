@@ -1,12 +1,16 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { Type } from 'class-transformer';
 import {
+  Equals,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsString,
   Matches,
   MaxLength,
   ValidateIf,
 } from 'class-validator';
+import { STORY_PLAYER_EXP_REWARD } from '../../../constants/story-reward.constant';
 import { CreateStoryInput } from '../create-story/create-story.input';
 import { StoryTypeEnum } from '../../../enums/story-type.enum';
 import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
@@ -21,6 +25,7 @@ export class UpdateStoryInput extends PartialType(
     'locationType',
     'locationDetail',
     'status',
+    'expAwarded',
   ] as const),
 ) {
   @ValidateIf(isProvided)
@@ -44,4 +49,13 @@ export class UpdateStoryInput extends PartialType(
   @IsString()
   @IsNotEmpty()
   locationDetail?: string;
+
+  // Same rule as create; redeclared because PartialType would let null through.
+  @ValidateIf(isProvided)
+  @Type(() => Number)
+  @IsInt()
+  @Equals(STORY_PLAYER_EXP_REWARD, {
+    message: `exp_awarded must be ${STORY_PLAYER_EXP_REWARD}`,
+  })
+  expAwarded?: number;
 }

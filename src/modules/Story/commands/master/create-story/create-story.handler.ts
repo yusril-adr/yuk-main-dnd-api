@@ -62,8 +62,7 @@ export class CreateStoryHandler implements ICommandHandler<CreateStoryCommand> {
             ...(storyId ? { id: storyId } : {}),
             ...(startAt !== undefined && { startAt: new Date(startAt) }),
             slug,
-            // Fixed; overrides any expAwarded a client still sends (the global
-            // ValidationPipe does not strip unknown properties).
+            // Always the fixed reward; the input only accepts this value.
             expAwarded: STORY_PLAYER_EXP_REWARD,
             createdBy: { id: user.id },
             bannerFile,
