@@ -106,6 +106,17 @@ export class CreateStoryInput {
   )
   locationLink?: string | null;
 
+  // Any https link to a feedback form (e.g. Google Forms). Sending null on
+  // update clears the link.
+  @ValidateIf((_, value) => value !== undefined && value !== null)
+  @IsString()
+  @MaxLength(255)
+  @IsUrl(
+    { protocols: ['https'], require_protocol: true },
+    { message: 'feedback_form_link must be an https link' },
+  )
+  feedbackFormLink?: string | null;
+
   @IsOptional()
   @IsUUID('4')
   bannerFileId?: string | null;
