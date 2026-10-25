@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
@@ -14,6 +14,7 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import { DEFAULT_STORY_PLAYER_EXP_REWARD } from '../../../constants/story-reward.constant';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryTypeEnum } from '../../../enums/story-type.enum';
 import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
@@ -63,11 +64,13 @@ export class CreateStoryInput {
   )
   discordChannelLink?: string | null;
 
-  @IsOptional()
+  // Player EXP each attendee gets on complete. Optional; null is stored as 0.
+  @ValidateIf((_, value) => value !== undefined)
   @Type(() => Number)
+  @Transform(({ value }: { value: unknown }) => (value === null ? 0 : value))
   @IsInt()
   @Min(0)
-  expAwarded?: number;
+  expAwarded?: number = DEFAULT_STORY_PLAYER_EXP_REWARD;
 
   @IsOptional()
   @Type(() => Number)

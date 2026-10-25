@@ -1,10 +1,13 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { Transform, Type } from 'class-transformer';
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsString,
   Matches,
   MaxLength,
+  Min,
   ValidateIf,
 } from 'class-validator';
 import { CreateStoryInput } from '../create-story/create-story.input';
@@ -21,6 +24,7 @@ export class UpdateStoryInput extends PartialType(
     'locationType',
     'locationDetail',
     'status',
+    'expAwarded',
   ] as const),
 ) {
   @ValidateIf(isProvided)
@@ -44,4 +48,13 @@ export class UpdateStoryInput extends PartialType(
   @IsString()
   @IsNotEmpty()
   locationDetail?: string;
+
+  // Same rule as create (null is stored as 0), without the default;
+  // redeclared because PartialType would skip validation for null.
+  @ValidateIf(isProvided)
+  @Type(() => Number)
+  @Transform(({ value }: { value: unknown }) => (value === null ? 0 : value))
+  @IsInt()
+  @Min(0)
+  expAwarded?: number;
 }
