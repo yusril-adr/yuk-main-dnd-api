@@ -47,6 +47,8 @@ export class GetTopPlayerExperienceHandler implements IQueryHandler<
       // Net EXP can drop to zero or below; such users are left off the board.
       .having(`${netExp} > 0`)
       .orderBy(netExp, 'DESC')
+      // Ties go to whoever reached that EXP first: the latest log counted above.
+      .addOrderBy('MAX(log.createdAt)', 'ASC')
       .addOrderBy('owner.id', 'ASC')
       .setParameter('increment', UserExpLogDirectionEnum.INCREMENT)
       .limit(3)
