@@ -54,6 +54,6 @@ export class UpdateStoryInput extends PartialType(
   @ValidateIf(isProvided)
   @Type(() => Number)
   @IsInt()
-  @Min(1)
+  @Min(0)
   expAwarded?: number;
 }
