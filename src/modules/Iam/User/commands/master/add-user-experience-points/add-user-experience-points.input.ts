@@ -11,7 +11,7 @@ export class AddUserExperiencePointsInput {
   @IsOptional()
   @Type(() => Number)
   @IsEnum(UserExpLogDirectionEnum)
-  direction: UserExpLogDirectionEnum = UserExpLogDirectionEnum.INCOME;
+  direction: UserExpLogDirectionEnum = UserExpLogDirectionEnum.INCREMENT;
 
   @Type(() => Number)
   @IsInt()

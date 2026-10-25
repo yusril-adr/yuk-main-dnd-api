@@ -199,12 +199,12 @@ export class UserBalanceService {
     direction: UserExpLogDirectionEnum | undefined,
   ): UserExpLogDirectionEnum {
     if (direction === undefined) {
-      return UserExpLogDirectionEnum.INCOME;
+      return UserExpLogDirectionEnum.INCREMENT;
     }
 
     if (
-      direction !== UserExpLogDirectionEnum.INCOME &&
-      direction !== UserExpLogDirectionEnum.EXPENSE
+      direction !== UserExpLogDirectionEnum.INCREMENT &&
+      direction !== UserExpLogDirectionEnum.DECREMENT
     ) {
       throw new BadRequestException('Experience direction is invalid');
     }
@@ -249,9 +249,9 @@ export class UserBalanceService {
       expColumn = 'dm_exp';
     }
 
-    const direction = params.direction ?? UserExpLogDirectionEnum.INCOME;
-    const isExpense = direction === UserExpLogDirectionEnum.EXPENSE;
-    const delta = isExpense
+    const direction = params.direction ?? UserExpLogDirectionEnum.INCREMENT;
+    const isDecrement = direction === UserExpLogDirectionEnum.DECREMENT;
+    const delta = isDecrement
       ? `"${expColumn}" - :amount`
       : `"${expColumn}" + :amount`;
 
@@ -266,7 +266,7 @@ export class UserBalanceService {
       throw new NotFoundException(`User with id ${missing} not found`);
     }
 
-    if (isExpense) {
+    if (isDecrement) {
       const expById = new Map(
         users.map((user) => [user.id, user[expProperty]]),
       );
@@ -296,7 +296,7 @@ export class UserBalanceService {
       .andWhere('deleted_at IS NULL')
       .setParameter('amount', params.amount);
 
-    if (isExpense) {
+    if (isDecrement) {
       update.andWhere(`"${expColumn}" >= :amount`);
     }
 

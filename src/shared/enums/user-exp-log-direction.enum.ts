@@ -1,4 +1,4 @@
 export enum UserExpLogDirectionEnum {
-  INCOME = 1,
-  EXPENSE = 2,
+  INCREMENT = 1,
+  DECREMENT = 2,
 }

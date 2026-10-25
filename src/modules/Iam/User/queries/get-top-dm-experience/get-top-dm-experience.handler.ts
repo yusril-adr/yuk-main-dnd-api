@@ -34,7 +34,7 @@ export class GetTopDmExperienceHandler implements IQueryHandler<
   ): Promise<GetTopDmExperienceOutput> {
     const range = this.dateRange(query.params.startDate, query.params.endDate);
     const netExp =
-      'SUM(CASE WHEN log.direction = :income THEN log.amount ELSE -log.amount END)';
+      'SUM(CASE WHEN log.direction = :increment THEN log.amount ELSE -log.amount END)';
     const rows = await this.userExpLogRepository
       .createQueryBuilder('log')
       .innerJoin('log.user', 'owner')
@@ -48,7 +48,7 @@ export class GetTopDmExperienceHandler implements IQueryHandler<
       .having(`${netExp} > 0`)
       .orderBy(netExp, 'DESC')
       .addOrderBy('owner.id', 'ASC')
-      .setParameter('income', UserExpLogDirectionEnum.INCOME)
+      .setParameter('increment', UserExpLogDirectionEnum.INCREMENT)
       .limit(3)
       .getRawMany<TRankedDmExpRow>();
 

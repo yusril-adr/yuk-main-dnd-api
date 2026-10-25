@@ -17,7 +17,7 @@ export class UserExpLog extends BaseEntity {
   @Column({ type: 'integer' })
   type: UserExpLogTypeEnum;
 
-  @Column({ type: 'integer', default: UserExpLogDirectionEnum.INCOME })
+  @Column({ type: 'integer', default: UserExpLogDirectionEnum.INCREMENT })
   direction: UserExpLogDirectionEnum;
 
   @Column({ type: 'text', nullable: true })
