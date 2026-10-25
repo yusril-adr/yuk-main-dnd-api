@@ -1,5 +1,5 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -49,10 +49,11 @@ export class UpdateStoryInput extends PartialType(
   @IsNotEmpty()
   locationDetail?: string;
 
-  // Same rule as create, without the default; redeclared because PartialType
-  // would let null through.
+  // Same rule as create (null is stored as 0), without the default;
+  // redeclared because PartialType would skip validation for null.
   @ValidateIf(isProvided)
   @Type(() => Number)
+  @Transform(({ value }: { value: unknown }) => (value === null ? 0 : value))
   @IsInt()
   @Min(0)
   expAwarded?: number;
