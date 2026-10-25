@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
@@ -64,9 +64,10 @@ export class CreateStoryInput {
   )
   discordChannelLink?: string | null;
 
-  // Player EXP each attendee gets on complete. Optional, but null is rejected.
+  // Player EXP each attendee gets on complete. Optional; null is stored as 0.
   @ValidateIf((_, value) => value !== undefined)
   @Type(() => Number)
+  @Transform(({ value }: { value: unknown }) => (value === null ? 0 : value))
   @IsInt()
   @Min(0)
   expAwarded?: number = DEFAULT_STORY_PLAYER_EXP_REWARD;
