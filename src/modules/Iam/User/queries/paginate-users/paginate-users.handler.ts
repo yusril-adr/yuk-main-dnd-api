@@ -26,6 +26,7 @@ export class PaginateUsersHandler implements IQueryHandler<
       order: {
         dmExp: OrderKeyEnum.DESC,
         playerExp: OrderKeyEnum.DESC,
+        createdAt: OrderKeyEnum.ASC,
         id: OrderKeyEnum.ASC,
       },
     };
