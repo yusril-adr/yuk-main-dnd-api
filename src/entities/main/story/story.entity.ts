@@ -49,6 +49,9 @@ export class Story extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   locationLink?: string | null;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  feedbackFormLink?: string | null;
+
   // Player EXP per attendee on complete. The API accepts 0 or more (null is stored as 0) and
   // defaults to 1 on create; the DB default stays 0.
   @Column({ type: 'integer', default: 0 })

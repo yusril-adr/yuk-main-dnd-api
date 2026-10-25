@@ -202,6 +202,7 @@ Table stories {
   location_type varchar(20) [not null, note: "online | offline"]
   location_detail text [not null, note: "online: platform/link (e.g. Discord, Roll20), offline: place name/address"]
   location_link varchar(255) [note: "optional https link to the location, e.g. Google Maps; independent of location_type"]
+  feedback_form_link varchar(255) [note: "optional https link to a feedback form, e.g. Google Forms"]
 
   banner_file_id uuid [unique]
 
