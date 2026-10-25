@@ -68,7 +68,7 @@ export class CreateStoryInput {
   @ValidateIf((_, value) => value !== undefined)
   @Type(() => Number)
   @IsInt()
-  @Min(1)
+  @Min(0)
   expAwarded?: number = DEFAULT_STORY_PLAYER_EXP_REWARD;
 
   @IsOptional()
