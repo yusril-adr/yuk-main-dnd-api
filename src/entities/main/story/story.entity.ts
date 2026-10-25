@@ -49,9 +49,10 @@ export class Story extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   locationLink?: string | null;
 
-  // Player EXP per attendee on complete. Minimum 1 through the API.
-  @Column({ type: 'integer', default: 1 })
-  expAwarded: number = 1;
+  // Player EXP per attendee on complete. The API requires at least 1 and
+  // defaults to 1 on create; the DB default stays 0.
+  @Column({ type: 'integer', default: 0 })
+  expAwarded: number = 0;
 
   @Column({ type: 'integer', default: 0 })
   pointAwarded: number = 0;
