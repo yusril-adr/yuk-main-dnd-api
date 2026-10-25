@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  Equals,
   IsDateString,
   IsEnum,
   IsIn,
@@ -14,6 +15,7 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import { STORY_PLAYER_EXP_REWARD } from '../../../constants/story-reward.constant';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryTypeEnum } from '../../../enums/story-type.enum';
 import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
@@ -62,6 +64,16 @@ export class CreateStoryInput {
     { message: 'discord_channel_link must be a Discord https link' },
   )
   discordChannelLink?: string | null;
+
+  // Player EXP per completed story is fixed; only that value is accepted.
+  // Optional, but null is rejected like any other value.
+  @ValidateIf((_, value) => value !== undefined)
+  @Type(() => Number)
+  @IsInt()
+  @Equals(STORY_PLAYER_EXP_REWARD, {
+    message: `exp_awarded must be ${STORY_PLAYER_EXP_REWARD}`,
+  })
+  expAwarded?: number = STORY_PLAYER_EXP_REWARD;
 
   @IsOptional()
   @Type(() => Number)

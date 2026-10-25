@@ -37,11 +37,6 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
     if ('status' in storyPayload) {
       delete storyPayload.status;
     }
-    // expAwarded is fixed; ignore it if a client still sends it (the global
-    // ValidationPipe does not strip unknown properties).
-    if ('expAwarded' in storyPayload) {
-      delete (storyPayload as { expAwarded?: unknown }).expAwarded;
-    }
 
     if (storyPayload.title && storyEntity.title !== storyPayload.title) {
       storyEntity.slug = await this.storyService.generateUniqueSlug(
