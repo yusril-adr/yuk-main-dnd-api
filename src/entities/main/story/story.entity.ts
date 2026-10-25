@@ -49,7 +49,7 @@ export class Story extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   locationLink?: string | null;
 
-  // Fixed at 1; the API only accepts this value. See STORY_PLAYER_EXP_REWARD.
+  // Player EXP per attendee on complete. Minimum 1 through the API.
   @Column({ type: 'integer', default: 1 })
   expAwarded: number = 1;
 

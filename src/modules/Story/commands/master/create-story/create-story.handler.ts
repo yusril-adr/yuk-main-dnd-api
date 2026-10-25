@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm';
 import { File } from '@entities/main/file.entity';
 import { Story } from '@entities/main/story/story.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
-import { STORY_PLAYER_EXP_REWARD } from '../../../constants/story-reward.constant';
 import { StoryService } from '../../../services/story.service';
 import { StoryMasterActionService } from '../../../services/story-master-action.service';
 import { CreateStoryCommand } from './create-story.command';
@@ -62,8 +61,6 @@ export class CreateStoryHandler implements ICommandHandler<CreateStoryCommand> {
             ...(storyId ? { id: storyId } : {}),
             ...(startAt !== undefined && { startAt: new Date(startAt) }),
             slug,
-            // Always the fixed reward; the input only accepts this value.
-            expAwarded: STORY_PLAYER_EXP_REWARD,
             createdBy: { id: user.id },
             bannerFile,
           }),
