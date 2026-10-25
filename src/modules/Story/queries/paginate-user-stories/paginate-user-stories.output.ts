@@ -21,6 +21,7 @@ export class PaginateUserStoriesItemOutput implements TPaginateUserStoriesItemOu
   gameSystem?: string;
   discordChannelLink: string | null;
   locationLink: string | null;
+  feedbackFormLink: string | null;
   maxMembers?: number;
   joinedMembers: number;
   startAt: string | null;
@@ -44,6 +45,7 @@ export class PaginateUserStoriesItemOutput implements TPaginateUserStoriesItemOu
     this.gameSystem = payload.gameSystem;
     this.discordChannelLink = payload.discordChannelLink ?? null;
     this.locationLink = payload.locationLink ?? null;
+    this.feedbackFormLink = payload.feedbackFormLink ?? null;
     this.maxMembers = payload.maxMembers;
     this.joinedMembers = joinedMembers;
     this.startAt = payload.startAt ? payload.startAt.toISOString() : null;
