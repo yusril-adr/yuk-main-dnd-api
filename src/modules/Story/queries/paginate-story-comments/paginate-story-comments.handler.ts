@@ -5,6 +5,7 @@ import { StoryComment } from '@entities/main/story/story-comment.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { StoryService } from '../../services/story.service';
 import { StoryCommentActionService } from '../../services/story-comment-action.service';
+import { StoryCommentReactionService } from '../../services/story-comment-reaction.service';
 import { PaginateStoryCommentsQuery } from './paginate-story-comments.query';
 import {
   PaginateStoryCommentsOutput,
@@ -22,6 +23,7 @@ export class PaginateStoryCommentsHandler implements IQueryHandler<
     private readonly storyCommentRepository: Repository<StoryComment>,
     private readonly storageService: StorageService,
     private readonly storyCommentActionService: StoryCommentActionService,
+    private readonly storyCommentReactionService: StoryCommentReactionService,
   ) {}
 
   async execute(
@@ -80,13 +82,24 @@ export class PaginateStoryCommentsHandler implements IQueryHandler<
         story,
         user,
       ),
+      isCanReact: this.storyCommentActionService.isCanReact(
+        comment,
+        story,
+        user,
+      ),
     }));
+
+    const reactions = await this.storyCommentReactionService.getSummaries(
+      comments,
+      user,
+    );
 
     return new PaginateStoryCommentsOutput(
       comments,
       avatarUrls,
       actionLists,
       comments.map((comment) => replyCounts.get(comment.id) ?? 0),
+      reactions,
       count,
     );
   }

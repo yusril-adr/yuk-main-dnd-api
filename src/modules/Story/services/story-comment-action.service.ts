@@ -18,6 +18,14 @@ export class StoryCommentActionService {
     return user !== null && PUBLIC_STORY_STATUSES.includes(story.status);
   }
 
+  isCanReact(
+    comment: StoryComment,
+    story: Story,
+    user: TJWTPayload | null,
+  ): boolean {
+    return comment.deletedAt == null && this.isCanComment(story, user);
+  }
+
   isCanUpdate(comment: StoryComment, user: TJWTPayload | null): boolean {
     return (
       user !== null && comment.deletedAt == null && comment.user?.id === user.id

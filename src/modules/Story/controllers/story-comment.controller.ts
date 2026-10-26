@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Request,
 } from '@nestjs/common';
@@ -26,6 +27,9 @@ import { UpdateStoryCommentInput } from '../commands/story-comment/update-story-
 import { RemoveStoryCommentCommand } from '../commands/story-comment/remove-story-comment/remove-story-comment.command';
 import { PinStoryCommentCommand } from '../commands/story-comment/pin-story-comment/pin-story-comment.command';
 import { UnpinStoryCommentCommand } from '../commands/story-comment/unpin-story-comment/unpin-story-comment.command';
+import { SetStoryCommentReactionCommand } from '../commands/story-comment/set-story-comment-reaction/set-story-comment-reaction.command';
+import { SetStoryCommentReactionInput } from '../commands/story-comment/set-story-comment-reaction/set-story-comment-reaction.input';
+import { RemoveStoryCommentReactionCommand } from '../commands/story-comment/remove-story-comment-reaction/remove-story-comment-reaction.command';
 
 @Controller({
   path: 'stories',
@@ -156,6 +160,39 @@ export class StoryCommentController {
     return wrapper.response({
       data: null,
       message: 'Story comment unpinned successfully',
+    });
+  }
+
+  @Put(':id/comments/:commentId/reaction')
+  async setReaction(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Param('commentId') commentId: string,
+    @Body() payload: SetStoryCommentReactionInput,
+  ) {
+    await this.commandBus.execute(
+      new SetStoryCommentReactionCommand(id, commentId, payload, request.user),
+    );
+    return wrapper.response({
+      data: null,
+      message: 'Story comment reaction saved successfully',
+    });
+  }
+
+  @Delete(':id/comments/:commentId/reaction')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeReaction(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Param('commentId') commentId: string,
+  ) {
+    await this.commandBus.execute(
+      new RemoveStoryCommentReactionCommand(id, commentId, request.user),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.NO_CONTENT,
+      data: null,
+      message: 'Story comment reaction removed successfully',
     });
   }
 }
