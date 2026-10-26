@@ -245,7 +245,6 @@ Table story_comments {
   content text [not null, note: "plain text, 1-1000 chars"]
 
   pinned_at timestamptz [note: "null = not pinned"]
-  pinned_by uuid
 
   created_at timestamptz [not null, default: `now()`]
   updated_at timestamptz [not null, default: `now()`]
@@ -367,7 +366,6 @@ Ref: stories.id < story_members.story_id
 
 Ref: stories.id < story_comments.story_id [delete: cascade]
 Ref: users.id < story_comments.user_id
-Ref: users.id < story_comments.pinned_by
 
 Ref: users.id < user_exp_logs.user_id
 Ref: users.id < user_point_logs.user_id

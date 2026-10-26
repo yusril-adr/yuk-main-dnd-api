@@ -20,10 +20,6 @@ export class StoryComment extends BaseEntity {
 
   @Column({ type: 'timestamp with time zone', nullable: true })
   pinnedAt?: Date | null;
-
-  @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'pinned_by' })
-  pinnedBy?: User | null;
 }
 
 export type TStoryComment = InstanceType<typeof StoryComment>;

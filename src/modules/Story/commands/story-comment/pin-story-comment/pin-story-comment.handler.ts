@@ -66,14 +66,13 @@ export class PinStoryCommentHandler implements ICommandHandler<PinStoryCommentCo
           }
           await commentRepo.update(
             pinned.map((item) => item.id),
-            { pinnedAt: null, pinnedBy: null },
+            { pinnedAt: null },
           );
         }
       }
 
       await commentRepo.update(comment.id, {
         pinnedAt: new Date(),
-        pinnedBy: { id: user.id },
       });
     });
   }

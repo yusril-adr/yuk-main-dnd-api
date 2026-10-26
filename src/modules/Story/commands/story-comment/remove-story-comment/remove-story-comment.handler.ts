@@ -43,7 +43,6 @@ export class RemoveStoryCommentHandler implements ICommandHandler<RemoveStoryCom
     // Soft delete and clear the pin so a deleted comment never holds a slot.
     await this.storyCommentRepository.update(comment.id, {
       pinnedAt: null,
-      pinnedBy: null,
       deletedAt: new Date(),
     });
   }

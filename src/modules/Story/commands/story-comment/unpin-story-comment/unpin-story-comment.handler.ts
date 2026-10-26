@@ -36,7 +36,6 @@ export class UnpinStoryCommentHandler implements ICommandHandler<UnpinStoryComme
 
     await this.storyCommentRepository.update(comment.id, {
       pinnedAt: null,
-      pinnedBy: null,
     });
   }
 }
