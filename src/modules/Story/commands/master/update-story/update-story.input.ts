@@ -30,9 +30,7 @@ export class UpdateStoryInput extends PartialType(
   @ValidateIf(isProvided)
   @IsString()
   @IsNotEmpty()
-  @Matches(/[A-Za-z0-9]/, {
-    message: 'title must contain at least one letter or number',
-  })
+  @Matches(/\S/, { message: 'title must not be empty' })
   @MaxLength(150)
   title?: string;
 
