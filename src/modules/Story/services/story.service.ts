@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
@@ -23,6 +22,7 @@ import {
 const STORY_SLUG_MAX_LENGTH = 180;
 const STORY_SLUG_SUFFIX_LENGTH = 6;
 const STORY_SLUG_GENERATION_MAX_ATTEMPTS = 10;
+const STORY_SLUG_FALLBACK_PREFIX = 'story';
 const STORY_SLUG_SUFFIX_ALPHABET = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 @Injectable()
@@ -198,6 +198,13 @@ export class StoryService {
 
   async generateUniqueSlug(title: string): Promise<string> {
     const baseSlug = this.slugify(title);
+
+    // Titles with no ASCII letters or digits (e.g. Devanagari) get a random
+    // ASCII slug so URLs stay ASCII.
+    if (!baseSlug) {
+      return this.generateSlugWithSuffix(STORY_SLUG_FALLBACK_PREFIX);
+    }
+
     const existingBaseSlug = await this.storyRepository.findOne({
       where: { slug: baseSlug },
       withDeleted: true,
@@ -207,6 +214,10 @@ export class StoryService {
       return baseSlug;
     }
 
+    return this.generateSlugWithSuffix(baseSlug);
+  }
+
+  private async generateSlugWithSuffix(baseSlug: string): Promise<string> {
     const maxBaseLength = STORY_SLUG_MAX_LENGTH - STORY_SLUG_SUFFIX_LENGTH - 1;
 
     for (
@@ -230,20 +241,14 @@ export class StoryService {
   }
 
   private slugify(title: string): string {
-    const slug = title
-      .trim()
+    return title
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
-      .slice(0, STORY_SLUG_MAX_LENGTH);
-
-    if (!slug) {
-      throw new BadRequestException(
-        'Story title must contain at least one letter or number',
-      );
-    }
-
-    return slug;
+      .slice(0, STORY_SLUG_MAX_LENGTH)
+      .replace(/-+$/, '');
   }
 
   private generateRandomSuffix(): string {
