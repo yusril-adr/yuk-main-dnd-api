@@ -22,7 +22,7 @@ export class UnpinStoryCommentHandler implements ICommandHandler<UnpinStoryComme
     const story = await this.storyCommentService.findStoryOrFail(storyId);
     // Permission only: pinning a pinned comment (or unpinning an unpinned one)
     // stays a no-op instead of an error.
-    if (!this.storyCommentActionService.isCanManagePin(story, user)) {
+    if (!this.storyCommentActionService.hasPinPermission(story, user)) {
       throw new ForbiddenException(
         'Your permission is not allowed to access this story',
       );

@@ -19,7 +19,9 @@ export class StoryCommentActionService {
   }
 
   isCanUpdate(comment: StoryComment, user: TJWTPayload | null): boolean {
-    return user !== null && comment.user?.id === user.id;
+    return (
+      user !== null && comment.deletedAt == null && comment.user?.id === user.id
+    );
   }
 
   isCanDelete(
@@ -27,7 +29,7 @@ export class StoryCommentActionService {
     story: Story,
     user: TJWTPayload | null,
   ): boolean {
-    if (user === null) {
+    if (user === null || comment.deletedAt != null) {
       return false;
     }
     return (
@@ -40,8 +42,9 @@ export class StoryCommentActionService {
     );
   }
 
-  // Permission only; pin and unpin stay idempotent regardless of pinned state.
-  isCanManagePin(story: Story, user: TJWTPayload | null): boolean {
+  // Permission only. The pin and unpin handlers use this for their 403, so
+  // both stay idempotent regardless of pinned state.
+  hasPinPermission(story: Story, user: TJWTPayload | null): boolean {
     return (
       user !== null &&
       this.storyPermissionService.canModify(
@@ -52,12 +55,27 @@ export class StoryCommentActionService {
     );
   }
 
+  // Only live top-level comments can be pinned; replies never can.
+  isCanManagePin(
+    comment: StoryComment,
+    story: Story,
+    user: TJWTPayload | null,
+  ): boolean {
+    return (
+      comment.parentId == null &&
+      comment.deletedAt == null &&
+      this.hasPinPermission(story, user)
+    );
+  }
+
   isCanPin(
     comment: StoryComment,
     story: Story,
     user: TJWTPayload | null,
   ): boolean {
-    return comment.pinnedAt == null && this.isCanManagePin(story, user);
+    return (
+      comment.pinnedAt == null && this.isCanManagePin(comment, story, user)
+    );
   }
 
   isCanUnpin(
@@ -65,6 +83,8 @@ export class StoryCommentActionService {
     story: Story,
     user: TJWTPayload | null,
   ): boolean {
-    return comment.pinnedAt != null && this.isCanManagePin(story, user);
+    return (
+      comment.pinnedAt != null && this.isCanManagePin(comment, story, user)
+    );
   }
 }

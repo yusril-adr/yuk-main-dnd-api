@@ -9,15 +9,19 @@ export type TStoryCommentActionList = {
 };
 
 export class PaginateStoryCommentsItemOutput extends StoryCommentEntityDto {
+  // Number of non-deleted replies.
+  replyCount: number;
   actionList: TStoryCommentActionList;
 
   constructor(
     payload: TStoryComment,
     actionList: TStoryCommentActionList,
-    avatarUrl?: string | null,
+    avatarUrl: string | null,
+    replyCount: number,
   ) {
     super();
     this.parseEntity(payload, avatarUrl);
+    this.replyCount = replyCount;
     this.actionList = actionList;
   }
 }
@@ -30,6 +34,7 @@ export class PaginateStoryCommentsOutput {
     comments: TStoryComment[],
     avatarUrls: (string | null)[],
     actionLists: TStoryCommentActionList[],
+    replyCounts: number[],
     count: number,
   ) {
     this.data = comments.map(
@@ -38,6 +43,7 @@ export class PaginateStoryCommentsOutput {
           comment,
           actionLists[i],
           avatarUrls[i],
+          replyCounts[i],
         ),
     );
     this.count = count;

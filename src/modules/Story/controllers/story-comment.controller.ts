@@ -17,6 +17,8 @@ import { Public } from '@shared/decorators/public.decorator';
 import type { TRequestUser } from '@shared/types/request.type';
 import { PaginateStoryCommentsQuery } from '../queries/paginate-story-comments/paginate-story-comments.query';
 import { PaginateStoryCommentsInput } from '../queries/paginate-story-comments/paginate-story-comments.input';
+import { PaginateStoryCommentRepliesQuery } from '../queries/paginate-story-comment-replies/paginate-story-comment-replies.query';
+import { PaginateStoryCommentRepliesInput } from '../queries/paginate-story-comment-replies/paginate-story-comment-replies.input';
 import { CreateStoryCommentCommand } from '../commands/story-comment/create-story-comment/create-story-comment.command';
 import { CreateStoryCommentInput } from '../commands/story-comment/create-story-comment/create-story-comment.input';
 import { UpdateStoryCommentCommand } from '../commands/story-comment/update-story-comment/update-story-comment.command';
@@ -50,6 +52,30 @@ export class StoryCommentController {
       count: output.count,
       query,
       message: 'Story comments retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/comments/:commentId/replies')
+  @Public()
+  async paginateReplies(
+    @Param('identifier') identifier: string,
+    @Param('commentId') commentId: string,
+    @Query() query: PaginateStoryCommentRepliesInput,
+    @Request() request: Partial<TRequestUser>,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateStoryCommentRepliesQuery(
+        identifier,
+        commentId,
+        query,
+        request.user ?? null,
+      ),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Story comment replies retrieved successfully',
     });
   }
 
