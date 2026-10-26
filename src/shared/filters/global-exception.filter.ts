@@ -1,42 +1,43 @@
 import {
-  ArgumentsHost,
-  BadRequestException,
-  Catch,
-  ConflictException,
   ExceptionFilter,
+  Catch,
+  ArgumentsHost,
   HttpException,
-  InternalServerErrorException,
+  HttpStatus,
   Logger,
+  InternalServerErrorException,
+  ConflictException,
+  BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import * as Sentry from '@sentry/nestjs';
-import { EntityNotFoundError, QueryFailedError } from 'typeorm';
+import { EntityNotFoundError, QueryFailedError, TypeORMError } from 'typeorm';
 import { camelToSnake } from '@shared/utils/common';
 import { AppConfigService } from '@modules/Global/services/app-config.service';
-import { TErrorDebug, TErrorResponse } from '@shared/types/error-response.type';
 
-// Postgres errors caused by bad input. The client gets a generic message;
-// table, column, constraint and SQL details only go to the server log.
-const DB_ERROR_EXCEPTIONS: Record<string, () => HttpException> = {
-  // unique_violation
-  '23505': () => new ConflictException('Data already exists'),
-  // not_null_violation
-  '23502': () => new BadRequestException('Invalid request data'),
-  // foreign_key_violation
-  '23503': () => new BadRequestException('Invalid request data'),
-  // invalid_text_representation (e.g. a malformed uuid)
-  '22P02': () => new BadRequestException('Invalid request data'),
-  // numeric_value_out_of_range
-  '22003': () => new BadRequestException('Invalid request data'),
-  // string_data_right_truncation
-  '22001': () => new BadRequestException('Invalid request data'),
-};
-
-type TResolvedException = {
-  httpException: HttpException;
-  // The error we replaced with a generic one; undefined for HttpExceptions.
-  originalError?: unknown;
+// Postgres error codes that are caused by the request data. Anything else is
+// answered with a 500. Messages are generic so no table, column or SQL text
+// leaks to the client.
+const DB_ERROR_RESPONSES: Record<
+  string,
+  { status: HttpStatus; message: string; error: string }
+> = {
+  '23505': {
+    status: HttpStatus.CONFLICT,
+    message: 'Data already exists',
+    error: ConflictException.name,
+  },
+  ...Object.fromEntries(
+    ['23502', '23503', '22P02', '22003', '22001'].map((code) => [
+      code,
+      {
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Invalid request data',
+        error: BadRequestException.name,
+      },
+    ]),
+  ),
 };
 
 @Catch()
@@ -45,126 +46,137 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   constructor(private readonly appConfigService: AppConfigService) {}
 
-  catch(exception: unknown, host: ArgumentsHost): void {
-    if (host.getType() !== 'http') {
-      // Only HTTP is served. RPC/WS would need their own response format.
-      this.logger.error(
-        `Unhandled ${host.getType()} exception`,
-        this.toDebug(exception).stack,
-      );
-      Sentry.captureException(exception);
-      return;
-    }
-
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
-    const { httpException, originalError } = this.resolve(exception);
-    const status = httpException.getStatus();
+    const applicationContext = host.getType();
 
-    this.log(request, status, exception, originalError !== undefined);
-
-    const body: TErrorResponse = {
-      ...this.toResponseBody(httpException),
-      statusCode: status,
-    };
-    if (originalError !== undefined && this.appConfigService.debug) {
-      body.debug = this.toDebug(originalError);
+    if (applicationContext === 'http') {
+      // Handle for application context of regular HTTP requests (REST)
+      this.httpExceptionResponse(exception, host);
+      return;
+    } else if (applicationContext === 'rpc') {
+      // Handle for application context of RPC (Microservice requests)
+      //TODO: implement this
+    } else if (applicationContext === 'ws') {
+      // Handle for application context of WS (Websocket requests)
+      //TODO: implement this
     }
 
-    response.status(status).json(camelToSnake(body));
+    this.reportException(exception);
+
+    // Send the transformed response
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
+      camelToSnake({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
+        error: InternalServerErrorException.name,
+        ...this.debugBody(exception),
+      }),
+    );
   }
 
-  private resolve(exception: unknown): TResolvedException {
-    if (exception instanceof HttpException) {
-      return { httpException: exception };
+  private httpExceptionResponse(exception: any, host: ArgumentsHost): void {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let responseBody: string | object = {
+      message: 'Internal server error',
+      error: InternalServerErrorException.name,
+    };
+
+    const handledExceptions: Record<string, () => void> = {
+      // Handle HTTP exceptions
+      [HttpException.name]: () => {
+        status = exception.getStatus();
+        const rawResponse = exception.getResponse();
+        responseBody =
+          typeof rawResponse === 'string'
+            ? { message: rawResponse, error: exception.name }
+            : { ...rawResponse, error: exception.name };
+      },
+
+      // Handle TypeORM exceptions
+      [QueryFailedError.name]: () => {
+        const dbError = DB_ERROR_RESPONSES[exception.driverError?.code];
+        status = dbError?.status ?? HttpStatus.INTERNAL_SERVER_ERROR;
+        responseBody = {
+          error: dbError?.error ?? InternalServerErrorException.name,
+          message: dbError?.message ?? 'Internal server error',
+          ...this.debugBody(exception),
+        };
+
+        this.reportException(exception);
+      },
+
+      [TypeORMError.name]: () => {
+        // QueryFailedError extends TypeORMError, so the parent name lookup
+        // lands here for it.
+        if (exception instanceof QueryFailedError) {
+          handledExceptions[QueryFailedError.name]();
+          return;
+        }
+
+        const isNotFound = exception instanceof EntityNotFoundError;
+        status = isNotFound
+          ? HttpStatus.NOT_FOUND
+          : HttpStatus.INTERNAL_SERVER_ERROR;
+        responseBody = {
+          error: isNotFound
+            ? NotFoundException.name
+            : InternalServerErrorException.name,
+          message: isNotFound ? 'Data not found' : 'Internal server error',
+          ...this.debugBody(exception),
+        };
+
+        this.reportException(exception);
+      },
+    };
+    const exceptionParentName = Object.getPrototypeOf(
+      exception.constructor,
+    ).name;
+
+    const handleException = handledExceptions[exceptionParentName];
+    if (handleException) {
+      handleException();
+    } else {
+      responseBody = { ...responseBody, ...this.debugBody(exception) };
+      this.reportException(exception);
     }
 
-    if (exception instanceof QueryFailedError) {
-      const createException = DB_ERROR_EXCEPTIONS[this.getDbCode(exception)];
-      if (createException) {
-        return { httpException: createException(), originalError: exception };
-      }
-    }
+    // Send the transformed response
+    response.status(status).json(
+      camelToSnake({
+        ...responseBody,
+        statusCode: status,
+      }),
+    );
+  }
 
-    if (exception instanceof EntityNotFoundError) {
-      return {
-        httpException: new NotFoundException('Data not found'),
-        originalError: exception,
-      };
+  // Only filled when APP_DEBUG=true. Never use it for HttpException, whose
+  // message is already meant for the client.
+  private debugBody(exception: any): object {
+    if (!this.appConfigService.debug) {
+      return {};
     }
 
     return {
-      httpException: new InternalServerErrorException('Internal server error'),
-      originalError: exception,
+      debug: {
+        name: exception?.name,
+        message: exception?.message ?? String(exception),
+        stack: exception?.stack,
+        ...(exception instanceof QueryFailedError && {
+          code: exception.driverError?.code,
+          detail: exception.driverError?.detail,
+        }),
+      },
     };
   }
 
-  // Same shape as before: the HttpException response plus its class name.
-  private toResponseBody(
-    exception: HttpException,
-  ): Omit<TErrorResponse, 'statusCode'> {
-    const rawResponse = exception.getResponse();
-    return typeof rawResponse === 'string'
-      ? { message: rawResponse, error: exception.name }
-      : {
-          ...(rawResponse as { message: unknown }),
-          error: exception.name,
-        };
-  }
-
-  // Request bodies are never logged since they can hold passwords.
-  private log(
-    request: Request,
-    status: number,
-    exception: unknown,
-    isReplaced: boolean,
-  ): void {
-    const isServerError = status >= 500;
-    if (!isServerError && !isReplaced) {
-      // Expected 4xx HttpExceptions (validation, auth, not found, ...).
-      return;
-    }
-
-    const debug = this.toDebug(exception);
-    const path = request.originalUrl.split('?')[0];
-    const dbInfo = debug.code
-      ? ` [${debug.code}]${debug.detail ? ` ${debug.detail}` : ''}`
-      : '';
-    const summary = `${request.method} ${path} -> ${status} ${debug.name}: ${debug.message}${dbInfo}`;
-
-    if (isServerError) {
-      this.logger.error(summary, debug.stack);
-    } else {
-      this.logger.warn(`${summary}\n${debug.stack ?? ''}`);
-    }
-
+  private reportException(exception: any): void {
+    this.logger.error(exception, exception.stack);
     Sentry.captureException(exception);
-  }
-
-  private toDebug(error: unknown): TErrorDebug {
-    if (!(error instanceof Error)) {
-      return { name: 'UnknownError', message: String(error) };
-    }
-
-    const debug: TErrorDebug = {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    };
-    if (error instanceof QueryFailedError) {
-      debug.code = this.getDbCode(error);
-      const detail = (error.driverError as { detail?: unknown })?.detail;
-      if (typeof detail === 'string') {
-        debug.detail = detail;
-      }
-    }
-
-    return debug;
-  }
-
-  private getDbCode(error: QueryFailedError): string {
-    return `${(error.driverError as { code?: unknown })?.code ?? ''}`;
   }
 }
