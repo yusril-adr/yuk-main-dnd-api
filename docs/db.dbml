@@ -258,6 +258,22 @@ Table story_comments {
   }
 }
 
+Table story_comment_reactions {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  comment_id uuid [not null]
+  user_id uuid [not null]
+
+  type integer [not null, note: "1 = LIKE, 2 = LOVE, 3 = LAUGH, 4 = WOW"]
+
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (comment_id, user_id) [unique, note: "one reaction per user per comment; also serves lookups by comment_id"]
+  }
+}
+
 /*
  * ============================================================
  * Exp
@@ -369,6 +385,8 @@ Ref: stories.id < story_members.story_id
 Ref: stories.id < story_comments.story_id [delete: cascade]
 Ref: users.id < story_comments.user_id
 Ref: story_comments.id < story_comments.parent_id [delete: cascade]
+Ref: story_comments.id < story_comment_reactions.comment_id [delete: cascade]
+Ref: users.id < story_comment_reactions.user_id [delete: cascade]
 
 Ref: users.id < user_exp_logs.user_id
 Ref: users.id < user_point_logs.user_id

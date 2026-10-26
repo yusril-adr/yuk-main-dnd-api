@@ -1,16 +1,25 @@
 import type { TStoryComment } from '@entities/main/story/story-comment.entity';
 import { StoryCommentEntityDto } from '@shared/dtos/entities/story/story-comment.entity.dto';
+import type {
+  TStoryCommentReactionCounts,
+  TStoryCommentReactionSummary,
+} from '../../services/story-comment-reaction.service';
+import type { StoryCommentReactionTypeEnum } from '../../enums/story-comment-reaction-type.enum';
 
 export type TStoryCommentActionList = {
   isCanUpdate: boolean;
   isCanDelete: boolean;
   isCanPin: boolean;
   isCanUnpin: boolean;
+  isCanReact: boolean;
 };
 
 export class PaginateStoryCommentsItemOutput extends StoryCommentEntityDto {
   // Number of non-deleted replies.
   replyCount: number;
+  reactionCounts: TStoryCommentReactionCounts;
+  reactionCount: number;
+  myReaction: StoryCommentReactionTypeEnum | null;
   actionList: TStoryCommentActionList;
 
   constructor(
@@ -18,10 +27,14 @@ export class PaginateStoryCommentsItemOutput extends StoryCommentEntityDto {
     actionList: TStoryCommentActionList,
     avatarUrl: string | null,
     replyCount: number,
+    reactions: TStoryCommentReactionSummary,
   ) {
     super();
     this.parseEntity(payload, avatarUrl);
     this.replyCount = replyCount;
+    this.reactionCounts = reactions.reactionCounts;
+    this.reactionCount = reactions.reactionCount;
+    this.myReaction = reactions.myReaction;
     this.actionList = actionList;
   }
 }
@@ -35,6 +48,7 @@ export class PaginateStoryCommentsOutput {
     avatarUrls: (string | null)[],
     actionLists: TStoryCommentActionList[],
     replyCounts: number[],
+    reactions: TStoryCommentReactionSummary[],
     count: number,
   ) {
     this.data = comments.map(
@@ -44,6 +58,7 @@ export class PaginateStoryCommentsOutput {
           actionLists[i],
           avatarUrls[i],
           replyCounts[i],
+          reactions[i],
         ),
     );
     this.count = count;
