@@ -8,7 +8,7 @@ import { StorageService } from '@modules/Global/services/storage.service';
 import { StoryService } from '../../services/story.service';
 import { StoryCommentActionService } from '../../services/story-comment-action.service';
 import { StoryCommentReactionService } from '../../services/story-comment-reaction.service';
-import type { TStoryCommentActionList } from '../paginate-story-comments/paginate-story-comments.output';
+import type { TStoryCommentActionList } from '../../types/story-comment-action-list.type';
 import { PaginateStoryCommentRepliesQuery } from './paginate-story-comment-replies.query';
 import { PaginateStoryCommentRepliesOutput } from './paginate-story-comment-replies.output';
 

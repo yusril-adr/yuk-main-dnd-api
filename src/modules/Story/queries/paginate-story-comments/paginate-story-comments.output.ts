@@ -5,14 +5,7 @@ import type {
   TStoryCommentReactionSummary,
 } from '../../types/story-comment-reaction.type';
 import type { StoryCommentReactionTypeEnum } from '../../enums/story-comment-reaction-type.enum';
-
-export type TStoryCommentActionList = {
-  isCanUpdate: boolean;
-  isCanDelete: boolean;
-  isCanPin: boolean;
-  isCanUnpin: boolean;
-  isCanReact: boolean;
-};
+import type { TStoryCommentActionList } from '../../types/story-comment-action-list.type';
 
 export class PaginateStoryCommentsItemOutput extends StoryCommentEntityDto {
   // Number of non-deleted replies.
