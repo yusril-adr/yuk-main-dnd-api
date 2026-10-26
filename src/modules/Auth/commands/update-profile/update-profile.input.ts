@@ -6,12 +6,16 @@ import {
   IsUUID,
   Matches,
   MaxLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class UpdateProfileInput {
-  @IsOptional()
+  // May be omitted, but must not be sent as null or empty.
+  @ValidateIf((_, value) => value !== undefined)
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'displayName must not be empty' })
+  @MaxLength(100)
   displayName?: string;
 
   @IsOptional()
