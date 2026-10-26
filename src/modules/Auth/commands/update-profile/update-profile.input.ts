@@ -7,11 +7,14 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
+import { IsOptionalNonNull } from '@shared/decorators/is-optional-non-null.decorator';
 
 export class UpdateProfileInput {
-  @IsOptional()
+  @IsOptionalNonNull()
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'displayName must not be empty' })
+  @MaxLength(100)
   displayName?: string;
 
   @IsOptional()
@@ -27,7 +30,7 @@ export class UpdateProfileInput {
   @MaxLength(50)
   bio?: string;
 
-  @IsOptional()
+  @IsOptionalNonNull()
   @IsEmail()
   email?: string;
 

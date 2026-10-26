@@ -29,6 +29,8 @@ export class CreateUserInput {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'displayName must not be empty' })
+  @MaxLength(100)
   displayName: string;
 
   @IsOptional()
