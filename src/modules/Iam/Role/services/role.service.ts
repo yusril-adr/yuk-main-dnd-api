@@ -57,6 +57,7 @@ export class RoleService {
     const baseKey = this.slugify(name);
     const existingBaseKey = await this.roleRepository.findOne({
       where: { key: baseKey },
+      withDeleted: true,
     });
 
     if (!existingBaseKey || existingBaseKey.id === excludedRoleId) {
@@ -74,6 +75,7 @@ export class RoleService {
       const candidateKey = `${baseKey.slice(0, maxBaseLength)}-${suffix}`;
       const existingKey = await this.roleRepository.findOne({
         where: { key: candidateKey },
+        withDeleted: true,
       });
 
       if (!existingKey || existingKey.id === excludedRoleId) {
