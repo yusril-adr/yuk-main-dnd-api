@@ -4,7 +4,7 @@ import type { TStoryCommentActionList } from '../paginate-story-comments/paginat
 import type {
   TStoryCommentReactionCounts,
   TStoryCommentReactionSummary,
-} from '../../services/story-comment-reaction.service';
+} from '../../types/story-comment-reaction.type';
 import type { StoryCommentReactionTypeEnum } from '../../enums/story-comment-reaction-type.enum';
 
 export class PaginateStoryCommentRepliesItemOutput extends StoryCommentEntityDto {

@@ -3,7 +3,7 @@ import { StoryCommentEntityDto } from '@shared/dtos/entities/story/story-comment
 import type {
   TStoryCommentReactionCounts,
   TStoryCommentReactionSummary,
-} from '../../services/story-comment-reaction.service';
+} from '../../types/story-comment-reaction.type';
 import type { StoryCommentReactionTypeEnum } from '../../enums/story-comment-reaction-type.enum';
 
 export type TStoryCommentActionList = {

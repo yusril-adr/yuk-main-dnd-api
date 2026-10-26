@@ -5,19 +5,10 @@ import { StoryComment } from '@entities/main/story/story-comment.entity';
 import { StoryCommentReaction } from '@entities/main/story/story-comment-reaction.entity';
 import type { TJWTPayload } from '@shared/types/jwt-payload.type';
 import { StoryCommentReactionTypeEnum } from '../enums/story-comment-reaction-type.enum';
-
-export type TStoryCommentReactionCounts = {
-  like: number;
-  love: number;
-  laugh: number;
-  wow: number;
-};
-
-export type TStoryCommentReactionSummary = {
-  reactionCounts: TStoryCommentReactionCounts;
-  reactionCount: number;
-  myReaction: StoryCommentReactionTypeEnum | null;
-};
+import type {
+  TStoryCommentReactionCounts,
+  TStoryCommentReactionSummary,
+} from '../types/story-comment-reaction.type';
 
 const COUNT_KEYS: Record<
   StoryCommentReactionTypeEnum,
