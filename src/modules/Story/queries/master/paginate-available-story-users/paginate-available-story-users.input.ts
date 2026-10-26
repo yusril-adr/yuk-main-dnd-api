@@ -9,7 +9,11 @@ import { getAllEntityProperties } from '@shared/utils/common';
 export class PaginateAvailableStoryUsersInput extends PaginateParamDto {
   @IsOptional()
   @IsString()
-  @IsIn(getAllEntityProperties(User).map((prop) => snakeCase(prop)))
+  @IsIn(
+    getAllEntityProperties(User)
+      .filter((prop) => prop !== 'password')
+      .map((prop) => snakeCase(prop)),
+  )
   sortBy: string = 'updated_at';
 
   @IsOptional()
