@@ -7,10 +7,8 @@ import { StoryService } from '../../services/story.service';
 import { StoryCommentActionService } from '../../services/story-comment-action.service';
 import { StoryCommentReactionService } from '../../services/story-comment-reaction.service';
 import { PaginateStoryCommentsQuery } from './paginate-story-comments.query';
-import {
-  PaginateStoryCommentsOutput,
-  TStoryCommentActionList,
-} from './paginate-story-comments.output';
+import { PaginateStoryCommentsOutput } from './paginate-story-comments.output';
+import type { TStoryCommentActionList } from '../../types/story-comment-action-list.type';
 
 @QueryHandler(PaginateStoryCommentsQuery)
 export class PaginateStoryCommentsHandler implements IQueryHandler<
