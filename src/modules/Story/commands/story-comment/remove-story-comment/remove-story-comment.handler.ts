@@ -3,16 +3,15 @@ import { ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StoryComment } from '@entities/main/story/story-comment.entity';
-import { PermissionEnum } from '@shared/enums/permission.enum';
 import { StoryCommentService } from '../../../services/story-comment.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryCommentActionService } from '../../../services/story-comment-action.service';
 import { RemoveStoryCommentCommand } from './remove-story-comment.command';
 
 @CommandHandler(RemoveStoryCommentCommand)
 export class RemoveStoryCommentHandler implements ICommandHandler<RemoveStoryCommentCommand> {
   constructor(
     private readonly storyCommentService: StoryCommentService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyCommentActionService: StoryCommentActionService,
     @InjectRepository(StoryComment)
     private readonly storyCommentRepository: Repository<StoryComment>,
   ) {}
@@ -26,15 +25,7 @@ export class RemoveStoryCommentHandler implements ICommandHandler<RemoveStoryCom
       commentId,
     );
 
-    const isAuthor = comment.user.id === user.id;
-    if (
-      !isAuthor &&
-      !this.storyPermissionService.canModify(
-        story,
-        user,
-        PermissionEnum.STORIES_DELETE,
-      )
-    ) {
+    if (!this.storyCommentActionService.isCanDelete(comment, story, user)) {
       throw new ForbiddenException(
         'Your permission is not allowed to delete this comment',
       );

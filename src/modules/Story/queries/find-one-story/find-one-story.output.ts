@@ -4,6 +4,7 @@ import { StoryEntityDto } from '@shared/dtos/entities/story/story.entity.dto';
 export type TStoryDetailActionList = {
   isCanJoin: boolean;
   isCanCancelJoin: boolean;
+  isCanComment: boolean;
 };
 
 export class FindOneStoryOutput extends StoryEntityDto {

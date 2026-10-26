@@ -16,6 +16,7 @@ import { StoryPermissionService } from './services/story-permission.service';
 import { StoryMasterActionService } from './services/story-master-action.service';
 import { StoryCommentService } from './services/story-comment.service';
 import { StoryCommentConfigService } from './services/story-comment-config.service';
+import { StoryCommentActionService } from './services/story-comment-action.service';
 import { CreateStoryHandler } from './commands/master/create-story/create-story.handler';
 import { UpdateStoryHandler } from './commands/master/update-story/update-story.handler';
 import { AddStoryMembersHandler } from './commands/master/add-story-members/add-story-members.handler';
@@ -101,6 +102,7 @@ const queryHandlers = [
     StoryMasterActionService,
     StoryCommentService,
     StoryCommentConfigService,
+    StoryCommentActionService,
     ...commandHandlers,
     ...queryHandlers,
   ],

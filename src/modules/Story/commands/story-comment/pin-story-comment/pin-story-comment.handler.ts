@@ -1,12 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { DataSource, IsNull, Not } from 'typeorm';
 import { Story } from '@entities/main/story/story.entity';
 import { StoryComment } from '@entities/main/story/story-comment.entity';
-import { PermissionEnum } from '@shared/enums/permission.enum';
 import { StoryCommentService } from '../../../services/story-comment.service';
 import { StoryCommentConfigService } from '../../../services/story-comment-config.service';
-import { StoryPermissionService } from '../../../services/story-permission.service';
+import { StoryCommentActionService } from '../../../services/story-comment-action.service';
 import { PinStoryCommentCommand } from './pin-story-comment.command';
 
 @CommandHandler(PinStoryCommentCommand)
@@ -15,18 +14,20 @@ export class PinStoryCommentHandler implements ICommandHandler<PinStoryCommentCo
     private readonly dataSource: DataSource,
     private readonly storyCommentService: StoryCommentService,
     private readonly storyCommentConfigService: StoryCommentConfigService,
-    private readonly storyPermissionService: StoryPermissionService,
+    private readonly storyCommentActionService: StoryCommentActionService,
   ) {}
 
   async execute(command: PinStoryCommentCommand): Promise<void> {
     const { storyId, commentId, user } = command;
 
     const story = await this.storyCommentService.findStoryOrFail(storyId);
-    this.storyPermissionService.assertCanModify(
-      story,
-      user,
-      PermissionEnum.STORIES_UPDATE,
-    );
+    // Permission only: pinning a pinned comment (or unpinning an unpinned one)
+    // stays a no-op instead of an error.
+    if (!this.storyCommentActionService.isCanManagePin(story, user)) {
+      throw new ForbiddenException(
+        'Your permission is not allowed to access this story',
+      );
+    }
 
     const maxPinned = this.storyCommentConfigService.maxPinnedCommentsPerStory;
 

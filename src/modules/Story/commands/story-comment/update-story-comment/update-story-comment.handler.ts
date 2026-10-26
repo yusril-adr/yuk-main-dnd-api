@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StoryComment } from '@entities/main/story/story-comment.entity';
 import { StoryCommentService } from '../../../services/story-comment.service';
+import { StoryCommentActionService } from '../../../services/story-comment-action.service';
 import { UpdateStoryCommentCommand } from './update-story-comment.command';
 
 @CommandHandler(UpdateStoryCommentCommand)
 export class UpdateStoryCommentHandler implements ICommandHandler<UpdateStoryCommentCommand> {
   constructor(
     private readonly storyCommentService: StoryCommentService,
+    private readonly storyCommentActionService: StoryCommentActionService,
     @InjectRepository(StoryComment)
     private readonly storyCommentRepository: Repository<StoryComment>,
   ) {}
@@ -23,7 +25,7 @@ export class UpdateStoryCommentHandler implements ICommandHandler<UpdateStoryCom
       commentId,
     );
 
-    if (comment.user.id !== user.id) {
+    if (!this.storyCommentActionService.isCanUpdate(comment, user)) {
       throw new ForbiddenException('Only the author can edit this comment');
     }
 

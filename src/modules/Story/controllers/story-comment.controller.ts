@@ -40,9 +40,10 @@ export class StoryCommentController {
   async paginate(
     @Param('identifier') identifier: string,
     @Query() query: PaginateStoryCommentsInput,
+    @Request() request: Partial<TRequestUser>,
   ) {
     const output = await this.queryBus.execute(
-      new PaginateStoryCommentsQuery(identifier, query),
+      new PaginateStoryCommentsQuery(identifier, query, request.user ?? null),
     );
     return wrapper.paginationResponse({
       data: output.data,
