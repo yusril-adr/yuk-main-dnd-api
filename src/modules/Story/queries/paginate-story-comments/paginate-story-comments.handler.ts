@@ -6,10 +6,7 @@ import { StorageService } from '@modules/Global/services/storage.service';
 import { StoryService } from '../../services/story.service';
 import { StoryCommentActionService } from '../../services/story-comment-action.service';
 import { PaginateStoryCommentsQuery } from './paginate-story-comments.query';
-import {
-  PaginateStoryCommentsOutput,
-  TStoryCommentActionList,
-} from './paginate-story-comments.output';
+import { PaginateStoryCommentsOutput } from './paginate-story-comments.output';
 
 @QueryHandler(PaginateStoryCommentsQuery)
 export class PaginateStoryCommentsHandler implements IQueryHandler<
@@ -67,20 +64,9 @@ export class PaginateStoryCommentsHandler implements IQueryHandler<
     );
 
     // Permissions come from the caller's token, so no per-comment lookups.
-    const actionLists: TStoryCommentActionList[] = comments.map((comment) => ({
-      isCanUpdate: this.storyCommentActionService.isCanUpdate(comment, user),
-      isCanDelete: this.storyCommentActionService.isCanDelete(
-        comment,
-        story,
-        user,
-      ),
-      isCanPin: this.storyCommentActionService.isCanPin(comment, story, user),
-      isCanUnpin: this.storyCommentActionService.isCanUnpin(
-        comment,
-        story,
-        user,
-      ),
-    }));
+    const actionLists = comments.map((comment) =>
+      this.storyCommentActionService.getActionList(comment, story, user),
+    );
 
     return new PaginateStoryCommentsOutput(
       comments,

@@ -7,7 +7,6 @@ import { StoryComment } from '@entities/main/story/story-comment.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { StoryService } from '../../services/story.service';
 import { StoryCommentActionService } from '../../services/story-comment-action.service';
-import type { TStoryCommentActionList } from '../paginate-story-comments/paginate-story-comments.output';
 import { PaginateStoryCommentRepliesQuery } from './paginate-story-comment-replies.query';
 import { PaginateStoryCommentRepliesOutput } from './paginate-story-comment-replies.output';
 
@@ -73,16 +72,9 @@ export class PaginateStoryCommentRepliesHandler implements IQueryHandler<
         : null,
     );
 
-    const actionLists: TStoryCommentActionList[] = replies.map((reply) => ({
-      isCanUpdate: this.storyCommentActionService.isCanUpdate(reply, user),
-      isCanDelete: this.storyCommentActionService.isCanDelete(
-        reply,
-        story,
-        user,
-      ),
-      isCanPin: this.storyCommentActionService.isCanPin(reply, story, user),
-      isCanUnpin: this.storyCommentActionService.isCanUnpin(reply, story, user),
-    }));
+    const actionLists = replies.map((reply) =>
+      this.storyCommentActionService.getActionList(reply, story, user),
+    );
 
     return new PaginateStoryCommentRepliesOutput(
       replies,

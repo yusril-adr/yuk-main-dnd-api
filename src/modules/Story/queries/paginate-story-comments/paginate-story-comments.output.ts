@@ -1,12 +1,6 @@
 import type { TStoryComment } from '@entities/main/story/story-comment.entity';
 import { StoryCommentEntityDto } from '@shared/dtos/entities/story/story-comment.entity.dto';
-
-export type TStoryCommentActionList = {
-  isCanUpdate: boolean;
-  isCanDelete: boolean;
-  isCanPin: boolean;
-  isCanUnpin: boolean;
-};
+import type { TStoryCommentActionList } from '../../types/story-comment-action-list.type';
 
 export class PaginateStoryCommentsItemOutput extends StoryCommentEntityDto {
   // Number of non-deleted replies.

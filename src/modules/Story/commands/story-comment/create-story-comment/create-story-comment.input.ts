@@ -1,19 +1,7 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Matches,
-  MaxLength,
-} from 'class-validator';
+import { IsOptional, IsUUID } from 'class-validator';
+import { StoryCommentContentParamDto } from '@shared/dtos/params/story-comment-content.param.dto';
 
-export class CreateStoryCommentInput {
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/\S/, { message: 'content must not be empty' })
-  @MaxLength(1000)
-  content: string;
-
+export class CreateStoryCommentInput extends StoryCommentContentParamDto {
   // Reply target. A reply to a reply is attached to that reply's parent.
   @IsOptional()
   @IsUUID()

@@ -1,3 +1,3 @@
-import { CreateStoryCommentInput } from '../create-story-comment/create-story-comment.input';
+import { StoryCommentContentParamDto } from '@shared/dtos/params/story-comment-content.param.dto';
 
-export class UpdateStoryCommentInput extends CreateStoryCommentInput {}
+export class UpdateStoryCommentInput extends StoryCommentContentParamDto {}
