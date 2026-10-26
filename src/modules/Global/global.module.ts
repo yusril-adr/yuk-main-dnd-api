@@ -4,6 +4,7 @@ import { SupabaseClientIntegration } from '@shared/libs/supabase/supabase-client
 import { SupabaseStorageIntegration } from '@shared/libs/supabase/supabase-storage.integration';
 import { UserAvatarPathService } from './services/user-avatar-path.service';
 import { StoryBannerPathService } from './services/story-banner-path.service';
+import { AppConfigService } from './services/app-config.service';
 
 @Global()
 @Module({
@@ -13,6 +14,7 @@ import { StoryBannerPathService } from './services/story-banner-path.service';
     SupabaseStorageIntegration,
     UserAvatarPathService,
     StoryBannerPathService,
+    AppConfigService,
   ],
   exports: [
     StorageService,
@@ -20,6 +22,7 @@ import { StoryBannerPathService } from './services/story-banner-path.service';
     SupabaseStorageIntegration,
     UserAvatarPathService,
     StoryBannerPathService,
+    AppConfigService,
   ],
 })
 export class GlobalModule {}
