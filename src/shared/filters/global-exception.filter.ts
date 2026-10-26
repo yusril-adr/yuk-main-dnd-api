@@ -6,15 +6,45 @@ import {
   HttpStatus,
   Logger,
   InternalServerErrorException,
+  ConflictException,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import * as Sentry from '@sentry/nestjs';
-import { QueryFailedError, TypeORMError } from 'typeorm';
+import { EntityNotFoundError, QueryFailedError, TypeORMError } from 'typeorm';
 import { camelToSnake } from '@shared/utils/common';
+import { AppConfigService } from '@modules/Global/services/app-config.service';
+
+// Postgres error codes that are caused by the request data. Anything else is
+// answered with a 500. Messages are generic so no table, column or SQL text
+// leaks to the client.
+const DB_ERROR_RESPONSES: Record<
+  string,
+  { status: HttpStatus; message: string; error: string }
+> = {
+  '23505': {
+    status: HttpStatus.CONFLICT,
+    message: 'Data already exists',
+    error: ConflictException.name,
+  },
+  ...Object.fromEntries(
+    ['23502', '23503', '22P02', '22003', '22001'].map((code) => [
+      code,
+      {
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Invalid request data',
+        error: BadRequestException.name,
+      },
+    ]),
+  ),
+};
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
+
+  constructor(private readonly appConfigService: AppConfigService) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -41,7 +71,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       camelToSnake({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
-        error: InternalServerErrorException,
+        error: InternalServerErrorException.name,
+        ...this.debugBody(exception),
       }),
     );
   }
@@ -56,7 +87,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       error: InternalServerErrorException.name,
     };
 
-    const handledExceptions = {
+    const handledExceptions: Record<string, () => void> = {
       // Handle HTTP exceptions
       [HttpException.name]: () => {
         status = exception.getStatus();
@@ -69,20 +100,35 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
       // Handle TypeORM exceptions
       [QueryFailedError.name]: () => {
-        status = HttpStatus.BAD_REQUEST;
+        const dbError = DB_ERROR_RESPONSES[exception.driverError?.code];
+        status = dbError?.status ?? HttpStatus.INTERNAL_SERVER_ERROR;
         responseBody = {
-          error: exception.name,
-          message: exception.message,
+          error: dbError?.error ?? InternalServerErrorException.name,
+          message: dbError?.message ?? 'Internal server error',
+          ...this.debugBody(exception),
         };
 
         this.reportException(exception);
       },
 
       [TypeORMError.name]: () => {
-        status = HttpStatus.BAD_REQUEST;
+        // QueryFailedError extends TypeORMError, so the parent name lookup
+        // lands here for it.
+        if (exception instanceof QueryFailedError) {
+          handledExceptions[QueryFailedError.name]();
+          return;
+        }
+
+        const isNotFound = exception instanceof EntityNotFoundError;
+        status = isNotFound
+          ? HttpStatus.NOT_FOUND
+          : HttpStatus.INTERNAL_SERVER_ERROR;
         responseBody = {
-          error: exception.name,
-          message: exception.message,
+          error: isNotFound
+            ? NotFoundException.name
+            : InternalServerErrorException.name,
+          message: isNotFound ? 'Data not found' : 'Internal server error',
+          ...this.debugBody(exception),
         };
 
         this.reportException(exception);
@@ -96,6 +142,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (handleException) {
       handleException();
     } else {
+      responseBody = { ...responseBody, ...this.debugBody(exception) };
       this.reportException(exception);
     }
 
@@ -106,6 +153,26 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         statusCode: status,
       }),
     );
+  }
+
+  // Only filled when APP_DEBUG=true. Never use it for HttpException, whose
+  // message is already meant for the client.
+  private debugBody(exception: any): object {
+    if (!this.appConfigService.debug) {
+      return {};
+    }
+
+    return {
+      debug: {
+        name: exception?.name,
+        message: exception?.message ?? String(exception),
+        stack: exception?.stack,
+        ...(exception instanceof QueryFailedError && {
+          code: exception.driverError?.code,
+          detail: exception.driverError?.detail,
+        }),
+      },
+    };
   }
 
   private reportException(exception: any): void {
