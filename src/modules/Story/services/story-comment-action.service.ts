@@ -4,7 +4,6 @@ import { StoryComment } from '@entities/main/story/story-comment.entity';
 import { PermissionEnum } from '@shared/enums/permission.enum';
 import type { TJWTPayload } from '@shared/types/jwt-payload.type';
 import { PUBLIC_STORY_STATUSES } from '../enums/story-status.enum';
-import type { TStoryCommentActionList } from '../types/story-comment-action-list.type';
 import { StoryPermissionService } from './story-permission.service';
 
 @Injectable()
@@ -87,18 +86,5 @@ export class StoryCommentActionService {
     return (
       comment.pinnedAt != null && this.isCanManagePin(comment, story, user)
     );
-  }
-
-  getActionList(
-    comment: StoryComment,
-    story: Story,
-    user: TJWTPayload | null,
-  ): TStoryCommentActionList {
-    return {
-      isCanUpdate: this.isCanUpdate(comment, user),
-      isCanDelete: this.isCanDelete(comment, story, user),
-      isCanPin: this.isCanPin(comment, story, user),
-      isCanUnpin: this.isCanUnpin(comment, story, user),
-    };
   }
 }

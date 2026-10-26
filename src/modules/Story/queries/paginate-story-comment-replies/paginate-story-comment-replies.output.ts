@@ -1,6 +1,6 @@
 import type { TStoryComment } from '@entities/main/story/story-comment.entity';
 import { StoryCommentEntityDto } from '@shared/dtos/entities/story/story-comment.entity.dto';
-import type { TStoryCommentActionList } from '../../types/story-comment-action-list.type';
+import type { TStoryCommentActionList } from '../paginate-story-comments/paginate-story-comments.output';
 
 export class PaginateStoryCommentRepliesItemOutput extends StoryCommentEntityDto {
   actionList: TStoryCommentActionList;
