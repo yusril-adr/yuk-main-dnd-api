@@ -41,7 +41,8 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
       );
     }
 
-    const { avatarFileId } = payload;
+    // The global whitelist strips undeclared fields, so the rest is safe to copy.
+    const { avatarFileId, ...userPayload } = payload;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;
     const isCurrentAvatarFile = avatarFileId === previousAvatarFile?.id;
@@ -82,18 +83,7 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
           ? await fileRepo.save(movedAvatarFile)
           : nextAvatarFile;
 
-        if (payload.displayName !== undefined) {
-          userEntity.displayName = payload.displayName;
-        }
-        if (payload.username !== undefined) {
-          userEntity.username = payload.username;
-        }
-        if (payload.bio !== undefined) {
-          userEntity.bio = payload.bio;
-        }
-        if (payload.email !== undefined) {
-          userEntity.email = payload.email;
-        }
+        Object.assign(userEntity, userPayload);
         if (isAvatarFileProvided) {
           userEntity.avatarFile = avatarFile;
         }
