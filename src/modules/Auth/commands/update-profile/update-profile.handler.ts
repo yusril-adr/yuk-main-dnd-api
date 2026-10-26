@@ -41,6 +41,7 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
       );
     }
 
+    // The global whitelist strips undeclared fields, so the rest is safe to copy.
     const { avatarFileId, ...userPayload } = payload;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;

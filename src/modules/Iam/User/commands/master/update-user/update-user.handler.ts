@@ -36,11 +36,12 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
       await this.userService.checkUsernameUniqueness(params.username, id);
     }
 
-    if (params.password) {
-      params.password = await this.userService.hashPassword(params.password);
-    }
-
-    const { roleIds, avatarFileId, ...userPayload } = params;
+    // The global whitelist strips undeclared fields, so the rest is safe to
+    // copy. The plaintext password is kept out and stored as a hash instead.
+    const { roleIds, avatarFileId, password, ...userPayload } = params;
+    const hashedPassword = password
+      ? await this.userService.hashPassword(password)
+      : undefined;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;
     const isCurrentAvatarFile = avatarFileId === previousAvatarFile?.id;
@@ -79,6 +80,9 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
           : nextAvatarFile;
 
         Object.assign(userEntity, userPayload);
+        if (hashedPassword !== undefined) {
+          userEntity.password = hashedPassword;
+        }
         if (isAvatarFileProvided) {
           userEntity.avatarFile = avatarFile;
         }

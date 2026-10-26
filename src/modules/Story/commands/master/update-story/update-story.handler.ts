@@ -33,14 +33,13 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
       throw new ForbiddenException('Story cannot be updated');
     }
 
+    // The global whitelist strips undeclared fields (status included), so the
+    // rest is safe to copy.
     const { startAt, bannerFileId, ...storyPayload } = params;
-    if ('status' in storyPayload) {
-      delete storyPayload.status;
-    }
 
-    if (storyPayload.title && storyEntity.title !== storyPayload.title) {
+    if (params.title && storyEntity.title !== params.title) {
       storyEntity.slug = await this.storyService.generateUniqueSlug(
-        storyPayload.title,
+        params.title,
       );
     }
     const isBannerFileProvided = bannerFileId !== undefined;

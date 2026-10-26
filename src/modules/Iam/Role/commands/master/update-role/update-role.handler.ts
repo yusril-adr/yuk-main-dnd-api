@@ -27,6 +27,7 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand> {
 
     const hasNameChanged =
       params.name !== undefined && params.name !== roleEntity.name;
+    // The global whitelist strips undeclared fields, so the rest is safe to copy.
     const { permissionIds, ...rolePayload } = params;
     Object.assign(roleEntity, rolePayload);
 
