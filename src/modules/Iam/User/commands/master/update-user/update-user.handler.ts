@@ -36,11 +36,11 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
       await this.userService.checkUsernameUniqueness(params.username, id);
     }
 
-    if (params.password) {
-      params.password = await this.userService.hashPassword(params.password);
-    }
+    const hashedPassword = params.password
+      ? await this.userService.hashPassword(params.password)
+      : undefined;
 
-    const { roleIds, avatarFileId, ...userPayload } = params;
+    const { roleIds, avatarFileId } = params;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;
     const isCurrentAvatarFile = avatarFileId === previousAvatarFile?.id;
@@ -78,7 +78,21 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
           ? await fileRepo.save(movedAvatarFile)
           : nextAvatarFile;
 
-        Object.assign(userEntity, userPayload);
+        if (params.username !== undefined) {
+          userEntity.username = params.username;
+        }
+        if (params.email !== undefined) {
+          userEntity.email = params.email;
+        }
+        if (hashedPassword !== undefined) {
+          userEntity.password = hashedPassword;
+        }
+        if (params.displayName !== undefined) {
+          userEntity.displayName = params.displayName;
+        }
+        if (params.bio !== undefined) {
+          userEntity.bio = params.bio;
+        }
         if (isAvatarFileProvided) {
           userEntity.avatarFile = avatarFile;
         }

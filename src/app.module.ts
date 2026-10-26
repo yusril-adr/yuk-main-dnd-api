@@ -75,6 +75,8 @@ import { GlobalModule } from '@modules/Global/global.module';
       useFactory: () =>
         new ValidationPipe({
           transform: true,
+          // Strip body/query fields the DTO doesn't declare.
+          whitelist: true,
           exceptionFactory: (errors) => {
             const flattenErrors = (
               validationErrors: any[],
