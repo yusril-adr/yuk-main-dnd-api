@@ -8,6 +8,7 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
+import { IsOptionalNonNull } from '@shared/decorators/is-optional-non-null.decorator';
 
 export class CreateRoleInput {
   @IsString()
@@ -22,7 +23,7 @@ export class CreateRoleInput {
   @IsString()
   description?: string;
 
-  @IsOptional()
+  @IsOptionalNonNull()
   @IsBoolean()
   isShowInPublic?: boolean;
 

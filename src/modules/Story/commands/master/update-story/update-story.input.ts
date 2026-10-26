@@ -10,6 +10,7 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import { IsOptionalNonNull } from '@shared/decorators/is-optional-non-null.decorator';
 import { CreateStoryInput } from '../create-story/create-story.input';
 import { StoryTypeEnum } from '../../../enums/story-type.enum';
 import { StoryLocationTypeEnum } from '../../../enums/story-location-type.enum';
@@ -25,6 +26,7 @@ export class UpdateStoryInput extends PartialType(
     'locationDetail',
     'status',
     'expAwarded',
+    'pointAwarded',
   ] as const),
 ) {
   @ValidateIf(isProvided)
@@ -55,4 +57,10 @@ export class UpdateStoryInput extends PartialType(
   @IsInt()
   @Min(0)
   expAwarded?: number;
+
+  @IsOptionalNonNull()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  pointAwarded?: number;
 }

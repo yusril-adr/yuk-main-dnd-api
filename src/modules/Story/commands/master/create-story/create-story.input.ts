@@ -14,6 +14,7 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import { IsOptionalNonNull } from '@shared/decorators/is-optional-non-null.decorator';
 import { DEFAULT_STORY_PLAYER_EXP_REWARD } from '../../../constants/story-reward.constant';
 import { StoryStatusEnum } from '../../../enums/story-status.enum';
 import { StoryTypeEnum } from '../../../enums/story-type.enum';
@@ -70,7 +71,7 @@ export class CreateStoryInput {
   @Min(0)
   expAwarded?: number = DEFAULT_STORY_PLAYER_EXP_REWARD;
 
-  @IsOptional()
+  @IsOptionalNonNull()
   @Type(() => Number)
   @IsInt()
   @Min(0)
