@@ -1,22 +1,55 @@
-import { OmitType, PartialType } from '@nestjs/mapped-types';
 import {
+  IsArray,
+  IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
+  IsStrongPassword,
+  IsUUID,
   Matches,
   MaxLength,
-  ValidateIf,
 } from 'class-validator';
-import { CreateUserInput } from '../create-user/create-user.input';
+import { IsOptionalNonNull } from '@shared/decorators/is-optional-non-null.decorator';
 
-export class UpdateUserInput extends PartialType(
-  OmitType(CreateUserInput, ['displayName'] as const),
-) {
-  // May be omitted, but must not be sent as null or empty; redeclared
-  // because PartialType would skip validation for null.
-  @ValidateIf((_, value) => value !== undefined)
+// Written out instead of PartialType(CreateUserInput): PartialType adds
+// @IsOptional(), which would let null through to non-nullable columns.
+export class UpdateUserInput {
+  @IsOptional()
+  @IsString()
+  @Matches(/^\S*$/, {
+    message: 'username must not contain spaces',
+  })
+  @MaxLength(50)
+  username?: string;
+
+  @IsOptionalNonNull()
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email?: string;
+
+  @IsOptionalNonNull()
+  @IsStrongPassword()
+  password?: string;
+
+  @IsOptionalNonNull()
   @IsString()
   @IsNotEmpty()
   @Matches(/\S/, { message: 'displayName must not be empty' })
   @MaxLength(100)
   displayName?: string;
+
+  @IsOptional()
+  @IsUUID('4')
+  avatarFileId?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  bio?: string;
+
+  @IsOptionalNonNull()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  roleIds?: string[];
 }

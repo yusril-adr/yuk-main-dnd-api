@@ -6,12 +6,11 @@ import {
   IsUUID,
   Matches,
   MaxLength,
-  ValidateIf,
 } from 'class-validator';
+import { IsOptionalNonNull } from '@shared/decorators/is-optional-non-null.decorator';
 
 export class UpdateProfileInput {
-  // May be omitted, but must not be sent as null or empty.
-  @ValidateIf((_, value) => value !== undefined)
+  @IsOptionalNonNull()
   @IsString()
   @IsNotEmpty()
   @Matches(/\S/, { message: 'displayName must not be empty' })
@@ -31,7 +30,7 @@ export class UpdateProfileInput {
   @MaxLength(50)
   bio?: string;
 
-  @IsOptional()
+  @IsOptionalNonNull()
   @IsEmail()
   email?: string;
 
