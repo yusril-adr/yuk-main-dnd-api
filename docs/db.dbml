@@ -241,6 +241,7 @@ Table story_comments {
 
   story_id uuid [not null]
   user_id uuid [not null]
+  parent_id uuid [note: "null = top-level comment; replies are one level deep"]
 
   content text [not null, note: "plain text, 1-1000 chars"]
 
@@ -252,6 +253,7 @@ Table story_comments {
 
   Indexes {
     (story_id, pinned_at, created_at)
+    (parent_id, created_at)
     (user_id)
   }
 }
@@ -366,6 +368,7 @@ Ref: stories.id < story_members.story_id
 
 Ref: stories.id < story_comments.story_id [delete: cascade]
 Ref: users.id < story_comments.user_id
+Ref: story_comments.id < story_comments.parent_id [delete: cascade]
 
 Ref: users.id < user_exp_logs.user_id
 Ref: users.id < user_point_logs.user_id
