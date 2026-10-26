@@ -4,14 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StoryComment } from '@entities/main/story/story-comment.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
-import { PUBLIC_STORY_STATUSES } from '../../../enums/story-status.enum';
 import { StoryCommentService } from '../../../services/story-comment.service';
+import { StoryCommentActionService } from '../../../services/story-comment-action.service';
 import { CreateStoryCommentCommand } from './create-story-comment.command';
 
 @CommandHandler(CreateStoryCommentCommand)
 export class CreateStoryCommentHandler implements ICommandHandler<CreateStoryCommentCommand> {
   constructor(
     private readonly storyCommentService: StoryCommentService,
+    private readonly storyCommentActionService: StoryCommentActionService,
     private readonly userRepository: UserRepository,
     @InjectRepository(StoryComment)
     private readonly storyCommentRepository: Repository<StoryComment>,
@@ -23,9 +24,7 @@ export class CreateStoryCommentHandler implements ICommandHandler<CreateStoryCom
     await this.userRepository.findAndValidateUserByIds([user.id]);
     const story = await this.storyCommentService.findStoryOrFail(storyId);
 
-    // Comments are listed on the public story page, so only stories that
-    // page shows (published or completed) accept new comments.
-    if (!PUBLIC_STORY_STATUSES.includes(story.status)) {
+    if (!this.storyCommentActionService.isCanComment(story, user)) {
       throw new BadRequestException(
         'Comments can only be added to published or completed stories',
       );
