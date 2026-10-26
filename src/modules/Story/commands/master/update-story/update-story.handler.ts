@@ -33,14 +33,11 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
       throw new ForbiddenException('Story cannot be updated');
     }
 
-    const { startAt, bannerFileId, ...storyPayload } = params;
-    if ('status' in storyPayload) {
-      delete storyPayload.status;
-    }
+    const { startAt, bannerFileId } = params;
 
-    if (storyPayload.title && storyEntity.title !== storyPayload.title) {
+    if (params.title && storyEntity.title !== params.title) {
       storyEntity.slug = await this.storyService.generateUniqueSlug(
-        storyPayload.title,
+        params.title,
       );
     }
     const isBannerFileProvided = bannerFileId !== undefined;
@@ -80,7 +77,42 @@ export class UpdateStoryHandler implements ICommandHandler<UpdateStoryCommand> {
           ? await fileRepo.save(movedBannerFile)
           : nextBannerFile;
 
-        Object.assign(storyEntity, storyPayload);
+        if (params.title !== undefined) {
+          storyEntity.title = params.title;
+        }
+        if (params.description !== undefined) {
+          storyEntity.description = params.description;
+        }
+        if (params.type !== undefined) {
+          storyEntity.type = params.type;
+        }
+        if (params.gameSystem !== undefined) {
+          storyEntity.gameSystem = params.gameSystem;
+        }
+        if (params.discordChannelLink !== undefined) {
+          storyEntity.discordChannelLink = params.discordChannelLink;
+        }
+        if (params.expAwarded !== undefined) {
+          storyEntity.expAwarded = params.expAwarded;
+        }
+        if (params.pointAwarded !== undefined) {
+          storyEntity.pointAwarded = params.pointAwarded;
+        }
+        if (params.maxMembers !== undefined) {
+          storyEntity.maxMembers = params.maxMembers;
+        }
+        if (params.locationType !== undefined) {
+          storyEntity.locationType = params.locationType;
+        }
+        if (params.locationDetail !== undefined) {
+          storyEntity.locationDetail = params.locationDetail;
+        }
+        if (params.locationLink !== undefined) {
+          storyEntity.locationLink = params.locationLink;
+        }
+        if (params.feedbackFormLink !== undefined) {
+          storyEntity.feedbackFormLink = params.feedbackFormLink;
+        }
         if (startAt !== undefined) {
           storyEntity.startAt = startAt === null ? null : new Date(startAt);
         }

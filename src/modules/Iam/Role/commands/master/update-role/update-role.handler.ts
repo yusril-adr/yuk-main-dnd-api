@@ -27,8 +27,16 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand> {
 
     const hasNameChanged =
       params.name !== undefined && params.name !== roleEntity.name;
-    const { permissionIds, ...rolePayload } = params;
-    Object.assign(roleEntity, rolePayload);
+    const { permissionIds } = params;
+    if (params.name !== undefined) {
+      roleEntity.name = params.name;
+    }
+    if (params.description !== undefined) {
+      roleEntity.description = params.description;
+    }
+    if (params.isShowInPublic !== undefined) {
+      roleEntity.isShowInPublic = params.isShowInPublic;
+    }
 
     if (hasNameChanged) {
       roleEntity.key = await this.roleService.generateUniqueKey(

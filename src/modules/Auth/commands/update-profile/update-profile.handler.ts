@@ -41,7 +41,7 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
       );
     }
 
-    const { avatarFileId, ...userPayload } = payload;
+    const { avatarFileId } = payload;
     const isAvatarFileProvided = avatarFileId !== undefined;
     const previousAvatarFile = userEntity.avatarFile;
     const isCurrentAvatarFile = avatarFileId === previousAvatarFile?.id;
@@ -82,7 +82,18 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
           ? await fileRepo.save(movedAvatarFile)
           : nextAvatarFile;
 
-        Object.assign(userEntity, userPayload);
+        if (payload.displayName !== undefined) {
+          userEntity.displayName = payload.displayName;
+        }
+        if (payload.username !== undefined) {
+          userEntity.username = payload.username;
+        }
+        if (payload.bio !== undefined) {
+          userEntity.bio = payload.bio;
+        }
+        if (payload.email !== undefined) {
+          userEntity.email = payload.email;
+        }
         if (isAvatarFileProvided) {
           userEntity.avatarFile = avatarFile;
         }
