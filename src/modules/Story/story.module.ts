@@ -4,14 +4,21 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { Story } from '@entities/main/story/story.entity';
 import { File } from '@entities/main/file.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
+import { StoryComment } from '@entities/main/story/story-comment.entity';
+import { StoryCommentReaction } from '@entities/main/story/story-comment-reaction.entity';
 import { UserModule } from '@modules/Iam/User/user.module';
 import { BoardStoryController } from './controllers/board-story.controller';
 import { MasterStoryController } from './controllers/master-story.controller';
 import { StoryController } from './controllers/story.controller';
+import { StoryCommentController } from './controllers/story-comment.controller';
 import { StoryRepository } from './repositories/story.repository';
 import { StoryService } from './services/story.service';
 import { StoryPermissionService } from './services/story-permission.service';
 import { StoryMasterActionService } from './services/story-master-action.service';
+import { StoryCommentService } from './services/story-comment.service';
+import { StoryCommentConfigService } from './services/story-comment-config.service';
+import { StoryCommentActionService } from './services/story-comment-action.service';
+import { StoryCommentReactionService } from './services/story-comment-reaction.service';
 import { CreateStoryHandler } from './commands/master/create-story/create-story.handler';
 import { UpdateStoryHandler } from './commands/master/update-story/update-story.handler';
 import { AddStoryMembersHandler } from './commands/master/add-story-members/add-story-members.handler';
@@ -35,6 +42,15 @@ import { FindOneStoryHandler as BoardFindOneStoryHandler } from './queries/board
 import { PaginateStoryMembersHandler } from './queries/master/paginate-story-members/paginate-story-members.handler';
 import { PaginateStoryMembersHandler as BoardPaginateStoryMembersHandler } from './queries/board/paginate-story-members/paginate-story-members.handler';
 import { PaginateStoryMembersHandler as PublicPaginateStoryMembersHandler } from './queries/paginate-story-members/paginate-story-members.handler';
+import { CreateStoryCommentHandler } from './commands/story-comment/create-story-comment/create-story-comment.handler';
+import { UpdateStoryCommentHandler } from './commands/story-comment/update-story-comment/update-story-comment.handler';
+import { RemoveStoryCommentHandler } from './commands/story-comment/remove-story-comment/remove-story-comment.handler';
+import { PinStoryCommentHandler } from './commands/story-comment/pin-story-comment/pin-story-comment.handler';
+import { UnpinStoryCommentHandler } from './commands/story-comment/unpin-story-comment/unpin-story-comment.handler';
+import { SetStoryCommentReactionHandler } from './commands/story-comment/set-story-comment-reaction/set-story-comment-reaction.handler';
+import { RemoveStoryCommentReactionHandler } from './commands/story-comment/remove-story-comment-reaction/remove-story-comment-reaction.handler';
+import { PaginateStoryCommentsHandler } from './queries/paginate-story-comments/paginate-story-comments.handler';
+import { PaginateStoryCommentRepliesHandler } from './queries/paginate-story-comment-replies/paginate-story-comment-replies.handler';
 import { PaginateAvailableStoryUsersHandler } from './queries/master/paginate-available-story-users/paginate-available-story-users.handler';
 
 const commandHandlers = [
@@ -50,6 +66,13 @@ const commandHandlers = [
   CompleteStoryHandler,
   JoinStoryHandler,
   CancelJoinStoryHandler,
+  CreateStoryCommentHandler,
+  UpdateStoryCommentHandler,
+  RemoveStoryCommentHandler,
+  PinStoryCommentHandler,
+  UnpinStoryCommentHandler,
+  SetStoryCommentReactionHandler,
+  RemoveStoryCommentReactionHandler,
 ];
 const queryHandlers = [
   PaginateStoriesHandler,
@@ -64,20 +87,37 @@ const queryHandlers = [
   BoardPaginateStoriesHandler,
   BoardFindOneStoryHandler,
   BoardPaginateStoryMembersHandler,
+  PaginateStoryCommentsHandler,
+  PaginateStoryCommentRepliesHandler,
 ];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Story, File, StoryMember]),
+    TypeOrmModule.forFeature([
+      Story,
+      File,
+      StoryMember,
+      StoryComment,
+      StoryCommentReaction,
+    ]),
     UserModule,
     CqrsModule,
   ],
-  controllers: [MasterStoryController, StoryController, BoardStoryController],
+  controllers: [
+    MasterStoryController,
+    StoryController,
+    StoryCommentController,
+    BoardStoryController,
+  ],
   providers: [
     StoryRepository,
     StoryService,
     StoryPermissionService,
     StoryMasterActionService,
+    StoryCommentService,
+    StoryCommentConfigService,
+    StoryCommentActionService,
+    StoryCommentReactionService,
     ...commandHandlers,
     ...queryHandlers,
   ],

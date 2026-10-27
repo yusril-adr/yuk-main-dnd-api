@@ -49,7 +49,7 @@ export class StoryController {
     @Request() request: Partial<TRequestUser>,
   ) {
     const output = await this.queryBus.execute(
-      new FindOneStoryQuery(identifier, request.user?.id ?? null),
+      new FindOneStoryQuery(identifier, request.user ?? null),
     );
     return wrapper.response({
       data: output,
