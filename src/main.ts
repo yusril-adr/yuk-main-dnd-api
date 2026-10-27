@@ -16,8 +16,8 @@ async function bootstrap() {
     Sentry.init({
       dsn: configService.get('SENTRY_DSN'),
       attachStacktrace: true,
-      debug: configService.get('APP_ENV') === 'development',
-      environment: configService.get('APP_ENV'),
+      debug: configService.get('NODE_ENV') === 'development',
+      environment: configService.get('NODE_ENV'),
       beforeSend: async (event, hint) => {
         const error = hint.originalException as Error;
 
