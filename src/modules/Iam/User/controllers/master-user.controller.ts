@@ -34,6 +34,12 @@ import { PaginateUserExperiencePointsQuery } from '../queries/master/paginate-us
 import { PaginateUserExperiencePointsInput } from '../queries/master/paginate-user-experience-points/paginate-user-experience-points.input';
 import { PaginateUserPointsQuery } from '../queries/master/paginate-user-points/paginate-user-points.query';
 import { PaginateUserPointsInput } from '../queries/master/paginate-user-points/paginate-user-points.input';
+import { CreateGuestUserCommand } from '../commands/master/create-guest-user/create-guest-user.command';
+import { CreateGuestUserInput } from '../commands/master/create-guest-user/create-guest-user.input';
+import { LinkGuestUserCommand } from '../commands/master/link-guest-user/link-guest-user.command';
+import { LinkGuestUserInput } from '../commands/master/link-guest-user/link-guest-user.input';
+import { FindOneUserOutput } from '../queries/master/find-one-user/find-one-user.output';
+import { StorageService } from '@modules/Global/services/storage.service';
 
 @Controller({
   path: 'master/iam/users',
@@ -43,6 +49,7 @@ export class MasterUserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly storageService: StorageService,
   ) {}
 
   @Post()
@@ -54,6 +61,64 @@ export class MasterUserController {
       statusCode: HttpStatus.CREATED,
       data: null,
       message: 'User created successfully',
+    });
+  }
+
+  @Post('guests')
+  @Permissions([PermissionEnum.GUESTS_CREATE])
+  @HttpCode(HttpStatus.CREATED)
+  async createGuest(
+    @Request() request: TRequestUser,
+    @Body() payload: CreateGuestUserInput,
+  ) {
+    const user = await this.commandBus.execute(
+      new CreateGuestUserCommand(payload, request.user),
+    );
+    const avatarUrl = user.avatarFile
+      ? this.storageService.getPublicUrlSync(user.avatarFile)
+      : undefined;
+    const permissionKeys = new Set(
+      Array.isArray(request.user.permissions) ? request.user.permissions : [],
+    );
+    const actionList = {
+      isCanUpdate: permissionKeys.has(PermissionEnum.USERS_UPDATE),
+      isCanDelete: permissionKeys.has(PermissionEnum.USERS_DELETE),
+      isCanViewBalances: permissionKeys.has(PermissionEnum.POINTS_VIEW),
+      isCanCreateBalances: permissionKeys.has(PermissionEnum.POINTS_CREATE),
+    };
+    return wrapper.response({
+      statusCode: HttpStatus.CREATED,
+      data: new FindOneUserOutput(user, actionList, avatarUrl),
+      message: 'Guest user created successfully',
+    });
+  }
+
+  @Post('guests/:id/link')
+  @Permissions([PermissionEnum.USERS_UPDATE])
+  @HttpCode(HttpStatus.OK)
+  async linkGuest(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Body() payload: LinkGuestUserInput,
+  ) {
+    const user = await this.commandBus.execute(
+      new LinkGuestUserCommand(id, payload, request.user),
+    );
+    const avatarUrl = user.avatarFile
+      ? this.storageService.getPublicUrlSync(user.avatarFile)
+      : undefined;
+    const permissionKeys = new Set(
+      Array.isArray(request.user.permissions) ? request.user.permissions : [],
+    );
+    const actionList = {
+      isCanUpdate: permissionKeys.has(PermissionEnum.USERS_UPDATE),
+      isCanDelete: permissionKeys.has(PermissionEnum.USERS_DELETE),
+      isCanViewBalances: permissionKeys.has(PermissionEnum.POINTS_VIEW),
+      isCanCreateBalances: permissionKeys.has(PermissionEnum.POINTS_CREATE),
+    };
+    return wrapper.response({
+      data: new FindOneUserOutput(user, actionList, avatarUrl),
+      message: 'Guest user linked successfully',
     });
   }
 

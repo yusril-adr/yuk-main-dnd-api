@@ -41,6 +41,7 @@ export class GetTopDmExperienceHandler implements IQueryHandler<
       .select('owner.id', 'userId')
       .addSelect(netExp, 'gainedDmExp')
       .where('log.type = :type', { type: UserExpLogTypeEnum.DM })
+      .andWhere('owner.isGuest = :isGuest', { isGuest: false })
       .andWhere('log.createdAt >= :startAt', { startAt: range.start })
       .andWhere('log.createdAt < :endAt', { endAt: range.endExclusive })
       .groupBy('owner.id')

@@ -1,5 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DataSource, QueryFailedError } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
@@ -26,6 +30,19 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     });
     if (!userEntity) {
       throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    if (userEntity.isGuest) {
+      if (params.email !== undefined || params.password !== undefined) {
+        throw new BadRequestException(
+          'Guest users cannot have email or password; link them to an account instead',
+        );
+      }
+      if (params.roleIds !== undefined) {
+        throw new BadRequestException(
+          'Guest users cannot be assigned roles; link them to an account instead',
+        );
+      }
     }
 
     if (params.email) {

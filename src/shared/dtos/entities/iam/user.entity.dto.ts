@@ -9,11 +9,16 @@ export type TUserEntityDto = Omit<
   | 'storyMembers'
   | 'userExpLogs'
   | 'userPointLogs'
+  | 'createdBy'
+  | 'mergedIntoUser'
+  | 'avatarFile'
   | 'createdAt'
   | 'updatedAt'
   | 'deletedAt'
 > & {
+  email: string | null;
   roles?: RoleEntityDto[];
+  avatarUrl?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -21,10 +26,11 @@ export type TUserEntityDto = Omit<
 export class UserEntityDto implements TUserEntityDto {
   id: string;
   username?: string;
-  email: string;
+  email: string | null;
   displayName: string;
   avatarUrl?: string;
   bio?: string;
+  isGuest: boolean;
   playerExp: number;
   playerLevel: number;
   dmExp: number;
@@ -37,12 +43,13 @@ export class UserEntityDto implements TUserEntityDto {
   parseEntity(user: TUser, avatarUrl?: string): UserEntityDto {
     this.id = user.id;
     this.username = user.username;
-    this.email = user.email;
+    this.email = user.email ?? null;
     this.displayName = user.displayName;
     if (avatarUrl) {
       this.avatarUrl = avatarUrl;
     }
     this.bio = user.bio;
+    this.isGuest = user.isGuest === true;
     this.playerExp = user.playerExp;
     this.playerLevel = user.playerLevel;
     this.dmExp = user.dmExp;

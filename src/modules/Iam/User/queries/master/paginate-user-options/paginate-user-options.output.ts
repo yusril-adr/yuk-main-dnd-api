@@ -4,11 +4,15 @@ export class PaginateUserOptionsItemOutput {
   id: string;
   displayName: string;
   username: string | null;
+  isGuest: boolean;
 
-  constructor(user: Pick<TUser, 'id' | 'displayName' | 'username'>) {
+  constructor(
+    user: Pick<TUser, 'id' | 'displayName' | 'username' | 'isGuest'>,
+  ) {
     this.id = user.id;
     this.displayName = user.displayName;
     this.username = user.username ?? null;
+    this.isGuest = user.isGuest === true;
   }
 }
 
@@ -17,7 +21,7 @@ export class PaginateUserOptionsOutput {
   public readonly count: number;
 
   constructor(
-    users: Pick<TUser, 'id' | 'displayName' | 'username'>[],
+    users: Pick<TUser, 'id' | 'displayName' | 'username' | 'isGuest'>[],
     count: number,
   ) {
     this.data = users.map((user) => new PaginateUserOptionsItemOutput(user));

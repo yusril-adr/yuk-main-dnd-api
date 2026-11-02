@@ -195,6 +195,60 @@ export class UserBalanceService {
     }
   }
 
+  async recomputeBalancesFromLogs(
+    userId: string,
+    manager?: EntityManager,
+  ): Promise<void> {
+    await this.run(manager, async (txManager) => {
+      const userRepo = txManager.getRepository(User);
+      const users = await this.lockLiveUsers(userRepo, [userId]);
+      if (!users.length) {
+        throw new NotFoundException(`User with id ${userId} not found`);
+      }
+
+      const expLogs = await txManager.getRepository(UserExpLog).find({
+        where: { user: { id: userId } },
+      });
+      let playerExp = 0;
+      let dmExp = 0;
+      for (const log of expLogs) {
+        const sign =
+          log.direction === UserExpLogDirectionEnum.DECREMENT ? -1 : 1;
+        if (log.type === UserExpLogTypeEnum.PLAYER) {
+          playerExp += sign * log.amount;
+        } else if (log.type === UserExpLogTypeEnum.DM) {
+          dmExp += sign * log.amount;
+        }
+      }
+
+      const pointLogs = await txManager.getRepository(UserPointLog).find({
+        where: { user: { id: userId } },
+      });
+      let points = 0;
+      for (const log of pointLogs) {
+        if (log.type === UserPointLogTypeEnum.INCOME) {
+          points += log.amount;
+        } else if (log.type === UserPointLogTypeEnum.EXPENSE) {
+          points -= log.amount;
+        }
+      }
+
+      // Levels stay as-is until the level-up TODO in applyExperiencePoints lands.
+      await userRepo
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          playerExp: Math.max(0, playerExp),
+          dmExp: Math.max(0, dmExp),
+          points: Math.max(0, points),
+          updatedAt: () => 'now()',
+        })
+        .where('id = :id', { id: userId })
+        .andWhere('deleted_at IS NULL')
+        .execute();
+    });
+  }
+
   private resolveExperienceDirection(
     direction: UserExpLogDirectionEnum | undefined,
   ): UserExpLogDirectionEnum {
