@@ -18,7 +18,6 @@ export class GetTopPlayerExperienceItemOutput implements TGetTopPlayerExperience
   dmLevel: number;
   playerExp: number;
   playerLevel: number;
-  isGuest: boolean;
   roles: TPublicUserRole[];
   gainedPlayerExp: number;
 
@@ -35,7 +34,6 @@ export class GetTopPlayerExperienceItemOutput implements TGetTopPlayerExperience
     this.dmLevel = payload.dmLevel;
     this.playerExp = payload.playerExp;
     this.playerLevel = payload.playerLevel;
-    this.isGuest = payload.isGuest === true;
     this.roles = publicRoles(payload);
     this.gainedPlayerExp = gainedPlayerExp;
   }

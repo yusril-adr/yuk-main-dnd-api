@@ -6,7 +6,6 @@ export type TStoryCreatorDto = {
   displayName: string;
   username?: string | null;
   avatarUrl?: string | null;
-  isGuest: boolean;
 };
 
 export type TStoryEntityDto = Omit<
@@ -77,7 +76,6 @@ export class StoryEntityDto implements TStoryEntityDto {
         displayName: story.createdBy.displayName,
         username: story.createdBy.username ?? null,
         avatarUrl: avatarCreatorUrl,
-        isGuest: story.createdBy.isGuest === true,
       };
     }
     this.createdAt = dayjs(story.createdAt).toISOString();

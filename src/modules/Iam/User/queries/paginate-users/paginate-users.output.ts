@@ -8,13 +8,7 @@ export type TPublicUserRole = {
 
 export type TPaginateUsersItemOutput = Pick<
   TUser,
-  | 'id'
-  | 'displayName'
-  | 'dmExp'
-  | 'dmLevel'
-  | 'playerExp'
-  | 'playerLevel'
-  | 'isGuest'
+  'id' | 'displayName' | 'dmExp' | 'dmLevel' | 'playerExp' | 'playerLevel'
 > & {
   username: string | null;
   avatarUrl: string | null;

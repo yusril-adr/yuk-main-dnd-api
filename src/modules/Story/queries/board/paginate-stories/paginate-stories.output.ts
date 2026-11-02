@@ -60,7 +60,6 @@ export class PaginateStoriesItemOutput implements TPaginateStoriesItemOutput {
         id: payload.createdBy.id,
         displayName: payload.createdBy.displayName,
         avatarUrl: avatarCreatorUrl,
-        isGuest: payload.createdBy.isGuest === true,
       };
     }
     this.createdAt = payload.createdAt.toISOString();

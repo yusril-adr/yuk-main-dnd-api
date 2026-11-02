@@ -60,7 +60,6 @@ export class PaginateUserJoinedStoriesItemOutput implements TPaginateUserJoinedS
         id: payload.createdBy.id,
         displayName: payload.createdBy.displayName,
         avatarUrl: avatarCreatorUrl,
-        isGuest: payload.createdBy.isGuest === true,
       };
     }
     this.createdAt = payload.createdAt.toISOString();
