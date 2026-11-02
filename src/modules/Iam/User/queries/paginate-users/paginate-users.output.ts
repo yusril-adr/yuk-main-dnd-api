@@ -24,6 +24,7 @@ export class PaginateUsersItemOutput implements TPaginateUsersItemOutput {
   dmLevel: number;
   playerExp: number;
   playerLevel: number;
+  isGuest: boolean;
   roles: TPublicUserRole[];
 
   constructor(payload: TUser, avatarUrl: string | null) {
@@ -35,6 +36,7 @@ export class PaginateUsersItemOutput implements TPaginateUsersItemOutput {
     this.dmLevel = payload.dmLevel;
     this.playerExp = payload.playerExp;
     this.playerLevel = payload.playerLevel;
+    this.isGuest = payload.isGuest === true;
     this.roles = publicRoles(payload);
   }
 }
