@@ -5,6 +5,7 @@ export type TStoryMemberUserDto = {
   displayName: string;
   username?: string | null;
   avatarUrl?: string | null;
+  isGuest: boolean;
 };
 
 export type TStoryMemberEntityDto = Pick<TStoryMember, 'id' | 'status'> & {
@@ -28,6 +29,7 @@ export class StoryMemberEntityDto implements TStoryMemberEntityDto {
       displayName: storyMember.user.displayName,
       username: storyMember.user.username ?? null,
       avatarUrl: avatarUrl ?? null,
+      isGuest: storyMember.user.isGuest === true,
     };
 
     return this;
