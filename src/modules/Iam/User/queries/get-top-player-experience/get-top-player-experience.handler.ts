@@ -41,6 +41,7 @@ export class GetTopPlayerExperienceHandler implements IQueryHandler<
       .select('owner.id', 'userId')
       .addSelect(netExp, 'gainedPlayerExp')
       .where('log.type = :type', { type: UserExpLogTypeEnum.PLAYER })
+      .andWhere('owner.isGuest = :isGuest', { isGuest: false })
       .andWhere('log.createdAt >= :startAt', { startAt: range.start })
       .andWhere('log.createdAt < :endAt', { endAt: range.endExclusive })
       .groupBy('owner.id')

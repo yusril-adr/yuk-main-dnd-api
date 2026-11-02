@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { BaseEntity } from '../base.entity';
 import { UserRole } from './user-role.entity';
 import { File } from '../file.entity';
@@ -11,17 +18,21 @@ export class User extends BaseEntity {
   @Column({ length: 50, nullable: true })
   username?: string;
 
-  @Column({ length: 255, unique: true })
-  email: string;
+  // Unique when not null via partial index UQ_users_email_not_null (migration).
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  email: string | null;
 
-  @Column({ length: 255 })
-  password: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  password: string | null;
 
   @Column({ length: 100 })
   displayName: string;
 
   @Column({ type: 'text', nullable: true })
   bio?: string;
+
+  @Column({ type: 'boolean', default: false })
+  isGuest: boolean = false;
 
   @Column({ type: 'integer', default: 0 })
   playerExp: number = 0;
@@ -41,6 +52,14 @@ export class User extends BaseEntity {
   @OneToOne(() => File, (file) => file.id, { cascade: true })
   @JoinColumn()
   avatarFile?: File | null;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'created_by' })
+  createdBy?: User | null;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'merged_into_user_id' })
+  mergedIntoUser?: User | null;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];

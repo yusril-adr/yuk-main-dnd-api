@@ -43,6 +43,14 @@ export class AuthService {
       );
     }
 
+    // Guests have no password and cannot log in. Same message as a bad
+    // password so guest accounts are not distinguishable at login.
+    if (user.isGuest || !user.password) {
+      throw new UnauthorizedException(
+        'Email, username or password is incorrect',
+      );
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException(
@@ -168,7 +176,7 @@ export class AuthService {
   ): LoginOutput {
     const payload: TJWTPayload = {
       id: user.id,
-      email: user.email,
+      email: user.email ?? null,
       displayName: user.displayName,
       selectedRole,
       availableRoles: this.getAvailableRoles(user),

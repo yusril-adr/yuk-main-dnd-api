@@ -12,6 +12,9 @@ export enum PermissionEnum {
   USERS_UPDATE = 'users:update',
   USERS_DELETE = 'users:delete',
 
+  // Guests
+  GUESTS_CREATE = 'guests:create',
+
   // Roles
   ROLES_CREATE = 'roles:create',
   ROLES_VIEW = 'roles:view',
