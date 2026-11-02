@@ -25,6 +25,7 @@ export class PaginateUserOptionsHandler implements IQueryHandler<
         id: true,
         displayName: true,
         username: true,
+        isGuest: true,
       },
       order: {
         [camelCase(params.sortBy)]: params.order,

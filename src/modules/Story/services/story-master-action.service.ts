@@ -21,6 +21,10 @@ export class StoryMasterActionService {
     return user.permissions?.includes(PermissionEnum.STORIES_CREATE) ?? false;
   }
 
+  isCanCreateGuestUser(user: TJWTPayload): boolean {
+    return user.permissions?.includes(PermissionEnum.GUESTS_CREATE) ?? false;
+  }
+
   isCanUpdate(story: Story, user: TJWTPayload): boolean {
     return (
       this.storyPermissionService.canModify(

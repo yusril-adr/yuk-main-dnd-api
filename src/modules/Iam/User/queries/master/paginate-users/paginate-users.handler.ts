@@ -101,6 +101,12 @@ export class PaginateUsersHandler implements IQueryHandler<
         id: In(userIds.length ? userIds : ['']),
       });
     }
+
+    if (params.isGuest !== undefined) {
+      query.where = mergeEachWhereConditions(query.where, {
+        isGuest: params.isGuest,
+      });
+    }
     return query;
   }
 }

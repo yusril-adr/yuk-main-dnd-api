@@ -48,6 +48,8 @@ export class FindOneStoryHandler implements IQueryHandler<
         user,
       ),
       isCanViewPublic: this.storyMasterActionService.isCanViewPublic(story),
+      isCanCreateGuestUser:
+        this.storyMasterActionService.isCanCreateGuestUser(user),
     };
 
     return new FindOneStoryOutput(

@@ -13,6 +13,8 @@ import { UserRepository } from './repositories/user.repository';
 import { UserService } from './services/user.service';
 import { UserBalanceService } from './services/user-balance.service';
 import { CreateUserHandler } from './commands/master/create-user/create-user.handler';
+import { CreateGuestUserHandler } from './commands/master/create-guest-user/create-guest-user.handler';
+import { LinkGuestUserHandler } from './commands/master/link-guest-user/link-guest-user.handler';
 import { UpdateUserHandler } from './commands/master/update-user/update-user.handler';
 import { RemoveUserHandler } from './commands/master/remove-user/remove-user.handler';
 import { AddUserExperiencePointsHandler } from './commands/master/add-user-experience-points/add-user-experience-points.handler';
@@ -31,6 +33,8 @@ import { UserPointLog } from '@entities/main/iam/user-point-log.entity';
 
 const commandHandlers = [
   CreateUserHandler,
+  CreateGuestUserHandler,
+  LinkGuestUserHandler,
   UpdateUserHandler,
   RemoveUserHandler,
   AddUserExperiencePointsHandler,

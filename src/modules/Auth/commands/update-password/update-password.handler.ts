@@ -22,6 +22,10 @@ export class UpdatePasswordHandler implements ICommandHandler<UpdatePasswordComm
       throw new NotFoundException('User not found');
     }
 
+    if (!userEntity.password) {
+      throw new BadRequestException('Current password is incorrect');
+    }
+
     const isPasswordValid = await bcrypt.compare(
       payload.currentPassword,
       userEntity.password,

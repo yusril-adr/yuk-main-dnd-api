@@ -2,7 +2,10 @@ import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { OrderKeyEnum } from '@shared/enums/order.enum';
-import { mergeWhereConditions } from '@shared/utils/common';
+import {
+  mergeEachWhereConditions,
+  mergeWhereConditions,
+} from '@shared/utils/common';
 import { UserRepository } from '../../repositories/user.repository';
 import { UserService } from '../../services/user.service';
 import { PaginateUsersQuery } from './paginate-users.query';
@@ -32,6 +35,9 @@ export class PaginateUsersHandler implements IQueryHandler<
     };
 
     findOptions = this.searchQuery(findOptions, params);
+    findOptions.where = mergeEachWhereConditions(findOptions.where, {
+      isGuest: false,
+    });
 
     const [users, count] = await this.userRepository.findAndCount({
       ...findOptions,

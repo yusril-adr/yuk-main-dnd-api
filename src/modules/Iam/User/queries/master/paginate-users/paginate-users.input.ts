@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsArray, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { snakeCase } from 'typeorm/util/StringUtils';
 import { User } from '@entities/main/iam/user.entity';
 import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
@@ -24,4 +31,15 @@ export class PaginateUsersInput extends PaginateParamDto {
     return undefined;
   })
   roleIds?: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => {
+    if (value === undefined || value === null) return undefined;
+    if (typeof value === 'boolean') return value;
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return value;
+  })
+  isGuest?: boolean;
 }

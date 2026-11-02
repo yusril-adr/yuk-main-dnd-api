@@ -5,12 +5,14 @@ export class PaginateAvailableStoryUsersItemOutput {
   displayName: string;
   avatarUrl: string | null;
   username?: string | null;
+  isGuest: boolean;
 
   constructor(user: TUser, avatarUrl?: string | null) {
     this.id = user.id;
     this.displayName = user.displayName;
     this.avatarUrl = avatarUrl ?? null;
     this.username = user.username;
+    this.isGuest = user.isGuest === true;
   }
 }
 
