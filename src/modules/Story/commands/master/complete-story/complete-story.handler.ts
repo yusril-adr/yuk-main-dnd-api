@@ -87,11 +87,19 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
         await storyMemberRepo.save(members);
       }
 
+      // Guests do not earn EXP or points from story completion.
+      const nonGuestMemberIds = new Set(
+        members.filter((m) => !m.user.isGuest).map((m) => m.user.id),
+      );
+      const rewardUserIds = uniqueUserIds.filter((userId) =>
+        nonGuestMemberIds.has(userId),
+      );
+
       const rewardDescription = `Player reward for story ${story.title}`;
-      if (story.expAwarded > 0) {
+      if (story.expAwarded > 0 && rewardUserIds.length > 0) {
         await this.userBalanceService.addExperiencePointsToMany(
           {
-            userIds: uniqueUserIds,
+            userIds: rewardUserIds,
             type: UserExpLogTypeEnum.PLAYER,
             amount: story.expAwarded,
             description: rewardDescription,
@@ -99,10 +107,10 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
           manager,
         );
       }
-      if (story.pointAwarded > 0) {
+      if (story.pointAwarded > 0 && rewardUserIds.length > 0) {
         await this.userBalanceService.addPointsToMany(
           {
-            userIds: uniqueUserIds,
+            userIds: rewardUserIds,
             type: UserPointLogTypeEnum.INCOME,
             amount: story.pointAwarded,
             description: rewardDescription,
@@ -113,8 +121,11 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
 
       // The story creator is the DM and gets a fixed DM EXP reward, unless
       // they attended as a player, in which case they only get the player
-      // reward above.
-      if (!attendedUserIds.has(story.createdBy.id)) {
+      // reward above. Guests never receive DM EXP either.
+      if (
+        !attendedUserIds.has(story.createdBy.id) &&
+        !story.createdBy.isGuest
+      ) {
         await this.userBalanceService.addExperiencePoints(
           {
             userId: story.createdBy.id,
