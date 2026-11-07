@@ -1,14 +1,14 @@
 [
   {
-    "username": "admin",
-    "email": "admin@example.com",
-    "display_name": "Admin",
+    "username": "I-Leaf",
+    "email": "forfun.alif.04@gmail.com",
+    "display_name": "I-Leaf",
     "bio": null,
     "player_exp": 0,
     "player_level": 1,
     "dm_exp": 0,
     "dm_level": 1,
-    "roles": ["guild-master", "player"]
+    "roles": ["guild-master", "dungeon-master", "player"]
   },
   {
     "username": "yonaka",
