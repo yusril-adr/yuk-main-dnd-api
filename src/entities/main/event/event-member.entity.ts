@@ -14,7 +14,7 @@ export class EventMember extends BaseEntity {
   event: EventEntity;
 
   @Index()
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, (user) => user.eventMembers, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
