@@ -12,6 +12,7 @@ import { File } from '../file.entity';
 import { UserExpLog } from './user-exp-log.entity';
 import { UserPointLog } from './user-point-log.entity';
 import { StoryMember } from '../story/story-member.entity';
+import { EventMember } from '../event/event-member.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -66,6 +67,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => StoryMember, (storyMember) => storyMember.user)
   storyMembers: StoryMember[];
+
+  @OneToMany(() => EventMember, (eventMember) => eventMember.user)
+  eventMembers: EventMember[];
 
   @OneToMany(() => UserExpLog, (userExpLog) => userExpLog.user)
   userExpLogs: UserExpLog[];
