@@ -27,7 +27,7 @@ export class EventEntity extends BaseEntity {
   slug: string;
 
   @Column({ type: 'text', nullable: true })
-  description?: string;
+  description?: string | null;
 
   @Index()
   @Column({ type: 'integer', default: EventStatusEnum.DRAFT })
@@ -49,7 +49,7 @@ export class EventEntity extends BaseEntity {
   pointAwarded: number = 0;
 
   @Column({ type: 'integer', nullable: true })
-  maxMembers?: number;
+  maxMembers?: number | null;
 
   @Index()
   @Column({ type: 'timestamp with time zone', nullable: true })

@@ -3,6 +3,7 @@ import { StorageService } from './services/storage.service';
 import { SupabaseClientIntegration } from '@shared/libs/supabase/supabase-client.integration';
 import { SupabaseStorageIntegration } from '@shared/libs/supabase/supabase-storage.integration';
 import { UserAvatarPathService } from './services/user-avatar-path.service';
+import { EventBannerPathService } from './services/event-banner-path.service';
 import { StoryBannerPathService } from './services/story-banner-path.service';
 import { AppConfigService } from './services/app-config.service';
 
@@ -14,6 +15,7 @@ import { AppConfigService } from './services/app-config.service';
     SupabaseStorageIntegration,
     UserAvatarPathService,
     StoryBannerPathService,
+    EventBannerPathService,
     AppConfigService,
   ],
   exports: [
@@ -22,6 +24,7 @@ import { AppConfigService } from './services/app-config.service';
     SupabaseStorageIntegration,
     UserAvatarPathService,
     StoryBannerPathService,
+    EventBannerPathService,
     AppConfigService,
   ],
 })

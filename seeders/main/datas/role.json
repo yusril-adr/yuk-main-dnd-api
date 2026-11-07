@@ -37,6 +37,8 @@
     "permissions": [
       "stories:view",
       "stories:create",
+      "events:view",
+      "events:create",
       "guests:create"
     ]
   },
