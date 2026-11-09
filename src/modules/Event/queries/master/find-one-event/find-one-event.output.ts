@@ -4,6 +4,7 @@ import { EventEntityDto } from '@shared/dtos/entities/event/event.entity.dto';
 export type TEventMasterDetailActionList = {
   isCanUpdate: boolean;
   isCanPublish: boolean;
+  isCanComplete: boolean;
   isCanCancel: boolean;
   isCanArchive: boolean;
   isCanUnarchive: boolean;

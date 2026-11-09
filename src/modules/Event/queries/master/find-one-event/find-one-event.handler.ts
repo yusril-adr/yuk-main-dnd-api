@@ -34,6 +34,7 @@ export class FindOneEventHandler implements IQueryHandler<
     const actionList: TEventMasterDetailActionList = {
       isCanUpdate: this.eventMasterActionService.isCanUpdate(event, user),
       isCanPublish: this.eventMasterActionService.isCanPublish(event, user),
+      isCanComplete: this.eventMasterActionService.isCanComplete(event, user),
       isCanCancel: this.eventMasterActionService.isCanCancel(event, user),
       isCanArchive: this.eventMasterActionService.isCanArchive(event, user),
       isCanUnarchive: this.eventMasterActionService.isCanUnarchive(event, user),

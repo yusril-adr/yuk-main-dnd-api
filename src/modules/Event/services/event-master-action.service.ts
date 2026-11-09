@@ -37,6 +37,17 @@ export class EventMasterActionService {
       event.status === EventStatusEnum.DRAFT
     );
   }
+  isCanComplete(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) &&
+      !this.eventService.isCancelledEvent(event) &&
+      event.status === EventStatusEnum.PUBLISHED
+    );
+  }
   isCanCancel(event: EventEntity, user: TJWTPayload): boolean {
     return (
       this.permissionService.canModify(
