@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { EventEntity } from '@entities/main/event/event.entity';
 import { EventMember } from '@entities/main/event/event-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
@@ -61,9 +61,13 @@ export class CompleteEventHandler implements ICommandHandler<CompleteEventComman
 
     await this.dataSource.transaction(async (manager) => {
       const eventMemberRepo = manager.getRepository(EventMember);
+      // withDeleted keeps soft-deleted users on active memberships; without it
+      // member.user is undefined and status/reward loops throw. Soft-deleted
+      // memberships stay excluded via deletedAt IS NULL.
       const members = await eventMemberRepo.find({
-        where: { event: { id } },
+        where: { event: { id }, deletedAt: IsNull() },
         relations: { user: true },
+        withDeleted: true,
       });
 
       const memberUserIds = new Set(members.map((member) => member.user.id));

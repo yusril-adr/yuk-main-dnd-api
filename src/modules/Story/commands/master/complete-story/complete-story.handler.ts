@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { Story } from '@entities/main/story/story.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
@@ -62,9 +62,13 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
 
     await this.dataSource.transaction(async (manager) => {
       const storyMemberRepo = manager.getRepository(StoryMember);
+      // withDeleted keeps soft-deleted users on active memberships; without it
+      // member.user is undefined and status/reward loops throw. Soft-deleted
+      // memberships stay excluded via deletedAt IS NULL.
       const members = await storyMemberRepo.find({
-        where: { story: { id } },
+        where: { story: { id }, deletedAt: IsNull() },
         relations: { user: true },
+        withDeleted: true,
       });
 
       const memberUserIds = new Set(members.map((member) => member.user.id));
