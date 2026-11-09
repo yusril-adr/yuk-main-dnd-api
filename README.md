@@ -98,6 +98,10 @@ FILE_STORY_BANNER_BUCKET=
 FILE_STORY_BANNER_PATH_PREFIX=stories
 FILE_STORY_BANNER_MAX_FILE_SIZE_BYTES=5242880
 
+FILE_EVENT_BANNER_BUCKET=
+FILE_EVENT_BANNER_PATH_PREFIX=events
+FILE_EVENT_BANNER_MAX_FILE_SIZE_BYTES=10485760
+
 FILE_OTHER_BUCKET=
 FILE_OTHER_PATH_PREFIX=others
 FILE_OTHER_MAX_FILE_SIZE_BYTES=10485760
@@ -107,7 +111,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 SUPABASE_SIGNED_URL_EXPIRES_IN=900
 ```
 
-Upload purpose `1` is a user avatar and purpose `2` is a story banner. Both stay temporary (`status` `1`) until a user or story write promotes the file to active (`status` `2`). Purpose `3` (other) is stored active immediately.
+Upload purpose `1` is a user avatar, purpose `2` is a story banner, and purpose `4` is an event banner. They stay temporary (`status` `1`) until a user, story, or event write promotes the file to active (`status` `2`). Purpose `3` (other) is stored active immediately.
 
 ## Project structure
 
