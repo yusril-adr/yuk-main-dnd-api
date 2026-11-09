@@ -6,7 +6,6 @@ import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { UserService } from '@modules/Iam/User/services/user.service';
-import { conflictFromUserUniqueViolation } from '@modules/Iam/User/utils/user-unique-conflict';
 import { UpdateProfileCommand } from './update-profile.command';
 
 @CommandHandler(UpdateProfileCommand)
@@ -99,8 +98,8 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
         );
       }
 
-      // Map 23505 by constraint: keep email/username messages accurate (see helper).
-      const conflict = conflictFromUserUniqueViolation(error);
+      // Map 23505 by constraint: keep email/username messages accurate (see UserService.conflictFromUniqueViolation).
+      const conflict = this.userService.conflictFromUniqueViolation(error);
       if (conflict) {
         throw conflict;
       }
