@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddActiveUserUniqueIndexes1794241108561
-  implements MigrationInterface
-{
+export class AddActiveUserUniqueIndexes1794241108561 implements MigrationInterface {
   name = 'AddActiveUserUniqueIndexes1794241108561';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -24,9 +22,7 @@ export class AddActiveUserUniqueIndexes1794241108561
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `DROP INDEX "public"."UQ_users_username_active"`,
-    );
+    await queryRunner.query(`DROP INDEX "public"."UQ_users_username_active"`);
     await queryRunner.query(`DROP INDEX "public"."UQ_users_email_active"`);
 
     // Recreate the prior partial unique index from AddGuestUsers1793100000000.
