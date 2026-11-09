@@ -33,6 +33,10 @@ import { PaginateEventMembersQuery } from '../queries/master/paginate-event-memb
 import { PaginateEventMembersInput } from '../queries/master/paginate-event-members/paginate-event-members.input';
 import { PaginateAvailableEventUsersQuery } from '../queries/master/paginate-available-event-users/paginate-available-event-users.query';
 import { PaginateAvailableEventUsersInput } from '../queries/master/paginate-available-event-users/paginate-available-event-users.input';
+import { PublishEventCommand } from '../commands/master/publish-event/publish-event.command';
+import { ArchiveEventCommand } from '../commands/master/archive-event/archive-event.command';
+import { UnarchiveEventCommand } from '../commands/master/unarchive-event/unarchive-event.command';
+import { CancelEventCommand } from '../commands/master/cancel-event/cancel-event.command';
 
 @Controller({ path: 'master/events', version: '1' })
 export class MasterEventController {
@@ -162,6 +166,50 @@ export class MasterEventController {
       count: output.count,
       query,
       message: 'Available event users retrieved successfully',
+    });
+  }
+  @Patch(':id/archive')
+  async archive(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    await this.commandBus.execute(new ArchiveEventCommand(id, request.user));
+    return wrapper.response({
+      data: null,
+      message: 'Event archived successfully',
+    });
+  }
+  @Patch(':id/publish')
+  async publish(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    await this.commandBus.execute(new PublishEventCommand(id, request.user));
+    return wrapper.response({
+      data: null,
+      message: 'Event published successfully',
+    });
+  }
+  @Patch(':id/unarchive')
+  async unarchive(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    await this.commandBus.execute(new UnarchiveEventCommand(id, request.user));
+    return wrapper.response({
+      data: null,
+      message: 'Event unarchived successfully',
+    });
+  }
+  @Patch(':id/cancel')
+  async cancel(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    await this.commandBus.execute(new CancelEventCommand(id, request.user));
+    return wrapper.response({
+      data: null,
+      message: 'Event cancelled successfully',
     });
   }
   @Delete(':id')

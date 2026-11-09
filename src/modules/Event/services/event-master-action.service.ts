@@ -26,6 +26,48 @@ export class EventMasterActionService {
       event.status !== EventStatusEnum.COMPLETED
     );
   }
+  isCanPublish(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) &&
+      !this.eventService.isCancelledEvent(event) &&
+      event.status === EventStatusEnum.DRAFT
+    );
+  }
+  isCanCancel(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) &&
+      !this.eventService.isCancelledEvent(event) &&
+      event.status === EventStatusEnum.PUBLISHED
+    );
+  }
+  isCanArchive(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) && event.status !== EventStatusEnum.ARCHIVED
+    );
+  }
+  isCanUnarchive(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) &&
+      event.status === EventStatusEnum.ARCHIVED &&
+      event.statusBefore != null
+    );
+  }
   isCanDelete(event: EventEntity, user: TJWTPayload): boolean {
     return this.permissionService.canModify(
       event,
