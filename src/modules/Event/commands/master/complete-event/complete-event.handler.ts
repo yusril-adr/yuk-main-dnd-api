@@ -30,9 +30,11 @@ export class CompleteEventHandler implements ICommandHandler<CompleteEventComman
   async execute(command: CompleteEventCommand): Promise<void> {
     const { id, params, user } = command;
 
+    // withDeleted keeps a soft-deleted creator on the row (permission checks).
     const event = await this.eventRepository.findOne({
-      where: { id },
+      where: { id, deletedAt: IsNull() },
       relations: { createdBy: true },
+      withDeleted: true,
     });
     if (!event) {
       throw new NotFoundException(`Event with id ${id} not found`);

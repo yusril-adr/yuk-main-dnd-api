@@ -31,9 +31,11 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
   async execute(command: CompleteStoryCommand): Promise<void> {
     const { id, params, user } = command;
 
+    // withDeleted keeps a soft-deleted creator on the row for DM EXP rules.
     const story = await this.storyRepository.findOne({
-      where: { id },
+      where: { id, deletedAt: IsNull() },
       relations: { createdBy: true },
+      withDeleted: true,
     });
     if (!story) {
       throw new NotFoundException(`Story with id ${id} not found`);
@@ -136,6 +138,8 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
             type: UserExpLogTypeEnum.DM,
             amount: STORY_DM_EXP_REWARD,
             description: `DM reward for story ${story.title}`,
+            // Soft-deleted creators still receive DM EXP (rule unchanged).
+            includeSoftDeleted: true,
           },
           manager,
         );
