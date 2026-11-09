@@ -5,3 +5,8 @@ export enum EventStatusEnum {
   CANCELLED = 4,
   COMPLETED = 5,
 }
+
+export const PUBLIC_EVENT_STATUSES = [
+  EventStatusEnum.PUBLISHED,
+  EventStatusEnum.COMPLETED,
+];

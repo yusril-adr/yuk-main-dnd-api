@@ -1,0 +1,1 @@
+export const DEFAULT_EVENT_PLAYER_EXP_REWARD = 1;

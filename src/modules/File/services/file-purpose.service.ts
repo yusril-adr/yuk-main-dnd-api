@@ -9,6 +9,7 @@ import { extname } from 'path';
 import { FilePurposesEnum } from '@modules/File/enums/file-purposes.enum';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { UserAvatarPathService } from '@modules/Global/services/user-avatar-path.service';
+import { EventBannerPathService } from '@modules/Global/services/event-banner-path.service';
 import { StoryBannerPathService } from '@modules/Global/services/story-banner-path.service';
 import { TFilePurposeUploadConfig } from '../types/file-purpose-upload-config.type';
 
@@ -20,6 +21,7 @@ export class FilePurposeService {
     private readonly configService: ConfigService,
     private readonly userAvatarPathService: UserAvatarPathService,
     private readonly storyBannerPathService: StoryBannerPathService,
+    private readonly eventBannerPathService: EventBannerPathService,
   ) {}
 
   resolveUploadConfig(
@@ -31,6 +33,8 @@ export class FilePurposeService {
         return this.resolveUserAvatarConfig(originalName);
       case FilePurposesEnum.STORY_BANNER:
         return this.resolveStoryBannerConfig(originalName);
+      case FilePurposesEnum.EVENT_BANNER:
+        return this.resolveEventBannerConfig(originalName);
       case FilePurposesEnum.OTHER:
         return this.resolveOtherConfig(originalName);
       default:
@@ -63,6 +67,20 @@ export class FilePurposeService {
       upsert: false,
       maxFileSizeBytes: this.getMaxFileSizeBytes(
         'FILE_STORY_BANNER_MAX_FILE_SIZE_BYTES',
+      ),
+      status: FileStatusEnum.TEMPORARY,
+    };
+  }
+
+  private resolveEventBannerConfig(
+    originalName: string,
+  ): TFilePurposeUploadConfig {
+    return {
+      bucket: this.eventBannerPathService.getBucket(),
+      path: this.eventBannerPathService.createTemporaryPath(originalName),
+      upsert: false,
+      maxFileSizeBytes: this.getMaxFileSizeBytes(
+        'FILE_EVENT_BANNER_MAX_FILE_SIZE_BYTES',
       ),
       status: FileStatusEnum.TEMPORARY,
     };
