@@ -1,10 +1,10 @@
-import { ConflictException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DataSource, QueryFailedError } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { UserService } from '../../../services/user.service';
+import { conflictFromUserUniqueViolation } from '../../../utils/user-unique-conflict';
 import { CreateUserCommand } from './create-user.command';
 
 @CommandHandler(CreateUserCommand)
@@ -72,11 +72,10 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
         );
       }
 
-      if (
-        error instanceof QueryFailedError &&
-        (error as any).driverError?.code === '23505'
-      ) {
-        throw new ConflictException('A user with this email already exists');
+      // Map 23505 by constraint: user_roles has its own unique index (see helper).
+      const conflict = conflictFromUserUniqueViolation(error);
+      if (conflict) {
+        throw conflict;
       }
 
       throw error;

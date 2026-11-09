@@ -1,11 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DataSource, QueryFailedError } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { UserService } from '@modules/Iam/User/services/user.service';
+import { conflictFromUserUniqueViolation } from '@modules/Iam/User/utils/user-unique-conflict';
 import { UpdateProfileCommand } from './update-profile.command';
 
 @CommandHandler(UpdateProfileCommand)
@@ -98,11 +99,10 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
         );
       }
 
-      if (
-        error instanceof QueryFailedError &&
-        (error as any).driverError?.code === '23505'
-      ) {
-        throw new ConflictException('A user with this email already exists');
+      // Map 23505 by constraint: keep email/username messages accurate (see helper).
+      const conflict = conflictFromUserUniqueViolation(error);
+      if (conflict) {
+        throw conflict;
       }
 
       throw error;
