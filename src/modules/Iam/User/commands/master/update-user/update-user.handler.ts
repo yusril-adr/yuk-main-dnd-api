@@ -1,10 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
-import { DataSource, QueryFailedError } from 'typeorm';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { User } from '@entities/main/iam/user.entity';
 import { UserRole } from '@entities/main/iam/user-role.entity';
 import { File } from '@entities/main/file.entity';
@@ -121,11 +117,10 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
         );
       }
 
-      if (
-        error instanceof QueryFailedError &&
-        (error as any).driverError?.code === '23505'
-      ) {
-        throw new ConflictException('A user with this email already exists');
+      // Map 23505 by constraint: user_roles has its own unique index (see UserService.conflictFromUniqueViolation).
+      const conflict = this.userService.conflictFromUniqueViolation(error);
+      if (conflict) {
+        throw conflict;
       }
 
       throw error;
