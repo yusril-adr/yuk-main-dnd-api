@@ -4,6 +4,10 @@ import { User } from '../iam/user.entity';
 import { EventEntity } from './event.entity';
 import { EventMemberStatusEnum } from '@modules/Event/enums/event-member-status.enum';
 
+@Index('UQ_event_members_event_user_active', ['event', 'user'], {
+  unique: true,
+  where: '"deleted_at" IS NULL',
+})
 @Entity()
 export class EventMember extends BaseEntity {
   @Index()

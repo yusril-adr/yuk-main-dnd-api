@@ -4,6 +4,10 @@ import { User } from '../iam/user.entity';
 import { Story } from './story.entity';
 import { StoryMemberStatusEnum } from '@modules/Story/enums/story-member-status.enum';
 
+@Index('UQ_story_members_story_user_active', ['story', 'user'], {
+  unique: true,
+  where: '"deleted_at" IS NULL',
+})
 @Entity()
 export class StoryMember extends BaseEntity {
   @Index()
