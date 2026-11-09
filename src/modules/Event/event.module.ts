@@ -22,6 +22,7 @@ import { PublishEventHandler } from './commands/master/publish-event/publish-eve
 import { ArchiveEventHandler } from './commands/master/archive-event/archive-event.handler';
 import { UnarchiveEventHandler } from './commands/master/unarchive-event/unarchive-event.handler';
 import { CancelEventHandler } from './commands/master/cancel-event/cancel-event.handler';
+import { CompleteEventHandler } from './commands/master/complete-event/complete-event.handler';
 import { PaginateEventsHandler } from './queries/master/paginate-events/paginate-events.handler';
 import { FindOneEventHandler } from './queries/master/find-one-event/find-one-event.handler';
 import { PaginateEventMembersHandler } from './queries/master/paginate-event-members/paginate-event-members.handler';
@@ -43,6 +44,7 @@ const commandHandlers = [
   ArchiveEventHandler,
   UnarchiveEventHandler,
   CancelEventHandler,
+  CompleteEventHandler,
 ];
 const queryHandlers = [
   PaginateEventsHandler,

@@ -37,6 +37,8 @@ import { PublishEventCommand } from '../commands/master/publish-event/publish-ev
 import { ArchiveEventCommand } from '../commands/master/archive-event/archive-event.command';
 import { UnarchiveEventCommand } from '../commands/master/unarchive-event/unarchive-event.command';
 import { CancelEventCommand } from '../commands/master/cancel-event/cancel-event.command';
+import { CompleteEventCommand } from '../commands/master/complete-event/complete-event.command';
+import { CompleteEventInput } from '../commands/master/complete-event/complete-event.input';
 
 @Controller({ path: 'master/events', version: '1' })
 export class MasterEventController {
@@ -199,6 +201,20 @@ export class MasterEventController {
     return wrapper.response({
       data: null,
       message: 'Event unarchived successfully',
+    });
+  }
+  @Patch(':id/complete')
+  async complete(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() payload: CompleteEventInput,
+  ) {
+    await this.commandBus.execute(
+      new CompleteEventCommand(id, payload, request.user),
+    );
+    return wrapper.response({
+      data: null,
+      message: 'Event completed successfully',
     });
   }
   @Patch(':id/cancel')
