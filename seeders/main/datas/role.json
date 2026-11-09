@@ -31,14 +31,44 @@
     ]
   },
   {
+    "name": "Developer",
+    "key": "developer",
+    "description": "Developer",
+    "permissions": [
+      "player_board:view",
+      "users:create",
+      "users:view",
+      "users:update",
+      "users:delete",
+      "guests:create",
+      "roles:create",
+      "roles:view",
+      "roles:update",
+      "roles:delete",
+      "permissions:view",
+      "stories:create",
+      "stories:view",
+      "stories:update",
+      "stories:delete",
+      "events:create",
+      "events:view",
+      "events:update",
+      "events:delete",
+      "goods:create",
+      "goods:view",
+      "goods:update",
+      "goods:delete",
+      "points:create",
+      "points:view"
+    ]
+  },
+  {
     "name": "Dungeon Master",
     "key": "dungeon-master",
     "description": "Dungeon Master",
     "permissions": [
       "stories:view",
       "stories:create",
-      "events:view",
-      "events:create",
       "guests:create"
     ]
   },

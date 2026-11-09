@@ -3,7 +3,7 @@ export enum PermissionEnum {
   PLAYER_BOARD_VIEW = 'player_board:view',
 
   /* 
-    ! READ ME: If you add a new permission, make sure to assign to guild-master role seeder
+    ! READ ME: If you add a new permission, make sure to assign to guild-master and developer role seeder
   */
 
   // Users
