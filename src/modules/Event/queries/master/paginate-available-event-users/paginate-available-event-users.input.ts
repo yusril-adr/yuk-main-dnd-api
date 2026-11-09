@@ -1,0 +1,23 @@
+import { Transform } from 'class-transformer';
+import { IsEnum, IsIn, IsOptional, IsString } from 'class-validator';
+import { snakeCase } from 'typeorm/util/StringUtils';
+import { User } from '@entities/main/iam/user.entity';
+import { PaginateParamDto } from '@shared/dtos/params/paginate.param.dto';
+import { OrderKeyEnum } from '@shared/enums/order.enum';
+import { getAllEntityProperties } from '@shared/utils/common';
+
+export class PaginateAvailableEventUsersInput extends PaginateParamDto {
+  @IsOptional()
+  @IsString()
+  @IsIn(
+    getAllEntityProperties(User)
+      .filter((prop) => prop !== 'password')
+      .map((prop) => snakeCase(prop)),
+  )
+  sortBy: string = 'updated_at';
+
+  @IsOptional()
+  @Transform(({ value }) => `${value}`.toLowerCase())
+  @IsEnum(OrderKeyEnum)
+  order?: OrderKeyEnum = OrderKeyEnum.ASC;
+}

@@ -22,6 +22,7 @@ import { AuthModule } from '@modules/Auth/auth.module';
 import { PermissionModule } from '@modules/Iam/Permission/permission.module';
 import { RoleModule } from '@modules/Iam/Role/role.module';
 import { UserModule } from '@modules/Iam/User/user.module';
+import { EventModule } from '@modules/Event/event.module';
 import { StoryModule } from '@modules/Story/story.module';
 import { FileModule } from '@modules/File/file.module';
 import { GlobalModule } from '@modules/Global/global.module';
@@ -55,6 +56,7 @@ import { GlobalModule } from '@modules/Global/global.module';
     RoleModule,
     UserModule,
     StoryModule,
+    EventModule,
     FileModule,
   ],
   providers: [
