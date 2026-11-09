@@ -18,6 +18,10 @@ import { AddEventMembersHandler } from './commands/master/add-event-members/add-
 import { RemoveEventMembersHandler } from './commands/master/remove-event-members/remove-event-members.handler';
 import { JoinEventHandler } from './commands/join-event/join-event.handler';
 import { CancelJoinEventHandler } from './commands/cancel-join-event/cancel-join-event.handler';
+import { PublishEventHandler } from './commands/master/publish-event/publish-event.handler';
+import { ArchiveEventHandler } from './commands/master/archive-event/archive-event.handler';
+import { UnarchiveEventHandler } from './commands/master/unarchive-event/unarchive-event.handler';
+import { CancelEventHandler } from './commands/master/cancel-event/cancel-event.handler';
 import { PaginateEventsHandler } from './queries/master/paginate-events/paginate-events.handler';
 import { FindOneEventHandler } from './queries/master/find-one-event/find-one-event.handler';
 import { PaginateEventMembersHandler } from './queries/master/paginate-event-members/paginate-event-members.handler';
@@ -35,6 +39,10 @@ const commandHandlers = [
   RemoveEventMembersHandler,
   JoinEventHandler,
   CancelJoinEventHandler,
+  PublishEventHandler,
+  ArchiveEventHandler,
+  UnarchiveEventHandler,
+  CancelEventHandler,
 ];
 const queryHandlers = [
   PaginateEventsHandler,

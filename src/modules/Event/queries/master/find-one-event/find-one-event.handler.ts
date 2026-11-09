@@ -33,8 +33,11 @@ export class FindOneEventHandler implements IQueryHandler<
 
     const actionList: TEventMasterDetailActionList = {
       isCanUpdate: this.eventMasterActionService.isCanUpdate(event, user),
+      isCanPublish: this.eventMasterActionService.isCanPublish(event, user),
+      isCanCancel: this.eventMasterActionService.isCanCancel(event, user),
+      isCanArchive: this.eventMasterActionService.isCanArchive(event, user),
+      isCanUnarchive: this.eventMasterActionService.isCanUnarchive(event, user),
       isCanDelete: this.eventMasterActionService.isCanDelete(event, user),
-      isCanViewPublic: this.eventMasterActionService.isCanViewPublic(event),
       isCanAddMembers: this.eventMasterActionService.isCanAddMembers(
         event,
         user,
@@ -43,6 +46,7 @@ export class FindOneEventHandler implements IQueryHandler<
         event,
         user,
       ),
+      isCanViewPublic: this.eventMasterActionService.isCanViewPublic(event),
       isCanCreateGuestUser:
         this.eventMasterActionService.isCanCreateGuestUser(user),
     };

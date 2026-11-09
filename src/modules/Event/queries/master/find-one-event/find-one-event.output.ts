@@ -3,10 +3,14 @@ import { EventEntityDto } from '@shared/dtos/entities/event/event.entity.dto';
 
 export type TEventMasterDetailActionList = {
   isCanUpdate: boolean;
+  isCanPublish: boolean;
+  isCanCancel: boolean;
+  isCanArchive: boolean;
+  isCanUnarchive: boolean;
   isCanDelete: boolean;
-  isCanViewPublic: boolean;
   isCanAddMembers: boolean;
   isCanRemoveMembers: boolean;
+  isCanViewPublic: boolean;
   isCanCreateGuestUser: boolean;
 };
 
