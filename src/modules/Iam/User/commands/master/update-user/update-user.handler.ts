@@ -7,7 +7,6 @@ import { File } from '@entities/main/file.entity';
 import { FileStatusEnum } from '@modules/Global/enum/file-status.enum';
 import { UserRepository } from '../../../repositories/user.repository';
 import { UserService } from '../../../services/user.service';
-import { conflictFromUserUniqueViolation } from '../../../utils/user-unique-conflict';
 import { UpdateUserCommand } from './update-user.command';
 
 @CommandHandler(UpdateUserCommand)
@@ -118,8 +117,8 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
         );
       }
 
-      // Map 23505 by constraint: user_roles has its own unique index (see helper).
-      const conflict = conflictFromUserUniqueViolation(error);
+      // Map 23505 by constraint: user_roles has its own unique index (see UserService.conflictFromUniqueViolation).
+      const conflict = this.userService.conflictFromUniqueViolation(error);
       if (conflict) {
         throw conflict;
       }
