@@ -10,6 +10,7 @@ import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { LoginHandler } from './commands/login/login.handler';
 import { SwitchRoleHandler } from './commands/switch-role/switch-role.handler';
+import { RequestDmHandler } from './commands/request-dm/request-dm.handler';
 import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 import { UpdatePasswordHandler } from './commands/update-password/update-password.handler';
 import { GetMeHandler } from './queries/get-me/get-me.handler';
@@ -19,6 +20,7 @@ import { PaginateMyPointsHandler } from './queries/paginate-my-points/paginate-m
 const commandHandlers = [
   LoginHandler,
   SwitchRoleHandler,
+  RequestDmHandler,
   UpdateProfileHandler,
   UpdatePasswordHandler,
 ];
