@@ -23,6 +23,7 @@ export type AddUserExperiencePointsParams = {
   direction?: UserExpLogDirectionEnum;
   amount: number;
   description?: string;
+  includeSoftDeleted?: boolean;
 };
 
 export type AddUserPointsParams = {
@@ -38,6 +39,7 @@ export type AddManyUserExperiencePointsParams = {
   direction?: UserExpLogDirectionEnum;
   amount: number;
   description?: string;
+  includeSoftDeleted?: boolean;
 };
 
 export type AddManyUserPointsParams = {
@@ -72,6 +74,7 @@ export class UserBalanceService {
           direction,
           amount: params.amount,
           description: params.description,
+          includeSoftDeleted: params.includeSoftDeleted,
         }),
       );
     } catch (error) {
@@ -280,11 +283,13 @@ export class UserBalanceService {
   private lockLiveUsers(
     userRepo: Repository<User>,
     userIds: string[],
+    includeSoftDeleted = false,
   ): Promise<User[]> {
     return userRepo.find({
       where: { id: In(userIds) },
       lock: { mode: 'pessimistic_write' },
       order: { id: 'ASC' },
+      ...(includeSoftDeleted ? { withDeleted: true } : {}),
     });
   }
 
@@ -313,7 +318,11 @@ export class UserBalanceService {
     const logRepo = manager.getRepository(UserExpLog);
     const { userIds } = params;
 
-    const users = await this.lockLiveUsers(userRepo, userIds);
+    const users = await this.lockLiveUsers(
+      userRepo,
+      userIds,
+      params.includeSoftDeleted === true,
+    );
     const found = new Set(users.map((user) => user.id));
     const missing = userIds.filter((userId) => !found.has(userId));
     if (missing.length) {
@@ -338,7 +347,8 @@ export class UserBalanceService {
     }
 
     // increment() does not set updatedAt, and TypeORM adds deleted_at IS NULL only on selects.
-    // One UPDATE keeps the change atomic and skips soft-deleted users.
+    // One UPDATE keeps the change atomic. Soft-deleted users are skipped unless
+    // includeSoftDeleted is set (Story DM reward for a soft-deleted creator).
     const update = userRepo
       .createQueryBuilder()
       .update(User)
@@ -347,8 +357,10 @@ export class UserBalanceService {
         updatedAt: () => 'now()',
       })
       .where('id IN (:...ids)', { ids: userIds })
-      .andWhere('deleted_at IS NULL')
       .setParameter('amount', params.amount);
+    if (params.includeSoftDeleted !== true) {
+      update.andWhere('deleted_at IS NULL');
+    }
 
     if (isDecrement) {
       update.andWhere(`"${expColumn}" >= :amount`);

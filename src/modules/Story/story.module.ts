@@ -51,6 +51,7 @@ import { SetStoryCommentReactionHandler } from './commands/story-comment/set-sto
 import { RemoveStoryCommentReactionHandler } from './commands/story-comment/remove-story-comment-reaction/remove-story-comment-reaction.handler';
 import { PaginateStoryCommentsHandler } from './queries/paginate-story-comments/paginate-story-comments.handler';
 import { PaginateStoryCommentRepliesHandler } from './queries/paginate-story-comment-replies/paginate-story-comment-replies.handler';
+import { PaginateStoryCommentReactionsHandler } from './queries/paginate-story-comment-reactions/paginate-story-comment-reactions.handler';
 import { PaginateAvailableStoryUsersHandler } from './queries/master/paginate-available-story-users/paginate-available-story-users.handler';
 
 const commandHandlers = [
@@ -89,6 +90,7 @@ const queryHandlers = [
   BoardPaginateStoryMembersHandler,
   PaginateStoryCommentsHandler,
   PaginateStoryCommentRepliesHandler,
+  PaginateStoryCommentReactionsHandler,
 ];
 
 @Module({

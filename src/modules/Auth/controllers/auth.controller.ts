@@ -12,11 +12,14 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import * as wrapper from '@shared/utils/wrapper';
 import { Public } from '@shared/decorators/public.decorator';
+import { Permissions } from '@shared/decorators/permissions.decorator';
+import { PermissionEnum } from '@shared/enums/permission.enum';
 import type { TRequestUser } from '@shared/types/request.type';
 import { LoginCommand } from '../commands/login/login.command';
 import { LoginInput } from '../commands/login/login.input';
 import { SwitchRoleCommand } from '../commands/switch-role/switch-role.command';
 import { SwitchRoleInput } from '../commands/switch-role/switch-role.input';
+import { RequestDmCommand } from '../commands/request-dm/request-dm.command';
 import { UpdateProfileCommand } from '../commands/update-profile/update-profile.command';
 import { UpdateProfileInput } from '../commands/update-profile/update-profile.input';
 import { UpdatePasswordCommand } from '../commands/update-password/update-password.command';
@@ -60,6 +63,19 @@ export class AuthController {
     return wrapper.response({
       data: output,
       message: 'Role switched successfully',
+    });
+  }
+
+  @Post('me/request-dm')
+  @Permissions([PermissionEnum.PLAYER_BOARD_VIEW])
+  @HttpCode(HttpStatus.OK)
+  async requestDm(@Request() request: TRequestUser) {
+    const output = await this.commandBus.execute(
+      new RequestDmCommand(request.user, request.token),
+    );
+    return wrapper.response({
+      data: output,
+      message: 'Dungeon Master role assigned successfully',
     });
   }
 

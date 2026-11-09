@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { Story } from '@entities/main/story/story.entity';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
@@ -31,9 +31,11 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
   async execute(command: CompleteStoryCommand): Promise<void> {
     const { id, params, user } = command;
 
+    // withDeleted keeps a soft-deleted creator on the row for DM EXP rules.
     const story = await this.storyRepository.findOne({
-      where: { id },
+      where: { id, deletedAt: IsNull() },
       relations: { createdBy: true },
+      withDeleted: true,
     });
     if (!story) {
       throw new NotFoundException(`Story with id ${id} not found`);
@@ -62,9 +64,13 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
 
     await this.dataSource.transaction(async (manager) => {
       const storyMemberRepo = manager.getRepository(StoryMember);
+      // withDeleted keeps soft-deleted users on active memberships; without it
+      // member.user is undefined and status/reward loops throw. Soft-deleted
+      // memberships stay excluded via deletedAt IS NULL.
       const members = await storyMemberRepo.find({
-        where: { story: { id } },
+        where: { story: { id }, deletedAt: IsNull() },
         relations: { user: true },
+        withDeleted: true,
       });
 
       const memberUserIds = new Set(members.map((member) => member.user.id));
@@ -132,6 +138,8 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
             type: UserExpLogTypeEnum.DM,
             amount: STORY_DM_EXP_REWARD,
             description: `DM reward for story ${story.title}`,
+            // Soft-deleted creators still receive DM EXP (rule unchanged).
+            includeSoftDeleted: true,
           },
           manager,
         );
