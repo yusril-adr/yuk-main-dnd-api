@@ -12,6 +12,14 @@ export const USERS_EMAIL_UNIQUE_INDEX = 'UQ_users_email_not_null';
 export const USER_ROLES_UNIQUE_INDEX = 'UQ_user_roles_user_role';
 
 /**
+ * One-to-one unique constraint on users.avatar_file_id
+ * (migration AddAvatarFileColumn1790311336363). Hit when two users race to
+ * claim the same avatar file, which would otherwise surface as the email message.
+ */
+export const USERS_AVATAR_FILE_UNIQUE_CONSTRAINT =
+  'UQ_65eb1fa7df7811daaec973798ce';
+
+/**
  * Map a Postgres unique violation (23505) from a user write to a ConflictException.
  *
  * Why: create/update-user transactions also write user_roles, which has its own
@@ -44,6 +52,13 @@ export function conflictFromUserUniqueViolation(
 
   if (/\(username\)=/i.test(detail)) {
     return new ConflictException('A user with this username already exists');
+  }
+
+  if (
+    constraint === USERS_AVATAR_FILE_UNIQUE_CONSTRAINT ||
+    /\(avatar_file_id\)=/i.test(detail)
+  ) {
+    return new ConflictException('Avatar file is already used by another user');
   }
 
   if (constraint === USER_ROLES_UNIQUE_INDEX) {
