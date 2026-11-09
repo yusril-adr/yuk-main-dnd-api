@@ -15,6 +15,7 @@ import { UserPointLog } from './user-point-log.entity';
 import { StoryMember } from '../story/story-member.entity';
 import { EventMember } from '../event/event-member.entity';
 
+@Index('IDX_users_is_guest', ['isGuest'])
 @Index('UQ_users_email_active', ['email'], {
   unique: true,
   where: '"email" IS NOT NULL AND "deleted_at" IS NULL',
@@ -61,11 +62,17 @@ export class User extends BaseEntity {
   avatarFile?: File | null;
 
   @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'created_by' })
+  @JoinColumn({
+    name: 'created_by',
+    foreignKeyConstraintName: 'FK_users_created_by',
+  })
   createdBy?: User | null;
 
   @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'merged_into_user_id' })
+  @JoinColumn({
+    name: 'merged_into_user_id',
+    foreignKeyConstraintName: 'FK_users_merged_into_user_id',
+  })
   mergedIntoUser?: User | null;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
