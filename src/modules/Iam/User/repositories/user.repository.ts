@@ -18,7 +18,9 @@ export class UserRepository extends Repository<User> {
     );
 
     if (notFoundUserIds.length) {
-      throw new NotFoundException(`User with id ${notFoundUserIds} not found`);
+      throw new NotFoundException(
+        `User with id ${notFoundUserIds.join(', ')} not found`,
+      );
     }
 
     return userDatas;

@@ -103,7 +103,7 @@ export class EventService {
 
     if (file.status !== expectedStatus) {
       throw new ConflictException(
-        `File with id ${bannerFileId} must be ${expectedStatus}`,
+        `File with id ${bannerFileId} must be ${FileStatusEnum[expectedStatus]}`,
       );
     }
 

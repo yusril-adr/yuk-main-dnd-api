@@ -56,7 +56,7 @@ export class AddEventMembersHandler implements ICommandHandler<AddEventMembersCo
       if (activeMembers.length) {
         const activeMemberIds = activeMembers.map((member) => member.user.id);
         throw new ConflictException(
-          `User with id ${activeMemberIds} is already a member of this event`,
+          `User with id ${activeMemberIds.join(', ')} is already a member of this event`,
         );
       }
 

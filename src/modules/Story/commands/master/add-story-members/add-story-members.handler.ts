@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource, IsNull } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { StoryMember } from '@entities/main/story/story-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
 import { StoryMemberStatusEnum } from '../../../enums/story-member-status.enum';
@@ -45,7 +45,6 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
         where: uniqueUserIds.map((userId) => ({
           story: { id },
           user: { id: userId },
-          deletedAt: IsNull(),
         })),
         relations: { user: true },
         withDeleted: true,
@@ -57,7 +56,7 @@ export class AddStoryMembersHandler implements ICommandHandler<AddStoryMembersCo
       if (activeMembers.length) {
         const activeMemberIds = activeMembers.map((member) => member.user.id);
         throw new ConflictException(
-          `User with id ${activeMemberIds} is already a member of this story`,
+          `User with id ${activeMemberIds.join(', ')} is already a member of this story`,
         );
       }
 

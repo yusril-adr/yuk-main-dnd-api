@@ -73,7 +73,7 @@ export class CompleteStoryHandler implements ICommandHandler<CompleteStoryComman
       );
       if (missingIds.length) {
         throw new NotFoundException(
-          `User with id ${missingIds} is not a member of this story`,
+          `User with id ${missingIds.join(', ')} is not a member of this story`,
         );
       }
 
