@@ -1,15 +1,22 @@
 import type { TEvent } from '@entities/main/event/event.entity';
 import { EventEntityDto } from '@shared/dtos/entities/event/event.entity.dto';
 
-import type { TEventMasterActionList } from '../paginate-events/paginate-events.output';
+export type TEventMasterDetailActionList = {
+  isCanUpdate: boolean;
+  isCanDelete: boolean;
+  isCanViewPublic: boolean;
+  isCanAddMembers: boolean;
+  isCanRemoveMembers: boolean;
+  isCanCreateGuestUser: boolean;
+};
 
 export class FindOneEventOutput extends EventEntityDto {
   statusBefore: number | null;
-  actionList: TEventMasterActionList;
+  actionList: TEventMasterDetailActionList;
 
   constructor(
     payload: TEvent,
-    actionList: TEventMasterActionList,
+    actionList: TEventMasterDetailActionList,
     bannerUrl: string | null,
     avatarCreatorUrl: string | null,
   ) {

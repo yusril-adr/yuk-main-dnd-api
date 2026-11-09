@@ -36,4 +36,29 @@ export class EventMasterActionService {
   isCanViewPublic(event: EventEntity): boolean {
     return this.eventService.isCanViewPublic(event);
   }
+  isCanCreateGuestUser(user: TJWTPayload): boolean {
+    return user.permissions?.includes(PermissionEnum.GUESTS_CREATE) ?? false;
+  }
+  isCanAddMembers(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) &&
+      !this.eventService.isCancelledEvent(event) &&
+      event.status !== EventStatusEnum.COMPLETED
+    );
+  }
+  isCanRemoveMembers(event: EventEntity, user: TJWTPayload): boolean {
+    return (
+      this.permissionService.canModify(
+        event,
+        user,
+        PermissionEnum.EVENTS_UPDATE,
+      ) &&
+      !this.eventService.isCancelledEvent(event) &&
+      event.status !== EventStatusEnum.COMPLETED
+    );
+  }
 }

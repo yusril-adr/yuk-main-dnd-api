@@ -22,9 +22,17 @@ import { CreateEventInput } from '../commands/master/create-event/create-event.i
 import { UpdateEventCommand } from '../commands/master/update-event/update-event.command';
 import { UpdateEventInput } from '../commands/master/update-event/update-event.input';
 import { RemoveEventCommand } from '../commands/master/remove-event/remove-event.command';
+import { AddEventMembersCommand } from '../commands/master/add-event-members/add-event-members.command';
+import { AddEventMembersInput } from '../commands/master/add-event-members/add-event-members.input';
+import { RemoveEventMembersCommand } from '../commands/master/remove-event-members/remove-event-members.command';
+import { RemoveEventMembersInput } from '../commands/master/remove-event-members/remove-event-members.input';
 import { PaginateEventsQuery } from '../queries/master/paginate-events/paginate-events.query';
 import { PaginateEventsInput } from '../queries/master/paginate-events/paginate-events.input';
 import { FindOneEventQuery } from '../queries/master/find-one-event/find-one-event.query';
+import { PaginateEventMembersQuery } from '../queries/master/paginate-event-members/paginate-event-members.query';
+import { PaginateEventMembersInput } from '../queries/master/paginate-event-members/paginate-event-members.input';
+import { PaginateAvailableEventUsersQuery } from '../queries/master/paginate-available-event-users/paginate-available-event-users.query';
+import { PaginateAvailableEventUsersInput } from '../queries/master/paginate-available-event-users/paginate-available-event-users.input';
 
 @Controller({ path: 'master/events', version: '1' })
 export class MasterEventController {
@@ -90,6 +98,70 @@ export class MasterEventController {
     return wrapper.response({
       data: null,
       message: 'Event updated successfully',
+    });
+  }
+  @Post(':id/members')
+  @HttpCode(HttpStatus.CREATED)
+  async addMembers(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() payload: AddEventMembersInput,
+  ) {
+    await this.commandBus.execute(
+      new AddEventMembersCommand(id, payload, request.user),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.CREATED,
+      data: null,
+      message: 'Event members added successfully',
+    });
+  }
+  @Delete(':id/members')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeMembers(
+    @Request() request: TRequestUser,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() payload: RemoveEventMembersInput,
+  ) {
+    await this.commandBus.execute(
+      new RemoveEventMembersCommand(id, payload, request.user),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.NO_CONTENT,
+      data: null,
+      message: 'Event members removed successfully',
+    });
+  }
+  @Get(':id/members')
+  @Permissions([PermissionEnum.EVENTS_VIEW])
+  async paginateMembers(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Query() query: PaginateEventMembersInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateEventMembersQuery(id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Event members retrieved successfully',
+    });
+  }
+  @Get(':id/available-users')
+  @Permissions([PermissionEnum.EVENTS_VIEW])
+  async paginateAvailableUsers(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Query() query: PaginateAvailableEventUsersInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateAvailableEventUsersQuery(id, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Available event users retrieved successfully',
     });
   }
   @Delete(':id')

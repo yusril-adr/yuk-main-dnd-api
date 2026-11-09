@@ -4,8 +4,10 @@ import { EventRepository } from '../../../repositories/event.repository';
 import { EventService } from '../../../services/event.service';
 import { EventMasterActionService } from '../../../services/event-master-action.service';
 import { FindOneEventQuery } from './find-one-event.query';
-import { FindOneEventOutput } from './find-one-event.output';
-import type { TEventMasterActionList } from '../paginate-events/paginate-events.output';
+import {
+  FindOneEventOutput,
+  TEventMasterDetailActionList,
+} from './find-one-event.output';
 
 @QueryHandler(FindOneEventQuery)
 export class FindOneEventHandler implements IQueryHandler<
@@ -29,10 +31,20 @@ export class FindOneEventHandler implements IQueryHandler<
       throw new NotFoundException(`Event with id ${id} not found`);
     }
 
-    const actionList: TEventMasterActionList = {
+    const actionList: TEventMasterDetailActionList = {
       isCanUpdate: this.eventMasterActionService.isCanUpdate(event, user),
       isCanDelete: this.eventMasterActionService.isCanDelete(event, user),
       isCanViewPublic: this.eventMasterActionService.isCanViewPublic(event),
+      isCanAddMembers: this.eventMasterActionService.isCanAddMembers(
+        event,
+        user,
+      ),
+      isCanRemoveMembers: this.eventMasterActionService.isCanRemoveMembers(
+        event,
+        user,
+      ),
+      isCanCreateGuestUser:
+        this.eventMasterActionService.isCanCreateGuestUser(user),
     };
 
     return new FindOneEventOutput(

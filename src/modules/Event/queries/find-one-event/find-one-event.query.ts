@@ -1,3 +1,8 @@
+import type { TJWTPayload } from '@shared/types/jwt-payload.type';
+
 export class FindOneEventQuery {
-  constructor(public readonly identifier: string) {}
+  constructor(
+    public readonly identifier: string,
+    public readonly user: TJWTPayload | null,
+  ) {}
 }
