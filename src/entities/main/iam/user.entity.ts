@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -14,12 +15,17 @@ import { UserPointLog } from './user-point-log.entity';
 import { StoryMember } from '../story/story-member.entity';
 import { EventMember } from '../event/event-member.entity';
 
+@Index('UQ_users_email_active', ['email'], {
+  unique: true,
+  where: '"email" IS NOT NULL AND "deleted_at" IS NULL',
+})
+// Expression index LOWER(username); owned by migration (TypeORM cannot express it).
+@Index('UQ_users_username_active', { synchronize: false })
 @Entity()
 export class User extends BaseEntity {
   @Column({ length: 50, nullable: true })
   username?: string;
 
-  // Unique when not null via partial index UQ_users_email_not_null (migration).
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string | null;
 

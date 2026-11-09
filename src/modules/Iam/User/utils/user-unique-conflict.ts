@@ -2,8 +2,17 @@ import { ConflictException } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { isPostgresUniqueViolation } from '@shared/utils/postgres-error';
 
-/** Partial unique index on users.email (NULL emails allowed for guests). */
-export const USERS_EMAIL_UNIQUE_INDEX = 'UQ_users_email_not_null';
+/**
+ * Partial unique index on active users.email (NULL emails allowed for guests).
+ * Soft-deleted rows are excluded so their email can be re-registered.
+ */
+export const USERS_EMAIL_UNIQUE_INDEX = 'UQ_users_email_active';
+
+/**
+ * Expression unique index on LOWER(username) for active users.
+ * Soft-deleted rows are excluded so their username can be re-registered.
+ */
+export const USERS_USERNAME_UNIQUE_INDEX = 'UQ_users_username_active';
 
 /**
  * Partial unique index on active user_roles (user_id, role_id).
@@ -28,9 +37,10 @@ export const USERS_AVATAR_FILE_UNIQUE_CONSTRAINT =
  * 23505 on that index. Mapping every 23505 to the email message would mislead,
  * so we map by constraint/index name (and detail column as a fallback).
  *
- * Username has no DB unique index today (app-level check only); the detail
- * fallback still covers a future index or a Key (username)=... detail.
- * Unmapped unique violations return undefined so the caller can rethrow.
+ * Email and username uniques only cover active (non-soft-deleted) users, matching
+ * the app-level checks which ignore soft-deleted rows. Soft-deleted email/username
+ * can therefore be reused. Unmapped unique violations return undefined so the
+ * caller can rethrow.
  */
 export function conflictFromUserUniqueViolation(
   error: unknown,
@@ -50,7 +60,11 @@ export function conflictFromUserUniqueViolation(
     return new ConflictException('A user with this email already exists');
   }
 
-  if (/\(username\)=/i.test(detail)) {
+  if (
+    constraint === USERS_USERNAME_UNIQUE_INDEX ||
+    /\(username\)=/i.test(detail) ||
+    /\(lower\s*\(/i.test(detail)
+  ) {
     return new ConflictException('A user with this username already exists');
   }
 
