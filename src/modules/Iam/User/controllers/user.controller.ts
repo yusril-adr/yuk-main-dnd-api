@@ -13,6 +13,8 @@ import { PaginateUserStoriesQuery } from '@modules/Story/queries/paginate-user-s
 import { PaginateUserStoriesInput } from '@modules/Story/queries/paginate-user-stories/paginate-user-stories.input';
 import { PaginateUserJoinedStoriesQuery } from '@modules/Story/queries/paginate-user-joined-stories/paginate-user-joined-stories.query';
 import { PaginateUserJoinedStoriesInput } from '@modules/Story/queries/paginate-user-joined-stories/paginate-user-joined-stories.input';
+import { PaginateUserJoinedEventsQuery } from '@modules/Event/queries/paginate-user-joined-events/paginate-user-joined-events.query';
+import { PaginateUserJoinedEventsInput } from '@modules/Event/queries/paginate-user-joined-events/paginate-user-joined-events.input';
 
 @Controller({
   path: 'users',
@@ -88,6 +90,23 @@ export class UserController {
       count: output.count,
       query,
       message: 'Stories retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/joined-events')
+  @Public()
+  async paginateJoinedEvents(
+    @Param('identifier') identifier: string,
+    @Query() query: PaginateUserJoinedEventsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateUserJoinedEventsQuery(identifier, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Events retrieved successfully',
     });
   }
 
