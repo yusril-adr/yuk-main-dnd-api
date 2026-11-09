@@ -75,12 +75,15 @@ export class UserService {
     const roleRepository = manager.getRepository(Role);
     const userRoleRepository = manager.getRepository(UserRole);
 
+    // Deduplicate so create/update with repeated role_ids cannot insert twice.
+    const uniqueRoleIds = [...new Set(roleIds)];
+
     const roles = await roleRepository.find({
-      where: roleIds.map((id) => ({ id })),
+      where: uniqueRoleIds.map((id) => ({ id })),
     });
 
     const foundIds = new Set(roles.map((role) => role.id));
-    const missingIds = roleIds.filter((id) => !foundIds.has(id));
+    const missingIds = uniqueRoleIds.filter((id) => !foundIds.has(id));
     if (missingIds.length) {
       throw new NotFoundException(
         `Role with id ${missingIds.join(', ')} not found`,

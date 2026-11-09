@@ -14,6 +14,7 @@ import { User } from '@entities/main/iam/user.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { LoginInput } from '../commands/login/login.input';
 import { LoginOutput } from '../commands/login/login.output';
+import { PermissionEnum } from '@shared/enums/permission.enum';
 import { GetMeOutput } from '../queries/get-me/get-me.output';
 
 @Injectable()
@@ -118,11 +119,19 @@ export class AuthService {
     if (user.avatarFile) {
       avatarUrl = this.storageService.getPublicUrlSync(user.avatarFile);
     }
+    const availableRoles = this.getAvailableRoles(user);
+    const actionList = {
+      isCanRequestDm:
+        user.isGuest !== true &&
+        permissions.includes(PermissionEnum.PLAYER_BOARD_VIEW) &&
+        !availableRoles.includes('dungeon-master'),
+    };
     return new GetMeOutput({
       user,
       selectedRole: decoded.selectedRole,
       permissions,
       avatarUrl,
+      actionList,
     });
   }
 

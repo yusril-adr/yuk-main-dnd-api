@@ -2,15 +2,21 @@ import { User } from '@entities/main/iam/user.entity';
 import { RoleEntityDto } from '@shared/dtos/entities/iam/role.entity.dto';
 import { UserEntityDto } from '@shared/dtos/entities/iam/user.entity.dto';
 
+export type TGetMeActionList = {
+  isCanRequestDm: boolean;
+};
+
 export class GetMeOutput extends UserEntityDto {
   selectedRole: RoleEntityDto | null;
   permissions: string[];
+  actionList: TGetMeActionList;
 
   constructor(payload: {
     user: User;
     selectedRole: string | null;
     permissions: string[];
     avatarUrl?: string;
+    actionList: TGetMeActionList;
   }) {
     super();
     this.parseEntity(payload.user);
@@ -19,5 +25,6 @@ export class GetMeOutput extends UserEntityDto {
       : null;
     this.permissions = payload.permissions;
     this.avatarUrl = payload.avatarUrl;
+    this.actionList = payload.actionList;
   }
 }
