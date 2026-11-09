@@ -20,6 +20,8 @@ import { PaginateStoryCommentsQuery } from '../queries/paginate-story-comments/p
 import { PaginateStoryCommentsInput } from '../queries/paginate-story-comments/paginate-story-comments.input';
 import { PaginateStoryCommentRepliesQuery } from '../queries/paginate-story-comment-replies/paginate-story-comment-replies.query';
 import { PaginateStoryCommentRepliesInput } from '../queries/paginate-story-comment-replies/paginate-story-comment-replies.input';
+import { PaginateStoryCommentReactionsQuery } from '../queries/paginate-story-comment-reactions/paginate-story-comment-reactions.query';
+import { PaginateStoryCommentReactionsInput } from '../queries/paginate-story-comment-reactions/paginate-story-comment-reactions.input';
 import { CreateStoryCommentCommand } from '../commands/story-comment/create-story-comment/create-story-comment.command';
 import { CreateStoryCommentInput } from '../commands/story-comment/create-story-comment/create-story-comment.input';
 import { UpdateStoryCommentCommand } from '../commands/story-comment/update-story-comment/update-story-comment.command';
@@ -80,6 +82,24 @@ export class StoryCommentController {
       count: output.count,
       query,
       message: 'Story comment replies retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/comments/:commentId/reactions')
+  @Public()
+  async paginateReactions(
+    @Param('identifier') identifier: string,
+    @Param('commentId') commentId: string,
+    @Query() query: PaginateStoryCommentReactionsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateStoryCommentReactionsQuery(identifier, commentId, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Story comment reactions retrieved successfully',
     });
   }
 
