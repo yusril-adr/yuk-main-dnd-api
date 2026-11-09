@@ -68,8 +68,7 @@ export class RequestDmHandler implements ICommandHandler<
         ]);
       });
     } catch (error) {
-      // user_roles has no unique (user_id, role_id) constraint today; keep this
-      // mapping so a future unique index still returns 409 instead of 500.
+      // Concurrent request-dm races hit UQ_user_roles_user_role (23505).
       if (isPostgresUniqueViolation(error)) {
         throw new ConflictException('User already has the dungeon-master role');
       }
