@@ -50,7 +50,13 @@ export class PaginateStoryCommentReactionsHandler implements IQueryHandler<
       .createQueryBuilder('reaction')
       .withDeleted()
       .innerJoinAndSelect('reaction.user', 'user')
-      .leftJoinAndSelect('user.avatarFile', 'avatarFile')
+      // withDeleted above would also load soft-deleted avatar files; keep only live ones
+      // (same effective result as member-list find() joins that exclude deleted files).
+      .leftJoinAndSelect(
+        'user.avatarFile',
+        'avatarFile',
+        'avatarFile.deleted_at IS NULL',
+      )
       .where('reaction.comment_id = :commentId', { commentId: comment.id })
       .orderBy('reaction.createdAt', 'DESC')
       .addOrderBy('reaction.id', 'ASC')
