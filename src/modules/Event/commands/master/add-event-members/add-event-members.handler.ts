@@ -7,6 +7,7 @@ import {
 import { DataSource } from 'typeorm';
 import { EventMember } from '@entities/main/event/event-member.entity';
 import { UserRepository } from '@modules/Iam/User/repositories/user.repository';
+import { isPostgresUniqueViolation } from '@shared/utils/postgres-error';
 import { EventMemberStatusEnum } from '../../../enums/event-member-status.enum';
 import { EventRepository } from '../../../repositories/event.repository';
 import { EventMasterActionService } from '../../../services/event-master-action.service';
@@ -39,53 +40,62 @@ export class AddEventMembersHandler implements ICommandHandler<AddEventMembersCo
     const uniqueUserIds = [...new Set(params.userIds)];
     await this.userRepository.findAndValidateUserByIds(uniqueUserIds);
 
-    await this.dataSource.transaction(async (manager) => {
-      const eventMemberRepo = manager.getRepository(EventMember);
-      const existingMembers = await eventMemberRepo.find({
-        where: uniqueUserIds.map((userId) => ({
-          event: { id },
-          user: { id: userId },
-        })),
-        relations: { user: true },
-        withDeleted: true,
-      });
-
-      const activeMembers = existingMembers.filter(
-        (member) => member.deletedAt == null,
-      );
-      if (activeMembers.length) {
-        const activeMemberIds = activeMembers.map((member) => member.user.id);
-        throw new ConflictException(
-          `User with id ${activeMemberIds.join(', ')} is already a member of this event`,
-        );
-      }
-
-      const softDeletedMembers = existingMembers.filter(
-        (member) => member.deletedAt != null,
-      );
-      if (softDeletedMembers.length) {
-        for (const member of softDeletedMembers) {
-          member.status = EventMemberStatusEnum.REGISTERED;
-        }
-        await eventMemberRepo.recover(softDeletedMembers);
-        await eventMemberRepo.save(softDeletedMembers);
-      }
-
-      const existingUserIds = new Set(
-        existingMembers.map((member) => member.user.id),
-      );
-      const newMembers = uniqueUserIds
-        .filter((userId) => !existingUserIds.has(userId))
-        .map((userId) =>
-          eventMemberRepo.create({
+    try {
+      await this.dataSource.transaction(async (manager) => {
+        const eventMemberRepo = manager.getRepository(EventMember);
+        const existingMembers = await eventMemberRepo.find({
+          where: uniqueUserIds.map((userId) => ({
             event: { id },
             user: { id: userId },
-            status: EventMemberStatusEnum.REGISTERED,
-          }),
+          })),
+          relations: { user: true },
+          withDeleted: true,
+        });
+
+        const activeMembers = existingMembers.filter(
+          (member) => member.deletedAt == null,
         );
-      if (newMembers.length) {
-        await eventMemberRepo.save(newMembers);
+        if (activeMembers.length) {
+          const activeMemberIds = activeMembers.map((member) => member.user.id);
+          throw new ConflictException(
+            `User with id ${activeMemberIds.join(', ')} is already a member of this event`,
+          );
+        }
+
+        const softDeletedMembers = existingMembers.filter(
+          (member) => member.deletedAt != null,
+        );
+        if (softDeletedMembers.length) {
+          for (const member of softDeletedMembers) {
+            member.status = EventMemberStatusEnum.REGISTERED;
+          }
+          await eventMemberRepo.recover(softDeletedMembers);
+          await eventMemberRepo.save(softDeletedMembers);
+        }
+
+        const existingUserIds = new Set(
+          existingMembers.map((member) => member.user.id),
+        );
+        const newMembers = uniqueUserIds
+          .filter((userId) => !existingUserIds.has(userId))
+          .map((userId) =>
+            eventMemberRepo.create({
+              event: { id },
+              user: { id: userId },
+              status: EventMemberStatusEnum.REGISTERED,
+            }),
+          );
+        if (newMembers.length) {
+          await eventMemberRepo.save(newMembers);
+        }
+      });
+    } catch (error) {
+      if (isPostgresUniqueViolation(error)) {
+        throw new ConflictException(
+          `User with id ${uniqueUserIds.join(', ')} is already a member of this event`,
+        );
       }
-    });
+      throw error;
+    }
   }
 }
