@@ -5,6 +5,7 @@ import { EventEntity } from '@entities/main/event/event.entity';
 import { EventMember } from '@entities/main/event/event-member.entity';
 import { File } from '@entities/main/file.entity';
 import { UserModule } from '@modules/Iam/User/user.module';
+import { BoardEventController } from './controllers/board-event.controller';
 import { EventController } from './controllers/event.controller';
 import { MasterEventController } from './controllers/master-event.controller';
 import { EventRepository } from './repositories/event.repository';
@@ -31,6 +32,9 @@ import { PaginateEventsHandler as PublicPaginateEventsHandler } from './queries/
 import { FindOneEventHandler as PublicFindOneEventHandler } from './queries/find-one-event/find-one-event.handler';
 import { PaginateEventMembersHandler as PublicPaginateEventMembersHandler } from './queries/paginate-event-members/paginate-event-members.handler';
 import { PaginateUserJoinedEventsHandler } from './queries/paginate-user-joined-events/paginate-user-joined-events.handler';
+import { PaginateEventsHandler as BoardPaginateEventsHandler } from './queries/board/paginate-events/paginate-events.handler';
+import { FindOneEventHandler as BoardFindOneEventHandler } from './queries/board/find-one-event/find-one-event.handler';
+import { PaginateEventMembersHandler as BoardPaginateEventMembersHandler } from './queries/board/paginate-event-members/paginate-event-members.handler';
 
 const commandHandlers = [
   CreateEventHandler,
@@ -55,6 +59,9 @@ const queryHandlers = [
   PublicFindOneEventHandler,
   PublicPaginateEventMembersHandler,
   PaginateUserJoinedEventsHandler,
+  BoardPaginateEventsHandler,
+  BoardFindOneEventHandler,
+  BoardPaginateEventMembersHandler,
 ];
 
 @Module({
@@ -63,7 +70,7 @@ const queryHandlers = [
     UserModule,
     CqrsModule,
   ],
-  controllers: [EventController, MasterEventController],
+  controllers: [EventController, MasterEventController, BoardEventController],
   providers: [
     EventRepository,
     EventService,
