@@ -71,7 +71,7 @@ The app listens on `APP_PORT` (default `8000`). The global prefix is `api` with 
 | `npm run start:dev`          | Dev server with hot reload               |
 | `npm run start`              | Start once                               |
 | `npm run start:debug`        | Dev server with the inspector            |
-| `npm run start:prod`         | Run `node dist/main` after a build       |
+| `npm run start:prod`         | Run `node dist/src/main` after a build   |
 | `npm run build`              | Compile with `nest build`                |
 | `npm run lint`               | ESLint with fix                          |
 | `npm run test`               | Jest                                     |
