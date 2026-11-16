@@ -3,4 +3,5 @@ export type TEventCommentActionList = {
   isCanDelete: boolean;
   isCanPin: boolean;
   isCanUnpin: boolean;
+  isCanReact: boolean;
 };

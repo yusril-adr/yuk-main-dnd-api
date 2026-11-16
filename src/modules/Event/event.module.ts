@@ -5,6 +5,7 @@ import { EventEntity } from '@entities/main/event/event.entity';
 import { EventMember } from '@entities/main/event/event-member.entity';
 import { File } from '@entities/main/file.entity';
 import { EventComment } from '@entities/main/event/event-comment.entity';
+import { EventCommentReaction } from '@entities/main/event/event-comment-reaction.entity';
 import { UserModule } from '@modules/Iam/User/user.module';
 import { BoardEventController } from './controllers/board-event.controller';
 import { EventController } from './controllers/event.controller';
@@ -17,13 +18,17 @@ import { EventMasterActionService } from './services/event-master-action.service
 import { EventCommentService } from './services/event-comment.service';
 import { EventCommentConfigService } from './services/event-comment-config.service';
 import { EventCommentActionService } from './services/event-comment-action.service';
+import { EventCommentReactionService } from './services/event-comment-reaction.service';
 import { CreateEventCommentHandler } from './commands/event-comment/create-event-comment/create-event-comment.handler';
 import { UpdateEventCommentHandler } from './commands/event-comment/update-event-comment/update-event-comment.handler';
 import { RemoveEventCommentHandler } from './commands/event-comment/remove-event-comment/remove-event-comment.handler';
 import { PinEventCommentHandler } from './commands/event-comment/pin-event-comment/pin-event-comment.handler';
 import { UnpinEventCommentHandler } from './commands/event-comment/unpin-event-comment/unpin-event-comment.handler';
+import { SetEventCommentReactionHandler } from './commands/event-comment/set-event-comment-reaction/set-event-comment-reaction.handler';
+import { RemoveEventCommentReactionHandler } from './commands/event-comment/remove-event-comment-reaction/remove-event-comment-reaction.handler';
 import { PaginateEventCommentsHandler } from './queries/paginate-event-comments/paginate-event-comments.handler';
 import { PaginateEventCommentRepliesHandler } from './queries/paginate-event-comment-replies/paginate-event-comment-replies.handler';
+import { PaginateEventCommentReactionsHandler } from './queries/paginate-event-comment-reactions/paginate-event-comment-reactions.handler';
 import { CreateEventHandler } from './commands/master/create-event/create-event.handler';
 import { UpdateEventHandler } from './commands/master/update-event/update-event.handler';
 import { RemoveEventHandler } from './commands/master/remove-event/remove-event.handler';
@@ -66,6 +71,8 @@ const commandHandlers = [
   RemoveEventCommentHandler,
   PinEventCommentHandler,
   UnpinEventCommentHandler,
+  SetEventCommentReactionHandler,
+  RemoveEventCommentReactionHandler,
 ];
 const queryHandlers = [
   PaginateEventsHandler,
@@ -81,11 +88,18 @@ const queryHandlers = [
   BoardPaginateEventMembersHandler,
   PaginateEventCommentsHandler,
   PaginateEventCommentRepliesHandler,
+  PaginateEventCommentReactionsHandler,
 ];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([EventEntity, EventMember, File, EventComment]),
+    TypeOrmModule.forFeature([
+      EventEntity,
+      EventMember,
+      File,
+      EventComment,
+      EventCommentReaction,
+    ]),
     UserModule,
     CqrsModule,
   ],
@@ -103,6 +117,7 @@ const queryHandlers = [
     EventCommentService,
     EventCommentConfigService,
     EventCommentActionService,
+    EventCommentReactionService,
     ...commandHandlers,
     ...queryHandlers,
   ],

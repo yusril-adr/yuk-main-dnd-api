@@ -18,6 +18,14 @@ export class EventCommentActionService {
     return user !== null && PUBLIC_EVENT_STATUSES.includes(event.status);
   }
 
+  isCanReact(
+    comment: EventComment,
+    event: Event,
+    user: TJWTPayload | null,
+  ): boolean {
+    return comment.deletedAt == null && this.isCanComment(event, user);
+  }
+
   isCanUpdate(comment: EventComment, user: TJWTPayload | null): boolean {
     return (
       user !== null && comment.deletedAt == null && comment.user?.id === user.id

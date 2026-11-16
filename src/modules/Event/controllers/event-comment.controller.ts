@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Request,
 } from '@nestjs/common';
@@ -19,6 +20,8 @@ import { PaginateEventCommentsQuery } from '../queries/paginate-event-comments/p
 import { PaginateEventCommentsInput } from '../queries/paginate-event-comments/paginate-event-comments.input';
 import { PaginateEventCommentRepliesQuery } from '../queries/paginate-event-comment-replies/paginate-event-comment-replies.query';
 import { PaginateEventCommentRepliesInput } from '../queries/paginate-event-comment-replies/paginate-event-comment-replies.input';
+import { PaginateEventCommentReactionsQuery } from '../queries/paginate-event-comment-reactions/paginate-event-comment-reactions.query';
+import { PaginateEventCommentReactionsInput } from '../queries/paginate-event-comment-reactions/paginate-event-comment-reactions.input';
 import { CreateEventCommentCommand } from '../commands/event-comment/create-event-comment/create-event-comment.command';
 import { CreateEventCommentInput } from '../commands/event-comment/create-event-comment/create-event-comment.input';
 import { UpdateEventCommentCommand } from '../commands/event-comment/update-event-comment/update-event-comment.command';
@@ -26,6 +29,9 @@ import { UpdateEventCommentInput } from '../commands/event-comment/update-event-
 import { RemoveEventCommentCommand } from '../commands/event-comment/remove-event-comment/remove-event-comment.command';
 import { PinEventCommentCommand } from '../commands/event-comment/pin-event-comment/pin-event-comment.command';
 import { UnpinEventCommentCommand } from '../commands/event-comment/unpin-event-comment/unpin-event-comment.command';
+import { SetEventCommentReactionCommand } from '../commands/event-comment/set-event-comment-reaction/set-event-comment-reaction.command';
+import { SetEventCommentReactionInput } from '../commands/event-comment/set-event-comment-reaction/set-event-comment-reaction.input';
+import { RemoveEventCommentReactionCommand } from '../commands/event-comment/remove-event-comment-reaction/remove-event-comment-reaction.command';
 
 @Controller({
   path: 'events',
@@ -76,6 +82,24 @@ export class EventCommentController {
       count: output.count,
       query,
       message: 'Event comment replies retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/comments/:commentId/reactions')
+  @Public()
+  async paginateReactions(
+    @Param('identifier') identifier: string,
+    @Param('commentId') commentId: string,
+    @Query() query: PaginateEventCommentReactionsInput,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateEventCommentReactionsQuery(identifier, commentId, query),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Event comment reactions retrieved successfully',
     });
   }
 
@@ -156,6 +180,39 @@ export class EventCommentController {
     return wrapper.response({
       data: null,
       message: 'Event comment unpinned successfully',
+    });
+  }
+
+  @Put(':id/comments/:commentId/reaction')
+  async setReaction(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Param('commentId') commentId: string,
+    @Body() payload: SetEventCommentReactionInput,
+  ) {
+    await this.commandBus.execute(
+      new SetEventCommentReactionCommand(id, commentId, payload, request.user),
+    );
+    return wrapper.response({
+      data: null,
+      message: 'Event comment reaction saved successfully',
+    });
+  }
+
+  @Delete(':id/comments/:commentId/reaction')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeReaction(
+    @Request() request: TRequestUser,
+    @Param('id') id: string,
+    @Param('commentId') commentId: string,
+  ) {
+    await this.commandBus.execute(
+      new RemoveEventCommentReactionCommand(id, commentId, request.user),
+    );
+    return wrapper.response({
+      statusCode: HttpStatus.NO_CONTENT,
+      data: null,
+      message: 'Event comment reaction removed successfully',
     });
   }
 }

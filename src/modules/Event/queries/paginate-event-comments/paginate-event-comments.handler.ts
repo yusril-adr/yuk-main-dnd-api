@@ -5,6 +5,7 @@ import { EventComment } from '@entities/main/event/event-comment.entity';
 import { StorageService } from '@modules/Global/services/storage.service';
 import { EventService } from '../../services/event.service';
 import { EventCommentActionService } from '../../services/event-comment-action.service';
+import { EventCommentReactionService } from '../../services/event-comment-reaction.service';
 import { PaginateEventCommentsQuery } from './paginate-event-comments.query';
 import { PaginateEventCommentsOutput } from './paginate-event-comments.output';
 import type { TEventCommentActionList } from '../../types/event-comment-action-list.type';
@@ -20,6 +21,7 @@ export class PaginateEventCommentsHandler implements IQueryHandler<
     private readonly eventCommentRepository: Repository<EventComment>,
     private readonly storageService: StorageService,
     private readonly eventCommentActionService: EventCommentActionService,
+    private readonly eventCommentReactionService: EventCommentReactionService,
   ) {}
 
   async execute(
@@ -78,13 +80,24 @@ export class PaginateEventCommentsHandler implements IQueryHandler<
         event,
         user,
       ),
+      isCanReact: this.eventCommentActionService.isCanReact(
+        comment,
+        event,
+        user,
+      ),
     }));
+
+    const reactions = await this.eventCommentReactionService.getSummaries(
+      comments,
+      user,
+    );
 
     return new PaginateEventCommentsOutput(
       comments,
       avatarUrls,
       actionLists,
       comments.map((comment) => replyCounts.get(comment.id) ?? 0),
+      reactions,
       count,
     );
   }
