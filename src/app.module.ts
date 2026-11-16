@@ -26,6 +26,7 @@ import { EventModule } from '@modules/Event/event.module';
 import { StoryModule } from '@modules/Story/story.module';
 import { FileModule } from '@modules/File/file.module';
 import { GlobalModule } from '@modules/Global/global.module';
+import { SchedulerModule } from '@modules/Scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { GlobalModule } from '@modules/Global/global.module';
     UserModule,
     StoryModule,
     EventModule,
+    SchedulerModule,
     FileModule,
   ],
   providers: [

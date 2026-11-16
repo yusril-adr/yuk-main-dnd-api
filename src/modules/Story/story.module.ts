@@ -123,5 +123,6 @@ const queryHandlers = [
     ...commandHandlers,
     ...queryHandlers,
   ],
+  exports: [StoryRepository, StoryService],
 })
 export class StoryModule {}

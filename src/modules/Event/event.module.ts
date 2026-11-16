@@ -121,5 +121,6 @@ const queryHandlers = [
     ...commandHandlers,
     ...queryHandlers,
   ],
+  exports: [EventRepository, EventService],
 })
 export class EventModule {}
