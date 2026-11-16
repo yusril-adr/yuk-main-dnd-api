@@ -4,6 +4,7 @@ import { EventEntityDto } from '@shared/dtos/entities/event/event.entity.dto';
 export type TEventDetailActionList = {
   isCanJoin: boolean;
   isCanCancelJoin: boolean;
+  isCanComment: boolean;
 };
 
 export class FindOneEventOutput extends EventEntityDto {
