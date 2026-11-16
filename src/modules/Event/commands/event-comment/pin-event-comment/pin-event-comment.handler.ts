@@ -46,6 +46,9 @@ export class PinEventCommentHandler implements ICommandHandler<PinEventCommentCo
         commentId,
         manager,
       );
+      if (comment.parentId) {
+        throw new BadRequestException('Replies cannot be pinned');
+      }
       if (comment.pinnedAt) {
         return;
       }

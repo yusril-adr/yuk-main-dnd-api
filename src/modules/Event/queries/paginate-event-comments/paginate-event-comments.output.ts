@@ -3,15 +3,19 @@ import { EventCommentEntityDto } from '@shared/dtos/entities/event/event-comment
 import type { TEventCommentActionList } from '../../types/event-comment-action-list.type';
 
 export class PaginateEventCommentsItemOutput extends EventCommentEntityDto {
+  // Number of non-deleted replies.
+  replyCount: number;
   actionList: TEventCommentActionList;
 
   constructor(
     payload: TEventComment,
     actionList: TEventCommentActionList,
-    avatarUrl?: string | null,
+    avatarUrl: string | null,
+    replyCount: number,
   ) {
     super();
     this.parseEntity(payload, avatarUrl);
+    this.replyCount = replyCount;
     this.actionList = actionList;
   }
 }
@@ -24,6 +28,7 @@ export class PaginateEventCommentsOutput {
     comments: TEventComment[],
     avatarUrls: (string | null)[],
     actionLists: TEventCommentActionList[],
+    replyCounts: number[],
     count: number,
   ) {
     this.data = comments.map(
@@ -32,6 +37,7 @@ export class PaginateEventCommentsOutput {
           comment,
           actionLists[i],
           avatarUrls[i],
+          replyCounts[i],
         ),
     );
     this.count = count;

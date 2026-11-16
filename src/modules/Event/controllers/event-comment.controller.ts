@@ -17,6 +17,8 @@ import { Public } from '@shared/decorators/public.decorator';
 import type { TRequestUser } from '@shared/types/request.type';
 import { PaginateEventCommentsQuery } from '../queries/paginate-event-comments/paginate-event-comments.query';
 import { PaginateEventCommentsInput } from '../queries/paginate-event-comments/paginate-event-comments.input';
+import { PaginateEventCommentRepliesQuery } from '../queries/paginate-event-comment-replies/paginate-event-comment-replies.query';
+import { PaginateEventCommentRepliesInput } from '../queries/paginate-event-comment-replies/paginate-event-comment-replies.input';
 import { CreateEventCommentCommand } from '../commands/event-comment/create-event-comment/create-event-comment.command';
 import { CreateEventCommentInput } from '../commands/event-comment/create-event-comment/create-event-comment.input';
 import { UpdateEventCommentCommand } from '../commands/event-comment/update-event-comment/update-event-comment.command';
@@ -50,6 +52,30 @@ export class EventCommentController {
       count: output.count,
       query,
       message: 'Event comments retrieved successfully',
+    });
+  }
+
+  @Get(':identifier/comments/:commentId/replies')
+  @Public()
+  async paginateReplies(
+    @Param('identifier') identifier: string,
+    @Param('commentId') commentId: string,
+    @Query() query: PaginateEventCommentRepliesInput,
+    @Request() request: Partial<TRequestUser>,
+  ) {
+    const output = await this.queryBus.execute(
+      new PaginateEventCommentRepliesQuery(
+        identifier,
+        commentId,
+        query,
+        request.user ?? null,
+      ),
+    );
+    return wrapper.paginationResponse({
+      data: output.data,
+      count: output.count,
+      query,
+      message: 'Event comment replies retrieved successfully',
     });
   }
 
