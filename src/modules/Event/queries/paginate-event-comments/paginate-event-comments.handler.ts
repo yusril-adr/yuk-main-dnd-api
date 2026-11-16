@@ -31,16 +31,23 @@ export class PaginateEventCommentsHandler implements IQueryHandler<
       relations: { createdBy: true },
     });
 
-    // Pinned first (newest pin on top), then newest comments, id as tie-break.
-    // withDeleted keeps comments from soft-deleted users; deleted comments are
-    // filtered out explicitly below.
+    // Top-level comments only. Pinned first (newest pin on top), then newest
+    // comments, id as tie-break. withDeleted keeps comments from soft-deleted
+    // users; a deleted comment stays only as a placeholder while it still has
+    // visible replies, so its thread remains readable.
     const [comments, count] = await this.eventCommentRepository
       .createQueryBuilder('comment')
       .withDeleted()
       .innerJoinAndSelect('comment.user', 'user')
       .leftJoinAndSelect('user.avatarFile', 'avatarFile')
       .where('comment.event_id = :eventId', { eventId: event.id })
-      .andWhere('comment.deleted_at IS NULL')
+      .andWhere('comment.parent_id IS NULL')
+      .andWhere(
+        `(comment.deleted_at IS NULL OR EXISTS (
+          SELECT 1 FROM event_comments reply
+          WHERE reply.parent_id = comment.id AND reply.deleted_at IS NULL
+        ))`,
+      )
       .orderBy('comment.pinnedAt', 'DESC', 'NULLS LAST')
       .addOrderBy('comment.createdAt', 'DESC')
       .addOrderBy('comment.id', 'ASC')
@@ -49,9 +56,12 @@ export class PaginateEventCommentsHandler implements IQueryHandler<
       .getManyAndCount();
 
     const avatarUrls = comments.map((comment) =>
-      comment.user.avatarFile
+      comment.user.avatarFile && !comment.deletedAt
         ? this.storageService.getPublicUrlSync(comment.user.avatarFile)
         : null,
+    );
+    const replyCounts = await this.countReplies(
+      comments.map((comment) => comment.id),
     );
 
     // Permissions come from the caller's token, so no per-comment lookups.
@@ -74,7 +84,26 @@ export class PaginateEventCommentsHandler implements IQueryHandler<
       comments,
       avatarUrls,
       actionLists,
+      comments.map((comment) => replyCounts.get(comment.id) ?? 0),
       count,
     );
+  }
+
+  // One grouped query for the whole page.
+  private async countReplies(
+    parentIds: string[],
+  ): Promise<Map<string, number>> {
+    if (parentIds.length === 0) {
+      return new Map();
+    }
+    const rows = await this.eventCommentRepository
+      .createQueryBuilder('reply')
+      .select('reply.parent_id', 'parentId')
+      .addSelect('COUNT(*)::int', 'count')
+      .where('reply.parent_id IN (:...parentIds)', { parentIds })
+      .andWhere('reply.deleted_at IS NULL')
+      .groupBy('reply.parent_id')
+      .getRawMany<{ parentId: string; count: number }>();
+    return new Map(rows.map((row) => [row.parentId, Number(row.count)]));
   }
 }

@@ -23,6 +23,7 @@ import { RemoveEventCommentHandler } from './commands/event-comment/remove-event
 import { PinEventCommentHandler } from './commands/event-comment/pin-event-comment/pin-event-comment.handler';
 import { UnpinEventCommentHandler } from './commands/event-comment/unpin-event-comment/unpin-event-comment.handler';
 import { PaginateEventCommentsHandler } from './queries/paginate-event-comments/paginate-event-comments.handler';
+import { PaginateEventCommentRepliesHandler } from './queries/paginate-event-comment-replies/paginate-event-comment-replies.handler';
 import { CreateEventHandler } from './commands/master/create-event/create-event.handler';
 import { UpdateEventHandler } from './commands/master/update-event/update-event.handler';
 import { RemoveEventHandler } from './commands/master/remove-event/remove-event.handler';
@@ -79,6 +80,7 @@ const queryHandlers = [
   BoardFindOneEventHandler,
   BoardPaginateEventMembersHandler,
   PaginateEventCommentsHandler,
+  PaginateEventCommentRepliesHandler,
 ];
 
 @Module({
