@@ -1,7 +1,7 @@
 import type { TEventComment } from '@entities/main/event/event-comment.entity';
 import { EventCommentEntityDto } from '@shared/dtos/entities/event/event-comment.entity.dto';
-
 import type { TEventCommentActionList } from '../../types/event-comment-action-list.type';
+
 export class PaginateEventCommentsItemOutput extends EventCommentEntityDto {
   // Number of non-deleted replies.
   replyCount: number;
