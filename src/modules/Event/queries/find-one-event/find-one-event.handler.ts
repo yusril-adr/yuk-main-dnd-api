@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { EventMember } from '@entities/main/event/event-member.entity';
 import { EventStatusEnum } from '../../enums/event-status.enum';
 import { EventService } from '../../services/event.service';
+import { EventCommentActionService } from '../../services/event-comment-action.service';
 import { FindOneEventQuery } from './find-one-event.query';
 import {
   FindOneEventOutput,
@@ -17,6 +18,7 @@ export class FindOneEventHandler implements IQueryHandler<
 > {
   constructor(
     private readonly eventService: EventService,
+    private readonly eventCommentActionService: EventCommentActionService,
     @InjectRepository(EventMember)
     private readonly eventMemberRepository: Repository<EventMember>,
   ) {}
@@ -31,12 +33,14 @@ export class FindOneEventHandler implements IQueryHandler<
     let actionList: TEventDetailActionList = {
       isCanJoin: false,
       isCanCancelJoin: false,
+      isCanComment: this.eventCommentActionService.isCanComment(event, user),
     };
     if (user !== null && event.status === EventStatusEnum.PUBLISHED) {
       const member = await this.eventMemberRepository.findOne({
         where: { event: { id: event.id }, user: { id: user.id } },
       });
       actionList = {
+        ...actionList,
         isCanJoin: !member,
         isCanCancelJoin: Boolean(member),
       };
